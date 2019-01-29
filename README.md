@@ -4,5 +4,6 @@
 Run 'npm install'
 
 ## To run
-Run 'npm start' in root directory
-Run 'npm run serve' in client directory
+Run <code>npm start</code> in root directory
+
+Run <code>npm run serve</code> in client directory
