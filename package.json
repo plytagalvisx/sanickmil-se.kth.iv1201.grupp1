@@ -1,0 +1,25 @@
+{
+  "name": "recruitment-app",
+  "version": "1.0.0",
+  "description": "Group 1's webb app for recruitment",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "nodemon server/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sanickmil/sanickmil-se.kth.iv1201.grupp1.git"
+  },
+  "author": "Sanickmil",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sanickmil/sanickmil-se.kth.iv1201.grupp1/issues"
+  },
+  "homepage": "https://github.com/sanickmil/sanickmil-se.kth.iv1201.grupp1#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "mongodb": "^3.1.13"
+  }
+}
