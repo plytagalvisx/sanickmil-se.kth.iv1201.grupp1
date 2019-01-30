@@ -55,6 +55,21 @@
             </b-col>
           </b-row>
 
+          <b-row>
+            <b-col sm="12">
+              <b-form-group
+                id="dobLabel"
+                label-for="dobInput"
+                label="Date of Birth">
+                <b-form-input
+                id="dobInput"
+                type="date">
+
+                </b-form-input>
+              </b-form-group>
+            </b-col>
+          </b-row>
+
         </b-form>
       </b-container>
     </b-jumbotron>
