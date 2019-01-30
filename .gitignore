@@ -90,4 +90,7 @@ node_modules
 docs/_book
 test/
 
+### OUR OWN ###
+env.sh
+
 # End of https://www.gitignore.io/api/node,vuejs
