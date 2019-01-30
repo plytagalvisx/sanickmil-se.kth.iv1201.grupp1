@@ -11,9 +11,9 @@ import RegisterForm from '../components/Register'
 
 export default {
     name: 'form',
-  components: {
-    LoginForm,
-    RegisterForm
-  }
+    components: {
+        LoginForm,
+        RegisterForm
+    }
 }
 </script>

@@ -2,8 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import LoginComponent from './components/LoginComponent.vue'
 import RegisterComponent from './components/Register.vue'
-import Form from './views/Form.vue'
-import ApplicantComponent from './views/Application.vue'
+import ApplicationView from './views/ApplicationView.vue'
 
 Vue.use(Router)
 
@@ -11,11 +10,6 @@ export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
-    {
-      path: '/',
-      name: 'form',
-      component: Form
-    },
     {
       path: '/',
       name: 'login',
@@ -34,7 +28,7 @@ export default new Router({
     {
       path: '/apply',
       name: 'apply',
-      component: ApplicantComponent
+      component: ApplicationView
     }
   ]
 })
