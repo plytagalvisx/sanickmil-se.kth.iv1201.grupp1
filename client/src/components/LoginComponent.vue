@@ -7,6 +7,7 @@
         </b-form-group>
         <b-form-group id="passwordGroup">
          <b-form-input id="password" type="text" v-model="form.password" required placeholder="Enter password"/>
+
         </b-form-group>
         <b-button type="submit" variant="info">Register</b-button>
         <b-button type="reset" variant="danger">Reset</b-button>
