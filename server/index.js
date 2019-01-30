@@ -14,7 +14,7 @@ app.use(cors());
 
 const users = require('./routes/api/users');
 
-//app.use('/api/users', users);
+app.use('/api/users', users);
 
 //Handle production
 if(process.env.NODE_ENV === 'production'){

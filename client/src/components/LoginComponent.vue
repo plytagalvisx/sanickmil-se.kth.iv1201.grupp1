@@ -9,7 +9,7 @@
          <b-form-input id="password" type="text" v-model="form.password" required placeholder="Enter password"/>
 
         </b-form-group>
-        <b-button type="submit" variant="info">Register</b-button>
+        <b-button type="submit" variant="info">Login</b-button>
         <b-button type="reset" variant="danger">Reset</b-button>
       </b-form>
       <p>Don't have an account? <router-link id="link" to="/register">Join us!</router-link></p>
@@ -18,8 +18,10 @@
 </template>
 
 <script>
+import UserService from '../services/UserService.js'
   export default {
-    data () {
+    name: 'LoginComponent',
+    data() {
       return {
         form: {
           username: '',
@@ -29,11 +31,21 @@
       }
     },
     methods: {
-      onSubmit (evt) {
+      async onSubmit (evt) {
         evt.preventDefault();
-        alert(JSON.stringify(this.form));
-        this.form.username = '';
-        this.form.password = '';
+        // alert(JSON.stringify(this.form));
+        // this.form.username = '';
+        // this.form.password = '';
+        // let data = null;
+        // let message = null;
+
+        await UserService.login(this.form.username, this.form.password).then(resData => {
+        /* eslint-disable-next-line no-console */
+          console.log(resData);
+
+        //data = resData.success
+        //message = resData.message
+      })
       },
       onReset (evt) {
         evt.preventDefault();
@@ -43,7 +55,9 @@
         /* Trick to reset/clear native browser form validation state */
         this.show = false;
         this.$nextTick(() => { this.show = true });
-      }
+      },
+
+
     },
     create() {
     }
