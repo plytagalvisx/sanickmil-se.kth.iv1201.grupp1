@@ -167,12 +167,10 @@ router.post('/apply', async (req, res) => {
             message: 'You have to be logged in'
         })
     }
-    
-
 });
 
 async function loadUsersCollection() {
-const client = await mongodb.MongoClient.connect('mongodb://sanickmil:Hejhej123@ds016138.mlab.com:16138/sanickmil-recruitment', {
+const client = await mongodb.MongoClient.connect(config.MONGODB_URI, {
             useNewUrlParser: true
         });
         return client.db('sanickmil-recruitment').collection('users');
