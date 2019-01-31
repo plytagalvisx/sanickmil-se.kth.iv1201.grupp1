@@ -78,16 +78,16 @@
     methods: {
       async onSubmit(evt) {
         evt.preventDefault();
+        await UserService.register(this.form.username, this.form.password, this.form.email, this.form.firstName, this.form.lastName, this.form.birth).then(resData => {
+          /* eslint-disable-next-line no-console */
+          console.log(resData);
+        })
         this.form.username = '',
         this.form.password = '',
         this.form.email = '',
         this.form.firstName = '',
         this.form.lastName = '',
         this.form.birth = ''
-        await UserService.register(this.form.username, this.form.password, this.form.email, this.form.firstName, this.form.lastName, this.form.birth).then(resData => {
-          /* eslint-disable-next-line no-console */
-          console.log(resData);
-        })
       },
       onReset(evt) {
         evt.preventDefault();

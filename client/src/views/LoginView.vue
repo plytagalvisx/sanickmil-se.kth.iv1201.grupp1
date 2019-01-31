@@ -49,6 +49,8 @@ import UserService from '../services/UserService.js'
             this.$router.push('/');
           }
         })
+        this.form.username = ''
+        this.form.password = ''
       },
       onReset (evt) {
         evt.preventDefault();
