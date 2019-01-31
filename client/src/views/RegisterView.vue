@@ -22,7 +22,7 @@
         <b-row>
           <b-col md="12" sm="12">
             <b-form-group id="emailGroup">
-              <b-form-input id="email" type="text" v-model="form.email" required placeholder="Email:" />
+              <b-form-input id="email" type="email" v-model="form.email" required placeholder="Email:" />
             </b-form-group>
           </b-col>
         </b-row>
