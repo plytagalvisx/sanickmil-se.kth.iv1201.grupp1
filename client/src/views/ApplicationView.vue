@@ -33,7 +33,6 @@
               </b-form-group>
             </b-col>
           </b-row>
-<<<<<<< HEAD
 
           <b-row>
             <b-col sm="12">
@@ -50,9 +49,6 @@
             </b-col>
           </b-row>
 
-=======
-          <b-button type="submit" variant="info">Login</b-button>
->>>>>>> working with apply
         </b-form>
       </b-container>
     </b-jumbotron>

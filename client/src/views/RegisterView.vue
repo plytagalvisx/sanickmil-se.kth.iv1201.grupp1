@@ -61,12 +61,8 @@
 <script>
   import UserService from '../services/UserService.js'
   export default {
-<<<<<<< HEAD:client/src/views/RegisterView.vue
     name: 'RegisterView',
     data () {
-=======
-    data() {
->>>>>>> working with apply:client/src/components/RegisterComponent.vue
       return {
         form: {
           username: '',
