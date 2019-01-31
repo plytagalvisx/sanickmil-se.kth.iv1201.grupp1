@@ -1,73 +1,45 @@
 import axios from 'axios';
 
+const USER = 'api/user/';
+const APPLICATION = 'api/application';
 
-const login = 'api/users/login';
-const logout = 'api/users/logout';
-const register = 'api/users/register';
-const apply = 'api/users/apply';
+class UserService {
 
-class UserService{
+  static login(username, password) {
+    return axios.post(USER, {
+      username,
+      password
+    }).then(response => {
+      return response.data
+    })
+  }
+  static checkToken() {
+    return axios.get(`${USER}/auth`).then(response => response.data);
+  }
 
-    static login(username, password){
-        return axios.post(login, {
-            username,
-            password
-        }).then(response => {
-            return response.data
-        })
-    }
-    static checkToken(){
-        return axios.get(login,{
+  static logout() {
+    return axios.get(USER, {}).then(response => response.data)
+  }
 
-        }).then(response => {
-            return response.data
-        })
-    }
+  static register(username, password, email, firstname, lastname, birth) {
+    return axios.post(USER, {
+      username,
+      password,
+      email,
+      firstname,
+      lastname,
+      birth
+    });
+  }
 
-    static logout(){
-        return axios.get(logout,{
+  static apply(firstname, lastname, email) {
+    return axios.post(APPLICATION, {
+      firstname,
+      lastname,
+      email,
 
-        }).then(response => {
-            return response.data
-        })
-    }
-
-    static register(username, password, email, firstname, lastname, birth){
-        return axios.post(register, {
-            username,
-            password,
-            email,
-            firstname,
-            lastname,
-            birth
-        });
-    }
-
-    static apply(firstname, lastname, email){
-        return axios.post(apply, {
-            firstname,
-            lastname,
-            email,
-            
-        });
-    }
-
-        // //Get Users
-        // static getUsers(){
-        //     return new Promise(async (resolve, reject) => {
-        //         try{
-        //             const res = await axios.get(url);
-        //             const data = res.data;
-        //             resolve(
-        //                 data.map(user => ({
-        //                     ...user
-        //                 }))
-        //             );
-        //         }catch(err){
-        //             reject(err);
-        //         }
-        //     });
-        // }
+    });
+  }
 }
 
 export default UserService;

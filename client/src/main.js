@@ -13,9 +13,12 @@ Vue.use(BootstrapVue);
 Vue.config.productionTip = false
 
 router.beforeEach( async (to, from, next) => {
-  const res = await UserService.checkToken();
-  if (!res.success && to.fullPath !== '/login') {
-    router.push('/login');
+  try {
+     await UserService.checkToken();
+  } catch(err) {
+    if (to.fullPath !== '/login' && to.fullPath !== '/register') {
+      router.push('/login');
+    }
   }
   next();
 });

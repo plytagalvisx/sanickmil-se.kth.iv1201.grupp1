@@ -12,9 +12,13 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(cors());
 
-const users = require('./routes/api/users');
+const user = require('./routes/api/user');
+const application = require('./routes/api/application');
+const skills = require('./routes/api/skills');
 
-app.use('/api/users', users);
+app.use('/api/user', user);
+app.use('/api/application', application);
+app.use('/api/skills', skills);
 
 //Handle production
 if(process.env.NODE_ENV === 'production'){
