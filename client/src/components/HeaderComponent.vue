@@ -41,7 +41,23 @@
 				},
         loggedIn: false
       }
-		},
+    },
+    created(){
+      this.verifyLoggedIn();
+      
+    },
+    methods: {
+      verifyLoggedIn(){
+      let token = this.$cookie.get("jwtToken");
+        if(token){
+        this.loggedIn = true
+      }else{
+        this.loggedIn = false;
+        }
+        // eslint-disable-next-line no-console
+        console.log(this.loggedIn)
+      }
+    }
 	}
 </script>
 
