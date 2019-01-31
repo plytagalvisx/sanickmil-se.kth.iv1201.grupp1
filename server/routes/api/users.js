@@ -109,7 +109,11 @@ router.post('/register', async (req, res) => {
         }
         users.insertOne({
             username: req.body.username,
-            password: hash
+            password: hash,
+            email: req.body.email,
+            firstname: req.body.firstname,
+            lastname: req.body.lastname,
+            birth: req.body.birth
         });
       });
     res.json({

@@ -32,10 +32,14 @@ class UserService{
         })
     }
 
-    static insertUser(username, password){
+    static register(username, password, email, firstname, lastname, birth){
         return axios.post(register, {
             username,
-            password
+            password,
+            email,
+            firstname,
+            lastname,
+            birth
         });
     }
 

@@ -1,6 +1,6 @@
 <template>
 <main>
-    <b-jumbotron class="login" header="Register new user" lead="Enter your perferred username and password">
+    <b-jumbotron class="login" header="Register" lead="Enter your preferred user information">
       <b-form @submit="onSubmit" @reset="onReset" v-if="show">
 
         <b-row>
@@ -22,11 +22,10 @@
         <b-row>
           <b-col md="12" sm="12">
             <b-form-group id="emailGroup">
-              <b-form-input id="username" type="text" v-model="form.email" required placeholder="Email:" />
+              <b-form-input id="email" type="text" v-model="form.email" required placeholder="Email:" />
             </b-form-group>
           </b-col>
         </b-row>
-
 
         <b-row>
           <b-col md="6" sm="12">
@@ -45,13 +44,14 @@
         <b-row>
           <b-col md="12" sm="12">
             <b-form-group id="birthGroup">
-              <b-form-input id="username" type="date" v-model="form.birth" required placeholder="dd-mm-yyyy" />
+              <b-form-input id="birth" type="date" v-model="form.birth" required placeholder="dd-mm-yyyy" />
             </b-form-group>
           </b-col>
         </b-row>
         <b-button type="submit" variant="info">Register</b-button>
         <b-button type="reset" variant="danger">Reset</b-button>
       </b-form>
+      <hr>
       <p>Already have an account? <router-link id="link" to="/">Login!</router-link>
       </p>
     </b-jumbotron>
@@ -71,8 +71,6 @@
           firstName: '',
           lastName: '',
           birth: ''
-
-
         },
         show: true
       }
@@ -80,7 +78,13 @@
     methods: {
       async onSubmit(evt) {
         evt.preventDefault();
-        await UserService.insertUser(this.form.username, this.form.password).then(resData => {
+        this.form.username = '',
+        this.form.password = '',
+        this.form.email = '',
+        this.form.firstName = '',
+        this.form.lastName = '',
+        this.form.birth = ''
+        await UserService.register(this.form.username, this.form.password, this.form.email, this.form.firstName, this.form.lastName, this.form.birth).then(resData => {
           /* eslint-disable-next-line no-console */
           console.log(resData);
         })
