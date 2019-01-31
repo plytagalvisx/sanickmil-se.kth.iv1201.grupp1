@@ -19,6 +19,7 @@
 <script>
 import UserService from '../services/UserService.js'
   export default {
+    name: 'RegisterView',
     data () {
       return {
         form: {

@@ -20,7 +20,7 @@
 <script>
 import UserService from '../services/UserService.js'
   export default {
-    name: 'LoginComponent',
+    name: 'LoginView',
     data() {
       return {
         form: {
@@ -43,9 +43,12 @@ import UserService from '../services/UserService.js'
         evt.preventDefault();
 
         await UserService.login(this.form.username, this.form.password).then(resData => {
-        /* eslint-disable-next-line no-console */
+          // eslint-disable-next-line
           console.log(resData);
-      })
+          if (resData.success) {
+            this.$router.push('/');
+          }
+        })
       },
       onReset (evt) {
         evt.preventDefault();

@@ -1,8 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import LoginComponent from './components/LoginComponent.vue'
-import RegisterComponent from './components/RegisterComponent.vue'
-import ApplicationView from './views/ApplicationView.vue'
+import LoginView from './views/LoginView'
+import RegisterView from './views/RegisterView'
+import ApplicationView from './views/ApplicationView'
+import DashboardView from './views/DashboardView';
 
 Vue.use(Router)
 
@@ -12,18 +13,18 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'root',
-      component: LoginComponent
+      name: 'dashboard',
+      component: DashboardView
     },
     {
       path: '/login',
       name: 'login',
-      component: LoginComponent
+      component: LoginView
     },
     {
       path: '/register',
       name: 'register',
-      component: RegisterComponent
+      component: RegisterView
     },
     {
       path: '/apply',
