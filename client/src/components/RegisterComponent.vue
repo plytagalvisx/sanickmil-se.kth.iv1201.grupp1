@@ -17,6 +17,7 @@
 </template>
 
 <script>
+import UserService from '../services/UserService.js'
   export default {
     data () {
       return {
@@ -28,9 +29,12 @@
       }
     },
     methods: {
-      onSubmit (evt) {
+      async onSubmit (evt) {
         evt.preventDefault();
-        alert(JSON.stringify(this.form));
+        await UserService.insertUser(this.form.username, this.form.password).then(resData => {
+        /* eslint-disable-next-line no-console */
+        console.log(resData);
+      })
       },
       onReset (evt) {
         evt.preventDefault();

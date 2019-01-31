@@ -26,25 +26,25 @@ import UserService from '../services/UserService.js'
         form: {
           username: '',
           password: '',
+          token: null
         },
         show: true
       }
     },
+    async created(){
+    try{
+      this.token = await UserService.checkToken();
+    }catch(err){
+      this.error = err.message;
+    }
+    },
     methods: {
       async onSubmit (evt) {
         evt.preventDefault();
-        // alert(JSON.stringify(this.form));
-        // this.form.username = '';
-        // this.form.password = '';
-        // let data = null;
-        // let message = null;
 
         await UserService.login(this.form.username, this.form.password).then(resData => {
         /* eslint-disable-next-line no-console */
           console.log(resData);
-
-        //data = resData.success
-        //message = resData.message
       })
       },
       onReset (evt) {
@@ -56,10 +56,6 @@ import UserService from '../services/UserService.js'
         this.show = false;
         this.$nextTick(() => { this.show = true });
       },
-
-
-    },
-    create() {
     }
   }
 </script>

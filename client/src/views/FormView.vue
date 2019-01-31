@@ -7,7 +7,7 @@
 
 <script>
 import LoginForm from '../components/LoginComponent'
-import RegisterForm from '../components/Register'
+import RegisterForm from '../components/RegisterComponent'
 
 export default {
     name: 'form',

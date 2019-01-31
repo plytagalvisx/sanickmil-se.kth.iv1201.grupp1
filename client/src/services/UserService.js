@@ -3,6 +3,7 @@ import axios from 'axios';
 
 const login = 'api/users/login';
 const logout = 'api/users/logout';
+const register = 'api/users/register';
 
 class UserService{
 
@@ -29,6 +30,30 @@ class UserService{
             return response.data
         })
     }
+
+        // //Get Users
+        // static getUsers(){
+        //     return new Promise(async (resolve, reject) => {
+        //         try{
+        //             const res = await axios.get(url);
+        //             const data = res.data;
+        //             resolve(
+        //                 data.map(user => ({
+        //                     ...user
+        //                 }))
+        //             );
+        //         }catch(err){
+        //             reject(err);
+        //         }
+        //     });
+        // }
+    
+        static insertUser(username, password){
+            return axios.post(register, {
+                username,
+                password
+            });
+        }
 }
 
 export default UserService;

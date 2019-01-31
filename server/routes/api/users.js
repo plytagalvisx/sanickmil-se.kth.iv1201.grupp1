@@ -2,6 +2,7 @@ const express = require('express');
 const mongodb = require('mongodb');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const config = require('../../config');
 
 const router = express.Router();
 
@@ -57,9 +58,11 @@ router.get('/login', async (req, res) => {
 })
 
 router.post('/login', async (req, res) => {
+    console.log('in post login')
     if(req.body.username && req.body.password){
         const users = await loadUsersCollection();
         const user = await users.findOne({username: req.body.username})
+        console.log(user)
         if(user !== null){
         bcrypt.compare(req.body.password, user.password, function(err, result) {
             if(result === true) {
@@ -108,11 +111,29 @@ router.get('/logout', async (req, res) => {
     }
 })
 
+// //Get users
+// router.get('/register', async (req, res) => {
+//     const users = await loadUsersCollection();
+//     res.send(await users.find({}).toArray());
+// });
+
+//Add user
+router.post('/register', async (req, res) => {
+    const users = await loadUsersCollection();
+    bcrypt.hash(req.body.password, 10, function(err, hash) {
+        users.insertOne({
+            username: req.body.username,
+            password: hash
+        });
+      });
+    res.status(201).send();
+});
+
 async function loadUsersCollection() {
-    const client = await mongodb.MongoClient.connect('mongodb://ockelberg:Bajsbajs11@ds054118.mlab.com:54118/vuetestdb', {
+const client = await mongodb.MongoClient.connect('mongodb://sanickmil:Hejhej123@ds016138.mlab.com:16138/sanickmil-recruitment', {
             useNewUrlParser: true
         });
-        return client.db('vuetestdb').collection('users');
+        return client.db('sanickmil-recruitment').collection('users');
     }
 
 module.exports = router;

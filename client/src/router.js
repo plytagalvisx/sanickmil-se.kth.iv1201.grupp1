@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import LoginComponent from './components/LoginComponent.vue'
-import RegisterComponent from './components/Register.vue'
+import RegisterComponent from './components/RegisterComponent.vue'
 import ApplicationView from './views/ApplicationView.vue'
 
 Vue.use(Router)

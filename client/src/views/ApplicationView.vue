@@ -5,7 +5,7 @@
 
       <template slot="lead">
         Apply for a job at <b>Amusement park</b>. You will not apply for a specific job, your specific task will be
-        decided by the recruiter, depending on you qualifications!
+        decided by the recruiter, depending on your qualifications!
       </template>
       <hr class="my-4">
       <b-container class="bv-example-row">
@@ -48,7 +48,7 @@
                 <b-form-input
                   id="emailInput"
                   placeholder="you@example.com"
-                  v-model="application.emial"
+                  v-model="application.email"
                   required>
                 </b-form-input>
               </b-form-group>
