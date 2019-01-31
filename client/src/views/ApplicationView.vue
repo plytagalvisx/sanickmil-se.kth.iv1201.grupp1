@@ -9,7 +9,7 @@
       </template>
       <hr class="my-4">
       <b-container class="bv-example-row">
-        <b-form>
+        <b-form @submit="onSubmit">
           <b-row>
             <b-col md="6" sm="12">
               <b-form-group
@@ -62,6 +62,7 @@
 </template>
 
 <script>
+import UserService from '../services/UserService.js'
   export default {
     name: 'ApplicationView',
     data() {
@@ -72,6 +73,16 @@
           email: ''
         }
       }
+    },
+    methods: {
+      async onSubmit (evt) {
+        evt.preventDefault();
+
+        await UserService.apply(this.form.firstName, this.form.lastName, this.form.email).then(resData => {
+        /* eslint-disable-next-line no-console */
+          console.log(resData);
+      })
+      },
     }
   }
 </script>

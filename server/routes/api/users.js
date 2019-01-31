@@ -6,24 +6,6 @@ const config = require('../../config');
 
 const router = express.Router();
 
-//Get users
-router.get('/', async (req, res) => {
-    const users = await loadUsersCollection();
-    res.send(await users.find({}).toArray());
-});
-
-//Add users
-router.post('/', async (req, res) => {
-    const users = await loadUsersCollection();
-    bcrypt.hash(req.body.password, 10, function(err, hash) {
-        users.insertOne({
-            username: req.body.username,
-            password: hash
-        });
-      });
-    res.status(201).send();
-});
-
 router.get('/login', async (req, res) => {
 
     let token = req.cookies.jwtToken;
@@ -35,7 +17,6 @@ router.get('/login', async (req, res) => {
         }
         jwt.verify(token, 'hemlighet', (err, decoded) =>{
             if(err){
-                console.log(err.message)
                 return res.json({
                     success: false,
                     message: 'Token is not valid'
@@ -58,11 +39,9 @@ router.get('/login', async (req, res) => {
 })
 
 router.post('/login', async (req, res) => {
-    console.log('in post login')
     if(req.body.username && req.body.password){
         const users = await loadUsersCollection();
         const user = await users.findOne({username: req.body.username})
-        console.log(user)
         if(user !== null){
         bcrypt.compare(req.body.password, user.password, function(err, result) {
             if(result === true) {
@@ -121,12 +100,21 @@ router.get('/logout', async (req, res) => {
 router.post('/register', async (req, res) => {
     const users = await loadUsersCollection();
     bcrypt.hash(req.body.password, 10, function(err, hash) {
+        if(err){
+            res.json({
+                success: false,
+                message: 'Something went wrong'
+            })
+        }
         users.insertOne({
             username: req.body.username,
             password: hash
         });
       });
-    res.status(201).send();
+    res.json({
+        success: true,
+        message: 'Account created'
+    });
 });
 
 async function loadUsersCollection() {
