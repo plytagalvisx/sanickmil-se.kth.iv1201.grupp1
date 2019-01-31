@@ -1,54 +1,107 @@
 <template>
-  <div class="hello">
+<main>
     <b-jumbotron class="login" header="Register new user" lead="Enter your perferred username and password">
       <b-form @submit="onSubmit" @reset="onReset" v-if="show">
-        <b-form-group id="usernameGroup">
-          <b-form-input id="username" type="text" v-model="form.username" required placeholder="Enter username"/>
-        </b-form-group>
-        <b-form-group id="passwordGroup">
-         <b-form-input id="password" type="text" v-model="form.password" required placeholder="Enter password"/>
-        </b-form-group>
+
+        <b-row>
+          <b-col md="12" sm="12">
+            <b-form-group id="usernameGroup">
+              <b-form-input id="username" type="text" v-model="form.username" required placeholder="Username:" />
+            </b-form-group>
+          </b-col>
+        </b-row>
+
+        <b-row>
+          <b-col md="12" sm="12">
+            <b-form-group id="passwordGroup">
+              <b-form-input id="password" type="password" v-model="form.password" required placeholder="Password:" />
+            </b-form-group>
+          </b-col>
+        </b-row>
+
+        <b-row>
+          <b-col md="12" sm="12">
+            <b-form-group id="emailGroup">
+              <b-form-input id="username" type="text" v-model="form.email" required placeholder="Email:" />
+            </b-form-group>
+          </b-col>
+        </b-row>
+
+
+        <b-row>
+          <b-col md="6" sm="12">
+            <b-form-group id="firstNameLabel">
+              <b-form-input id="firstNameInput" placeholder="First name:" v-model="form.firstName" required></b-form-input>
+            </b-form-group>
+          </b-col>
+
+          <b-col md="6" sm="12">
+            <b-form-group id="lastNameLabel">
+              <b-form-input id="lastNameInput" placeholder="Last name:" v-model="form.lastName" required></b-form-input>
+            </b-form-group>
+          </b-col>
+        </b-row>
+
+        <b-row>
+          <b-col md="12" sm="12">
+            <b-form-group id="birthGroup">
+              <b-form-input id="username" type="date" v-model="form.birth" required placeholder="dd-mm-yyyy" />
+            </b-form-group>
+          </b-col>
+        </b-row>
         <b-button type="submit" variant="info">Register</b-button>
         <b-button type="reset" variant="danger">Reset</b-button>
       </b-form>
-      <p>Already have an account? <router-link id="link" to="/">Login!</router-link> </p>
+      <p>Already have an account? <router-link id="link" to="/">Login!</router-link>
+      </p>
     </b-jumbotron>
-  </div>
+  </main>
 </template>
 
 <script>
-import UserService from '../services/UserService.js'
+  import UserService from '../services/UserService.js'
   export default {
+<<<<<<< HEAD:client/src/views/RegisterView.vue
     name: 'RegisterView',
     data () {
+=======
+    data() {
+>>>>>>> working with apply:client/src/components/RegisterComponent.vue
       return {
         form: {
           username: '',
           password: '',
+          email: '',
+          firstName: '',
+          lastName: '',
+          birth: ''
+
+
         },
         show: true
       }
     },
     methods: {
-      async onSubmit (evt) {
+      async onSubmit(evt) {
         evt.preventDefault();
         await UserService.insertUser(this.form.username, this.form.password).then(resData => {
-        /* eslint-disable-next-line no-console */
-        console.log(resData);
-      })
+          /* eslint-disable-next-line no-console */
+          console.log(resData);
+        })
       },
-      onReset (evt) {
+      onReset(evt) {
         evt.preventDefault();
         /* Reset our form values */
         this.form.username = '';
         this.form.password = '';
         /* Trick to reset/clear native browser form validation state */
         this.show = false;
-        this.$nextTick(() => { this.show = true });
+        this.$nextTick(() => {
+          this.show = true
+        });
       }
     },
-    create() {
-    }
+    create() {}
   }
 </script>
 

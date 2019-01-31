@@ -1,5 +1,5 @@
 <template>
-  <div id="apply">
+  <main id="apply">
     <b-jumbotron>
       <template slot="header">Apply</template>
 
@@ -9,31 +9,17 @@
       </template>
       <hr class="my-4">
       <b-container class="bv-example-row">
-        <b-form @submit="onSubmit">
+        <b-form @submit="onSubmit ">
           <b-row>
             <b-col md="6" sm="12">
-              <b-form-group
-              id="firstNameLabel"
-              label="First name:"
-              label-for="firstNameInput">
-              <b-form-input
-                id="firstNameInput"
-                placeholder="John"
-                v-model="application.firstName"
-                required>
-              </b-form-input>
-            </b-form-group>
+              <b-form-group id="firstNameLabel" label="First name:" label-for="firstNameInput">
+                <b-form-input id="firstNameInput" placeholder="John" v-model="application.firstName" required>
+                </b-form-input>
+              </b-form-group>
             </b-col>
-              <b-col md="6" sm="12">
-                <b-form-group
-                id="lastNameLabel"
-                label="Last name:"
-                label-for="lastNameInput">
-                <b-form-input
-                  id="lastNameInput"
-                  placeholder="Doe"
-                  v-model="application.lastName"
-                  required>
+            <b-col md="6" sm="12">
+              <b-form-group id="lastNameLabel" label="Last name:" label-for="lastNameInput">
+                <b-form-input id="lastNameInput" placeholder="Doe" v-model="application.lastName" required>
                 </b-form-input>
               </b-form-group>
             </b-col>
@@ -41,19 +27,13 @@
 
           <b-row>
             <b-col sm="12">
-              <b-form-group
-                id="emailLabel"
-                label="Email:"
-                label-for="emailInput">
-                <b-form-input
-                  id="emailInput"
-                  placeholder="you@example.com"
-                  v-model="application.email"
-                  required>
+              <b-form-group id="emailLabel" label="Email:" label-for="emailInput">
+                <b-form-input id="emailInput" placeholder="you@example.com" v-model="application.email" required>
                 </b-form-input>
               </b-form-group>
             </b-col>
           </b-row>
+<<<<<<< HEAD
 
           <b-row>
             <b-col sm="12">
@@ -70,14 +50,17 @@
             </b-col>
           </b-row>
 
+=======
+          <b-button type="submit" variant="info">Login</b-button>
+>>>>>>> working with apply
         </b-form>
       </b-container>
     </b-jumbotron>
-  </div>
+  </main>
 </template>
 
 <script>
-import UserService from '../services/UserService.js'
+  import UserService from '../services/UserService.js'
   export default {
     name: 'ApplicationView',
     data() {
@@ -90,23 +73,20 @@ import UserService from '../services/UserService.js'
       }
     },
     methods: {
-      async onSubmit (evt) {
+      async onSubmit(evt) {
         evt.preventDefault();
 
-        await UserService.apply(this.form.firstName, this.form.lastName, this.form.email).then(resData => {
-        /* eslint-disable-next-line no-console */
-          console.log(resData);
-      })
+        await UserService.apply(this.application.firstName, this.application.lastName, this.application.email).then(
+          resData => {
+            /* eslint-disable-next-line no-console */
+            console.log(resData);
+          })
       },
     }
   }
 </script>
 
 <style scoped>
-  #apply {
-    max-width: 900px;
-    margin: 0 auto;
-  }
 
   form {
     text-align: left;

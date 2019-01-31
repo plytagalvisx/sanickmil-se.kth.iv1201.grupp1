@@ -15,7 +15,7 @@ router.get('/login', async (req, res) => {
         if (token.startsWith('Bearer ')){
             token = token.replace('Bearer ', '')
         }
-        jwt.verify(token, 'hemlighet', (err, decoded) =>{
+        jwt.verify(token, config.SECRET, (err, decoded) =>{
             if(err){
                 return res.json({
                     success: false,
@@ -47,11 +47,12 @@ router.post('/login', async (req, res) => {
             if(result === true) {
                 //TODO: mySecret must be in environment variable, cuz securityz.
                 //Things to store in token: Username, real name, role
-                let token = 'Bearer ' + jwt.sign({username: req.body.username}, 'hemlighet', {expiresIn: '1h'})
-                res.cookie('jwtToken', token, {expire : new Date() + 15}).json({
-                                                                         success: true,
-                                                                         message: 'Successfully authenticated'
-                                                                    })
+                let token = 'Bearer ' + jwt.sign({username: req.body.username}, config.SECRET, {expiresIn: '1h'})
+                res.cookie('jwtToken', token, {expire : new Date() + 15})
+                .json({
+                    success: true,
+                    message: 'Successfully authenticated'
+                })
             } else {
                 res.json({
                     success: false,
@@ -115,6 +116,55 @@ router.post('/register', async (req, res) => {
         success: true,
         message: 'Account created'
     });
+});
+router.post('/apply', async (req, res) => {
+    const users = await loadUsersCollection();
+
+    let token = req.cookies.jwtToken;
+
+    //TODO: Also move secret to environment vars.
+    if(token){
+        if (token.startsWith('Bearer ')){
+            token = token.replace('Bearer ', '')
+        }
+        jwt.verify(token, config.SECRET, (err, decoded) => {
+            if(err){
+                return res.json({
+                    success: false,
+                    message: 'You have to have a valid token, try to log in again.'
+                })
+            }else{
+                let username = decoded.username
+                let user = users.find({username: username})
+                users.updateOne({"username" : username},{
+                    $set: {
+                        "name": req.body.firstname,
+                        "surname": req.body.lastname,
+                        "email" : req.body.email,
+                        "ssn" : req.body.ssn,
+                        "qualifications": req.body.qualifications,
+                        "availability" : req.body.availability,
+                        "applicationStatus": "unhandled",
+                        "role": "applicant",
+                    }
+                })
+
+
+                return res.json({
+                    success: true,
+                    message: 'Token is valid',
+                    decoded
+                })
+            }
+        });
+    }else{
+        return res.json({
+            success: false,
+            message: 'You have to be logged in'
+        })
+    }
+    
+
 });
 
 async function loadUsersCollection() {

@@ -43,7 +43,8 @@ class UserService{
         return axios.post(apply, {
             firstname,
             lastname,
-            email
+            email,
+            
         });
     }
 
