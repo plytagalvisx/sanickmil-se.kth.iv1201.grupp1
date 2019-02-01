@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const USER = 'api/user/';
+const USER = 'api/user';
 const APPLICATION = 'api/application';
 
 class UserService {
@@ -18,7 +18,7 @@ class UserService {
   }
 
   static logout() {
-    return axios.get(USER, {}).then(response => response.data)
+    return axios.get(`${USER}/logout`, {}).then(response => response.data)
   }
 
   static register(username, password, email, firstname, lastname, birth) {

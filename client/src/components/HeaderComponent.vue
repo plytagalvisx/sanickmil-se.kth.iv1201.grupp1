@@ -17,8 +17,10 @@
           <em>User</em>
         </template>
         <b-dropdown-item to="#">Profile</b-dropdown-item>
-        <b-dropdown-item to="#">Signout</b-dropdown-item>
+        <b-dropdown-item v-on:click="logout">Signout</b-dropdown-item>
       </b-nav-item-dropdown>
+			<b-nav-item to="/apply" v-if="loggedIn">Apply</b-nav-item>
+			<b-nav-item to="/register" v-if="!loggedIn">Register</b-nav-item>
 			<b-nav-item to="/login" v-if="!loggedIn">Login</b-nav-item>
     </b-navbar-nav>
 
@@ -27,6 +29,7 @@
 </template>
 
 <script>
+import UserService from '../services/UserService.js'
 	export default {
 		name: 'HeaderComponent',
     data () {
@@ -56,7 +59,13 @@
         }
         // eslint-disable-next-line no-console
         console.log(this.loggedIn)
-      }
+			},
+			async logout(){
+				await UserService.logout().then(resData => {
+          /* eslint-disable-next-line no-console */
+          console.log(resData);
+        })
+			}
     }
 	}
 </script>
