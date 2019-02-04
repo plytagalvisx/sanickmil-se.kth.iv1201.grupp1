@@ -30,7 +30,7 @@
 
 <script>
   import UserService from '../services/UserService.js'
-  import { mapState, mapActions } from 'vuex'
+  import {mapState, mapActions} from 'vuex'
   export default {
     name: 'HeaderComponent',
     data() {
