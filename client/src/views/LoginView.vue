@@ -31,13 +31,6 @@
         show: true
       }
     },
-    async created() {
-      // try {
-      //   this.token = await UserService.checkToken();
-      // } catch (err) {
-      //   this.error = err.message;
-      // }
-    },
     methods: {
       ...mapMutations([
         'LOG_IN'
