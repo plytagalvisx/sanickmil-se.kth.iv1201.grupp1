@@ -9,45 +9,53 @@
       </template>
       <hr class="my-4">
       <b-container class="bv-example-row">
-        <b-form @submit="onSubmit ">
+        <b-form @submit="onSubmit" @reset="onReset">
           <b-row>
-            <b-col md="6" sm="12">
-              <b-form-group id="firstNameLabel" label="First name:" label-for="firstNameInput">
-                <b-form-input id="firstNameInput" placeholder="John" v-model="application.firstName" required>
+            <b-col md="7" sm="12">
+              <b-form-group id="expertise" label="Select expertise:" label-for="expertiseSelect">
+                <b-form-select id="expertiseSelect" :options="options" placeholder="Select expertise" v-model="application.expertise" required>
+                </b-form-select>
+              </b-form-group>
+            </b-col>
+          <b-col md="3" sm="12">
+              <b-form-group id="expertise" label="Experience (years):" label-for="yearsInput">
+                <b-form-input type="number" id="yearsInput" placeholder="Years of expertise" v-model="application.expertiseYears" required>
                 </b-form-input>
               </b-form-group>
             </b-col>
-            <b-col md="6" sm="12">
-              <b-form-group id="lastNameLabel" label="Last name:" label-for="lastNameInput">
-                <b-form-input id="lastNameInput" placeholder="Doe" v-model="application.lastName" required>
-                </b-form-input>
+          <b-col md="2" sm="12">
+              <b-form-group id="expertise" label="New entry" label-for="newExpertise">
+                <b-button id="newExpertise" :options="options" placeholder="Select expertise" required>+</b-button>
               </b-form-group>
             </b-col>
           </b-row>
 
+          <p><i>Preview med alla hittils tillagda expertiser</i></p>
+
           <b-row>
-            <b-col sm="12">
-              <b-form-group id="emailLabel" label="Email:" label-for="emailInput">
-                <b-form-input id="emailInput" placeholder="you@example.com" v-model="application.email" required>
+            <b-col md="5" sm="12">
+              <b-form-group id="availabilityStartLabel" label="Availability from:" label-for="availabilityStartDate">
+                <b-form-input id="availabilityStartDate" type="date" v-model="application.startAvailability" required>
                 </b-form-input>
+              </b-form-group>
+            </b-col>
+            <b-col md="5" sm="12">
+              <b-form-group id="availabilityEndLabel" label="Availability to:" label-for="availabilityEndDate">
+                <b-form-input id="availabilityEndDate" type="date" v-model="application.endAvailability" required>
+                </b-form-input>
+              </b-form-group>
+            </b-col>
+            <b-col md="2" sm="12">
+              <b-form-group id="expertise" label="New entry" label-for="newAvailability">
+                <b-button id="newAvailability" :options="options" placeholder="Select expertise" required>+</b-button>
               </b-form-group>
             </b-col>
           </b-row>
 
-          <b-row>
-            <b-col sm="12">
-              <b-form-group
-                id="dobLabel"
-                label-for="dobInput"
-                label="Date of Birth">
-                <b-form-input
-                id="dobInput"
-                type="date">
+          <p><i>Visa sammanställning av input</i></p>
 
-                </b-form-input>
-              </b-form-group>
-            </b-col>
-          </b-row>
+          <b-button type="submit" variant="info">Submit</b-button>
+          <b-button type="reset" variant="danger">Reset</b-button>
 
         </b-form>
       </b-container>
@@ -61,10 +69,15 @@
     name: 'ApplicationView',
     data() {
       return {
+        options: [
+        { value: null, text: 'Please select an expertise' },
+        { value: 'a', text: 'This is First option' },
+        { value: 'b', text: 'Selected Option' },
+        { value: {'C': '3PO'}, text: 'This is an option with object value' },
+        { value: 'd', text: 'This one is disabled', disabled: true }
+      ],
         application: {
-          firstName: '',
-          lastName: '',
-          email: ''
+          
         }
       }
     },
