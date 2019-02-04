@@ -5,7 +5,7 @@
         <b-form-input id="username" type="text" v-model="form.username" required placeholder="Enter username" />
       </b-form-group>
       <b-form-group id="passwordGroup">
-        <b-form-input id="password" type="text" v-model="form.password" required placeholder="Enter password" />
+        <b-form-input id="password" type="password" v-model="form.password" required placeholder="Enter password" />
 
       </b-form-group>
       <b-button type="submit" variant="info">Login</b-button>
@@ -53,17 +53,6 @@
         })
         this.form.username = ''
         this.form.password = ''
-      },
-      onReset(evt) {
-        evt.preventDefault();
-        /* Reset our form values */
-        this.form.username = '';
-        this.form.password = '';
-        /* Trick to reset/clear native browser form validation state */
-        this.show = false;
-        this.$nextTick(() => {
-          this.show = true
-        });
       },
     }
   }
