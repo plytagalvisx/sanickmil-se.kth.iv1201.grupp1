@@ -56,7 +56,7 @@
         await UserService.logout().then(() => {
           this.logOut();
           this.$router.push('/login');
-        })
+        });
       }
     }
   }
