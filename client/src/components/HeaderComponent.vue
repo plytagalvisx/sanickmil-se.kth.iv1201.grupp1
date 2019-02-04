@@ -14,7 +14,7 @@
         <b-nav-item-dropdown right v-if="loggedIn">
           <!-- Using button-content slot -->
           <template slot="button-content">
-            <em>User</em>
+            <em>{{user.name}}</em>
           </template>
           <b-dropdown-item to="#">Profile</b-dropdown-item>
           <b-dropdown-item v-on:click="logout">Signout</b-dropdown-item>

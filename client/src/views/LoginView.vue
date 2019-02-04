@@ -39,7 +39,7 @@
 
         await UserService.login(this.form.username, this.form.password).then(resData => {
           if (resData.success) {
-            this.logIn();
+            this.logIn({name: this.form.username, role: 'DEFAULT DEV'});
             this.$router.push('/');
           }
         })
