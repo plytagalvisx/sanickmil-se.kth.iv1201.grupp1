@@ -12,7 +12,13 @@ Vue.use(BootstrapVue);
 
 Vue.config.productionTip = false
 
-router.beforeEach( async (to, from, next) => {
+/**
+ * Asserts that the user is logged in at each navigation.
+ * Logged out users trying to access logged in pages are
+ * redirected to the login page, and may enter the registration
+ * page as well.
+ */
+router.beforeEach( async(to, from, next) => {
   try {
      await UserService.checkToken();
   } catch(err) {
