@@ -6,6 +6,8 @@ const APPLICATION = 'api/application';
 class UserService {
 
   static login(username, password) {
+    // eslint-disable-next-line
+    console.log('CHECKTOKEN');
     return axios.post(USER, {
       username,
       password
