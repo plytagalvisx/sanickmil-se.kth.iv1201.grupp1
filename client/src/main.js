@@ -3,11 +3,12 @@ import App from './App.vue'
 import router from './router'
 import BootstrapVue from 'bootstrap-vue'
 import UserService from './services/UserService'
+import VueCookie from 'vue-cookie'
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
-
+Vue.use(VueCookie);
 Vue.use(BootstrapVue);
 
 Vue.config.productionTip = false
