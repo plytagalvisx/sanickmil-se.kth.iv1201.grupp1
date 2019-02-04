@@ -1,6 +1,6 @@
 <template>
   <b-jumbotron class="login" header="Login" lead="You need to login in order to use the service. Please login, or create a new user!">
-    <b-form @submit="onSubmit" @reset="onReset" v-if="show">
+    <b-form @submit="onSubmit" v-if="show">
       <b-form-group id="usernameGroup">
         <b-form-input id="username" type="text" v-model="form.username" required placeholder="Enter username" />
       </b-form-group>
@@ -9,7 +9,6 @@
 
       </b-form-group>
       <b-button type="submit" variant="info">Login</b-button>
-      <b-button type="reset" variant="danger">Reset</b-button>
     </b-form>
     <p>Don't have an account? <router-link id="link" to="/register">Join us!</router-link>
     </p>
@@ -18,7 +17,7 @@
 
 <script>
   import UserService from '../services/UserService.js'
-  import { mapMutations } from 'vuex'
+  import { mapActions } from 'vuex'
   export default {
     name: 'LoginView',
     data() {
@@ -32,15 +31,15 @@
       }
     },
     methods: {
-      ...mapMutations([
-        'LOG_IN'
-      ]),
+      ...mapActions({
+        logIn: 'logIn'
+      }),
       async onSubmit(evt) {
         evt.preventDefault();
 
         await UserService.login(this.form.username, this.form.password).then(resData => {
           if (resData.success) {
-            this.LOG_IN();
+            this.logIn();
             this.$router.push('/');
           }
         })
