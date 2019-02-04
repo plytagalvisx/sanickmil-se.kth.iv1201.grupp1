@@ -92,8 +92,12 @@
       onReset(evt) {
         evt.preventDefault();
         /* Reset our form values */
-        this.form.username = '';
-        this.form.password = '';
+        this.form.username = '',
+        this.form.password = '',
+        this.form.email = '',
+        this.form.firstName = '',
+        this.form.lastName = '',
+        this.form.birth = ''
         /* Trick to reset/clear native browser form validation state */
         this.show = false;
         this.$nextTick(() => {
