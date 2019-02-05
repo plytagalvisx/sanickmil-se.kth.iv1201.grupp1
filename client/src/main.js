@@ -1,10 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
-<<<<<<< HEAD
 import store from './store'
-=======
->>>>>>> started work on saving state of application in cookies
 import BootstrapVue from 'bootstrap-vue'
 import UserService from './services/UserService'
 import VueCookie from 'vue-cookie'
@@ -14,7 +11,6 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 Vue.use(VueCookie);
 Vue.use(BootstrapVue);
-<<<<<<< HEAD
 Vue.use(store);
 
 Vue.config.productionTip = false
@@ -28,14 +24,6 @@ Vue.config.productionTip = false
 router.beforeEach( async(to, from, next) => {
   try {
     await UserService.checkToken();
-=======
-
-Vue.config.productionTip = false
-
-router.beforeEach( async (to, from, next) => {
-  try {
-     await UserService.checkToken();
->>>>>>> started work on saving state of application in cookies
   } catch(err) {
     if (to.fullPath !== '/login' && to.fullPath !== '/register') {
       router.push('/login');
@@ -46,9 +34,6 @@ router.beforeEach( async (to, from, next) => {
 
 new Vue({
   router,
-<<<<<<< HEAD
   store,
-=======
->>>>>>> started work on saving state of application in cookies
   render: h => h(App)
 }).$mount('#app')

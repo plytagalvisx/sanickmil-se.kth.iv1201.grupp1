@@ -1,13 +1,9 @@
 <template>
   <div id="app">
     <HeaderComponent />
-<<<<<<< HEAD
     <main>
       <router-view/>
     </main>
-=======
-    <router-view/>
->>>>>>> started work on saving state of application in cookies
   </div>
 </template>
 

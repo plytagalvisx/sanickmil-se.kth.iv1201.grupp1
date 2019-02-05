@@ -6,11 +6,6 @@ const APPLICATION = 'api/application';
 class UserService {
 
   static login(username, password) {
-<<<<<<< HEAD
-    // eslint-disable-next-line
-    console.log('CHECKTOKEN');
-=======
->>>>>>> started work on saving state of application in cookies
     return axios.post(USER, {
       username,
       password
@@ -37,19 +32,10 @@ class UserService {
     });
   }
 
-<<<<<<< HEAD
-  static apply(firstname, lastname, email) {
-    return axios.post(APPLICATION, {
-      firstname,
-      lastname,
-      email,
-
-=======
   static saveState(qualifications, availability) {
     return axios.post(APPLICATION, {
       qualifications,
       availability
->>>>>>> started work on saving state of application in cookies
     });
   }
 }

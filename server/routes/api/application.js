@@ -1,8 +1,4 @@
 const express = require('express');
-<<<<<<< HEAD
-const router = express.Router();
-module.exports = router;
-=======
 const mongodb = require('mongodb');
 const config = require('../../config');
 const jwt = require('jsonwebtoken');
@@ -57,4 +53,3 @@ const router = express.Router();
   }
 
   module.exports = router;
->>>>>>> started work on saving state of application in cookies
