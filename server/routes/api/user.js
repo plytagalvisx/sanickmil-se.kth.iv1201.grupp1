@@ -131,57 +131,6 @@ router.post('/register', async (req, res) => {
     message: 'Account created'
   });
 });
-router.post('/apply', async (req, res) => {
-  const users = await loadUsersCollection();
-
-  let token = req.cookies.jwtToken;
-
-  //TODO: Also move secret to environment vars.
-  if (token) {
-    if (token.startsWith('Bearer ')) {
-      token = token.replace('Bearer ', '')
-    }
-    jwt.verify(token, config.SECRET, (err, decoded) => {
-      if (err) {
-        return res.json({
-          success: false,
-          message: 'You have to have a valid token, try to log in again.'
-        })
-      } else {
-        let username = decoded.username
-        let user = users.find({
-          username: username
-        })
-        users.updateOne({
-          "username": username
-        }, {
-          $set: {
-            "name": req.body.firstname,
-            "surname": req.body.lastname,
-            "email": req.body.email,
-            "ssn": req.body.ssn,
-            "qualifications": req.body.qualifications,
-            "availability": req.body.availability,
-            "applicationStatus": "unhandled",
-            "role": "applicant",
-          }
-        })
-
-
-        return res.json({
-          success: true,
-          message: 'Token is valid',
-          decoded
-        })
-      }
-    });
-  } else {
-    return res.json({
-      success: false,
-      message: 'You have to be logged in'
-    })
-  }
-});
 
 async function loadUsersCollection() {
   const client = await mongodb.MongoClient.connect(config.MONGODB_URI, {

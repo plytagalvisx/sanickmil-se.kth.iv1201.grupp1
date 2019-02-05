@@ -1,3 +1,60 @@
 const express = require('express');
+<<<<<<< HEAD
 const router = express.Router();
 module.exports = router;
+=======
+const mongodb = require('mongodb');
+const config = require('../../config');
+const jwt = require('jsonwebtoken');
+const router = express.Router();
+
+  router.post('/', async (req, res) => {
+  
+    let token = req.cookies.jwtToken;
+    let qualifications = req.body.qualifications
+    let availability = req.body.availability
+    let oldState = req.cookies.savedState
+  
+    //TODO: Also move secret to environment vars.
+    if (token) {
+      if (token.startsWith('Bearer ')) {
+        token = token.replace('Bearer ', '')
+      }
+      jwt.verify(token, config.SECRET, (err, decoded) => {
+        if (err) {
+          return res.json({
+            success: false,
+            message: 'You have to have a valid token, try to log in again.'
+          })
+        } else {
+            let username = decoded.username
+            let result = {
+                ...oldState,
+                ...{username, qualifications, availability}
+            }
+            res.cookie('savedState', result, {
+                expire: new Date() + 15
+              })
+              .json({
+                success: true,
+                message: 'Successfully saved state',
+              })
+        }
+      });
+    } else {
+      return res.json({
+        success: false,
+        message: 'You have to be logged in'
+      })
+    }
+  });
+
+  async function loadApplicationCollection() {
+    const client = await mongodb.MongoClient.connect(config.MONGODB_URI, {
+      useNewUrlParser: true
+    });
+    return client.db('sanickmil-recruitment').collection('application');
+  }
+
+  module.exports = router;
+>>>>>>> started work on saving state of application in cookies
