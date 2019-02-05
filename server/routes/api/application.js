@@ -4,7 +4,7 @@ const config = require('../../config');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
 
-  router.post('/', async (req, res) => {
+router.post('/', async (req, res) => {
   
     let token = req.cookies.jwtToken;
     let qualifications = req.body.qualifications
@@ -28,6 +28,7 @@ const router = express.Router();
                 ...oldState,
                 ...{username, qualifications, availability}
             }
+            console.log(result)
             res.cookie('savedState', result, {
                 expire: new Date() + 15
               })
@@ -44,6 +45,39 @@ const router = express.Router();
       })
     }
   });
+
+router.delete('/', async (req, res) => {
+  let savedState = req.cookies.savedState
+  let token = req.cookies.jwtToken;
+  let username = null
+
+  console.log(token)
+
+  jwt.verify(token, config.SECRET, (err, decoded) => {
+    if (err) {
+      return res.status(401)
+      .json({
+        success: false,
+        message: 'Token is not valid'
+      });
+    } else {
+        username = decoded.username
+    }
+  });
+
+  if (savedState.username === username) {
+    res.clearCookie('savedState')
+    return res.json({
+      success: true,
+      message: 'Successfully removed saved state.'
+    })
+  } else {
+    return res.json({
+      success: false,
+      message: 'You can\'t remove the state when you\'re not logged in.'
+    })
+  }
+})
 
   async function loadApplicationCollection() {
     const client = await mongodb.MongoClient.connect(config.MONGODB_URI, {

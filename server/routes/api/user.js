@@ -40,7 +40,6 @@ router.get('/auth', async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
-  console.log('LOGIN CALLED');
   if (req.body.username && req.body.password) {
     const users = await loadUsersCollection();
     const user = await users.findOne({
@@ -89,6 +88,7 @@ router.get('/logout', async (req, res) => {
 
   if (token) {
     res.clearCookie('jwtToken')
+    res.clearCookie('savedState')
     return res.json({
       success: true,
       message: 'Successfully logged out.'

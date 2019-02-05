@@ -81,12 +81,12 @@
           /* eslint-disable-next-line no-console */
           console.log(resData);
         })
-        this.form.username = '',
+          this.form.username = '',
           this.form.password = '',
           this.form.email = '',
           this.form.firstName = '',
           this.form.lastName = '',
-          this.form.birth = ''
+          this.form.birth = '' 
       },
       onReset(evt) {
         evt.preventDefault();

@@ -13,7 +13,7 @@
           <b-row>
             <b-col md="7" sm="12">
               <b-form-group label="Select expertise:" label-for="expertiseSelect">
-                <b-form-select id="expertiseSelect" :options="options" placeholder="Select expertise" v-model="qualifications.name" required>
+                <b-form-select id="expertiseSelect" :options="options" v-model="qualifications.name">
                 </b-form-select>
               </b-form-group>
             </b-col>
@@ -66,8 +66,8 @@
             </b-col>
           </b-row>
 
-          <b-button to="/finalizeApplicationView" variant="info">next</b-button>
-          <b-button type="reset" variant="danger">Reset</b-button>
+          <b-button to="/finalizeApplicationView" variant="info">Next</b-button>
+          <b-button type="reset" variant="danger" @click="onReset">Reset</b-button>
 
         </b-form>
       </b-container>
@@ -76,14 +76,18 @@
 </template>
 
 <script>
-  import UserService from '../services/UserService.js'
+  import ApplicationService from '../services/ApplicationService.js'
+  import {mapState} from 'vuex'
   export default {
     name: 'ApplicationView',
     data() {
       return {
+        optionsold:[
+
+        ],
         options: [
-        { value: null, text: 'Please select an expertise', disabled: true },
-        { value: 'Slav', text: 'Slav' },
+        { value: null, text: 'Please select an expertise', disabled: true},
+        { value: 'Slav', text: 'Slav'},
         { value: 'Waiter', text: 'Waiter'},
         { value: 'General manager', text: 'General manager' },
         { value: 'Boss', text: 'Boss'},
@@ -92,8 +96,20 @@
         availability:[]
       }
     },
+    computed: {
+      ...mapState(['loggedIn', 'user'])
+    },
     created(){
+      let cookie = this.$cookie.get('savedState')
+      if(cookie){
+        cookie = cookie.substr(2, cookie.length)
+        cookie = JSON.parse(cookie)
 
+        if(this.user.name === cookie.username){
+          this.qualifications = cookie.qualifications
+          this.availability = cookie.availability
+          }
+      }
     },
     methods: {
       addExpertise(){
@@ -105,17 +121,20 @@
         this.storeState()
       },
       async storeState(){
-        await UserService.saveState(this.qualifications, this.availability)
+        await ApplicationService.saveState(this.qualifications, this.availability)
       },
-      submit(){
-        //skicka båda arrayerna med datan till en service och sedan vidare till backend.
-      }
+      async onReset(){        
+        await ApplicationService.removeState()
+        document.getElementById('expertiseSelect').value = '';
+        this.qualifications.years = '';
+        this.availability.start = '';
+        this.availability.end = '';
+      },
     }
   }
 </script>
 
 <style scoped>
-
   form {
     text-align: left;
   }

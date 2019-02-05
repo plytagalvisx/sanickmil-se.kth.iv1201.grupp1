@@ -1,8 +1,6 @@
 import axios from 'axios';
 
 const USER = 'api/user';
-const APPLICATION = 'api/application';
-
 class UserService {
 
   static login(username, password) {
@@ -29,13 +27,6 @@ class UserService {
       firstname,
       lastname,
       birth
-    });
-  }
-
-  static saveState(qualifications, availability) {
-    return axios.post(APPLICATION, {
-      qualifications,
-      availability
     });
   }
 }
