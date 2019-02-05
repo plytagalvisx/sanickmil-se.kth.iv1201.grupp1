@@ -36,13 +36,13 @@
       }),
       async onSubmit(evt) {
         evt.preventDefault();
-
-        await UserService.login(this.form.username, this.form.password).then(resData => {
-          if (resData.success) {
+        await UserService.login(this.form.username, this.form.password)
+          .then(() => {
             this.logIn({name: this.form.username, role: 'DEFAULT DEV'});
             this.$router.push('/');
-          }
-        })
+          })
+          // eslint-disable-next-line
+          .catch(err => console.log('ERROR EHERE', err));
         this.form.username = ''
         this.form.password = ''
       },

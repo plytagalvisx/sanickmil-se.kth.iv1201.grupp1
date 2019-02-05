@@ -5,12 +5,11 @@ const jwt = require('jsonwebtoken');
 const router = express.Router();
 
 router.post('/', async (req, res) => {
-  
     let token = req.cookies.jwtToken;
     let qualifications = req.body.qualifications
     let availability = req.body.availability
     let oldState = req.cookies.savedState
-  
+
     //TODO: Also move secret to environment vars.
     if (token) {
       if (token.startsWith('Bearer ')) {
@@ -79,11 +78,11 @@ router.delete('/', async (req, res) => {
   }
 })
 
-  async function loadApplicationCollection() {
-    const client = await mongodb.MongoClient.connect(config.MONGODB_URI, {
-      useNewUrlParser: true
-    });
-    return client.db('sanickmil-recruitment').collection('application');
-  }
+async function loadApplicationCollection() {
+  const client = await mongodb.MongoClient.connect(config.MONGODB_URI, {
+    useNewUrlParser: true
+  });
+  return client.db('sanickmil-recruitment').collection('application');
+}
 
-  module.exports = router;
+module.exports = router;

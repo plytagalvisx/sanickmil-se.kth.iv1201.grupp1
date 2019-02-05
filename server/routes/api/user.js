@@ -6,115 +6,17 @@ const config = require('../../config');
 
 const router = express.Router();
 
-router.get('/auth', async (req, res) => {
-  console.log('Auth called');
-  let token = req.cookies.jwtToken;
-  //TODO: Also move hemlighet to environment vars.
-  if (token) {
-    if (token.startsWith('Bearer ')) {
-      token = token.replace('Bearer ', '')
-    }
-    jwt.verify(token, config.SECRET, (err, decoded) => {
-      if (err) {
-        return res.status(401)
-        .json({
-          success: false,
-          message: 'Token is not valid'
-        });
-      } else {
-        return res.status(200)
-        .json({
-          success: true,
-          message: 'Token is valid',
-          decoded: decoded
-        });
-      }
-    });
-  } else {
-    return res.status(400).
-    json({
-      success: false,
-      message: 'Auth token is not supplied'
-    })
-  }
-})
+const DUPL_USER = 11000;
 
+/**
+ * This is for ADDING users aka registtry.
+ */
 router.post('/', async (req, res) => {
-  if (req.body.username && req.body.password) {
-    const users = await loadUsersCollection();
-    const user = await users.findOne({
-      username: req.body.username
-    })
-    if (user !== null) {
-      bcrypt.compare(req.body.password, user.password, function (err, result) {
-        if (result === true) {
-          //TODO: mySecret must be in environment variable, cuz securityz.
-          //Things to store in token: Username, real name, role
-          let token = 'Bearer ' + jwt.sign({
-            username: req.body.username
-          }, config.SECRET, {
-            expiresIn: '1h'
-          })
-          res.cookie('jwtToken', token, {
-              expire: new Date() + 15
-            })
-            .json({
-              success: true,
-              message: 'Successfully authenticated'
-            })
-        } else {
-          res.json({
-            success: false,
-            message: 'Incorrect username or password'
-          })
-        }
-      });
-    } else {
-      res.json({
-        success: false,
-        message: 'Account doesn\'t exist'
-      })
-    }
-  } else {
-    res.json({
-      success: false,
-      message: 'Authentication failed, please make sure both fields are filled in.'
-    })
-  }
-});
-
-router.get('/logout', async (req, res) => {
-  let token = req.cookies.jwtToken;
-
-  if (token) {
-    res.clearCookie('jwtToken')
-    res.clearCookie('savedState')
-    return res.json({
-      success: true,
-      message: 'Successfully logged out.'
-    })
-  } else {
-    return res.json({
-      success: false,
-      message: 'You can\'t log out when you\'re not logged in.'
-    })
-  }
-})
-
-// //Get users
-// router.get('/register', async (req, res) => {
-//     const users = await loadUsersCollection();
-//     res.send(await users.find({}).toArray());
-// });
-
-//Add user
-router.post('/register', async (req, res) => {
   const users = await loadUsersCollection();
   bcrypt.hash(req.body.password, 10, function (err, hash) {
     if (err) {
-      res.json({
-        success: false,
-        message: 'Something went wrong'
+      res.status(400).json({
+        message: 'Something went wrong: ' + err
       })
     }
     users.insertOne({
@@ -124,12 +26,67 @@ router.post('/register', async (req, res) => {
       firstname: req.body.firstname,
       lastname: req.body.lastname,
       birth: req.body.birth
+    }, (err, docs) => {
+      if (err) {
+        if (err.code === DUPL_USER) {
+          res.status(400).send({
+            message: 'That user already exists.'
+          })
+        } else {
+          res.status(400).send({
+            message: err.errmsg
+          });
+        }
+      } else {
+        res.status(200).json({
+          message: 'Account created'
+        });
+      }
     });
   });
-  res.json({
-    success: true,
-    message: 'Account created'
-  });
+});
+
+/**
+ * This is LOGIN, for "getting" a user of the info matches
+ */
+router.get('/', async (req, res) => {
+  let username = req.query.username;
+  let password = req.query.password;
+  if (username && password) {
+    const users = await loadUsersCollection();
+    const user = await users.findOne({
+      username
+    })
+    if (user !== null) {
+      bcrypt.compare(password, user.password, function (err, result) {
+        if (result === true) {
+          let token = 'Bearer ' + jwt.sign({
+            username
+          }, config.SECRET, {
+            expiresIn: '1h'
+          })
+          res.cookie('jwtToken', token, {
+              expire: new Date() + 15
+            })
+            .status(200).json({
+              message: 'Successfully authenticated'
+            })
+        } else {
+          res.status(401).json({
+            message: 'Incorrect username or password'
+          })
+        }
+      });
+    } else {
+      res.status(401).json({
+        message: 'Account doesn\'t exist'
+      })
+    }
+  } else {
+    res.status(400).json({
+      message: 'Authentication failed, please make sure both fields are filled in.'
+    })
+  }
 });
 
 async function loadUsersCollection() {

@@ -16,7 +16,7 @@
           <template slot="button-content">
             <em>{{user.name}}</em>
           </template>
-          <b-dropdown-item to="#">Profile</b-dropdown-item>
+          <b-dropdown-item to="/profile">Profile</b-dropdown-item>
           <b-dropdown-item v-on:click="logout">Signout</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item to="/apply" v-if="loggedIn">Apply</b-nav-item>

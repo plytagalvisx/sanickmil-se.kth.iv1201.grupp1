@@ -1,22 +1,23 @@
 import axios from 'axios';
 
 const USER = 'api/user';
+const AUTH = 'api/auth';
 class UserService {
 
   static login(username, password) {
-    return axios.post(USER, {
-      username,
-      password
-    }).then(response => {
-      return response.data
-    })
+    return axios.get(USER, {
+      params: {
+        username,
+        password
+      }
+    }).then(response => response.data);
   }
   static checkToken() {
-    return axios.get(`${USER}/auth`).then(response => response.data);
+    return axios.get(`${AUTH}`).then(response => response.data);
   }
 
   static logout() {
-    return axios.get(`${USER}/logout`, {}).then(response => response.data)
+    return axios.delete(`${AUTH}`, {}).then(response => response.data)
   }
 
   static register(username, password, email, firstname, lastname, birth) {
