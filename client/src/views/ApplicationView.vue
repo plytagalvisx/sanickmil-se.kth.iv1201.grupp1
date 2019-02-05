@@ -66,7 +66,7 @@
             </b-col>
           </b-row>
 
-          <b-button to="/finalizeApplicationView" variant="info">next</b-button>
+          <b-button to="/receipt" variant="info">next</b-button>
           <b-button type="reset" variant="danger">Reset</b-button>
 
         </b-form>
