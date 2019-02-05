@@ -52,6 +52,10 @@ router.delete('/', async (req, res) => {
 
   console.log(token)
 
+  if (token.startsWith('Bearer ')) {
+    token = token.replace('Bearer ', '')
+  }
+
   jwt.verify(token, config.SECRET, (err, decoded) => {
     if (err) {
       return res.status(401)
