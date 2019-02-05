@@ -22,11 +22,15 @@ Vue.config.productionTip = false
  * page as well.
  */
 router.beforeEach( async(to, from, next) => {
-  try {
-    await UserService.checkToken();
-  } catch(err) {
-    if (to.fullPath !== '/login' && to.fullPath !== '/register') {
-      router.push('/login');
+  if (to.fullPath === '/login' || to.fullPath === '/register') {
+    next();
+  } else {
+    try {
+      await UserService.checkToken();
+    } catch(err) {
+      if (to.fullPath !== '/login' && to.fullPath !== '/register') {
+        router.push('/login');
+      }
     }
   }
   next();
