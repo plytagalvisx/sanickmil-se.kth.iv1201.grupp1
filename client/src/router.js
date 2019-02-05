@@ -3,7 +3,9 @@ import Router from 'vue-router'
 import LoginView from './views/LoginView'
 import RegisterView from './views/RegisterView'
 import ApplicationView from './views/ApplicationView'
-import DashboardView from './views/DashboardView';
+import DashboardView from './views/DashboardView'
+import Profile from './views/Profile'
+import FinalApplication from './views/FinalApplication'
 
 Vue.use(Router)
 
@@ -30,6 +32,16 @@ export default new Router({
       path: '/apply',
       name: 'apply',
       component: ApplicationView
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: Profile
+    },
+    {
+      path: '/receipt',
+      name: 'receipt',
+      component: FinalApplication
     }
   ]
 })
