@@ -67,7 +67,7 @@
           </b-row>
 
           <b-button to="/receipt" variant="info">next</b-button>
-          <b-button type="reset" variant="danger">Reset</b-button>
+          <b-button type="reset" variant="danger" @click="onReset">Reset</b-button>
 
         </b-form>
       </b-container>
@@ -123,12 +123,14 @@
       async storeState(){
         await ApplicationService.saveState(this.qualifications, this.availability)
       },
-      async onReset(){        
+      async onReset(){
         await ApplicationService.removeState()
         document.getElementById('expertiseSelect').value = '';
         this.qualifications.years = '';
         this.availability.start = '';
         this.availability.end = '';
+        this.availability = [];
+        this.qualifications = [];
       },
     }
   }

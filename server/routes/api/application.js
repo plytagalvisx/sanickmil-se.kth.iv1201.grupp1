@@ -50,8 +50,6 @@ router.delete('/', async (req, res) => {
   let token = req.cookies.jwtToken;
   let username = null
 
-  console.log(token)
-
   if (token.startsWith('Bearer ')) {
     token = token.replace('Bearer ', '')
   }

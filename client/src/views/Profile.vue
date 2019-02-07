@@ -1,6 +1,6 @@
 <template>
-    <b-jumbotron header="Current Application" lead="Bootstrap 4 Components for Vue.js 2">
-        <p>For more information visit website</p>
+    <b-jumbotron header="Your Application" lead="You can edit your application as long as the application is unhandeled. You can see your current application and its status here.">
+        <hr>
         <ApplicationReceipt/>
     </b-jumbotron>
 </template>
