@@ -1,35 +1,42 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import VuexPersist from 'vuex-persist'
+// import VuexPersist from 'vuex-persist'
 
 Vue.use(Vuex)
 
-const vuexLocalStorage = new VuexPersist({
-  key: 'vuex-persistance',
-  storage: window.localStorage
-});
+// const vuexLocalStorage = new VuexPersist({
+//   key: 'vuex-persistance',
+//   storage: window.localStorage
+// });
 
 export default new Vuex.Store({
-  plugins: [vuexLocalStorage.plugin],
+  // plugins: [vuexLocalStorage.plugin],
   state: {
     loggedIn: false,
-    user: null
+    user: null,
+    globalError: null
   },
   mutations: {
-    LOG_IN: (state, newUser = {name: 'defaultUser', role: 'DEBUG'}) => {
+    logIn: (state, newUser = {name: 'defaultUser', role: 'DEBUG'}) => {
       state.user = newUser;
       state.loggedIn = true;
     },
-    LOG_OUT: (state => {
+    logOut: (state) => {
       state.loggedIn = false;
-    })
+    },
+    setError: (state, text) => {
+      state.globalError = text;
+    }
   },
   actions: {
     logIn: ({commit}, payload) => {
-      commit('LOG_IN', payload);
+      commit('logIn', payload);
     },
     logOut: ({commit}) => {
-      commit('LOG_OUT');
+      commit('logOut');
+    },
+    setError: ({commit}, payload) => {
+      commit('setError', payload);
     }
   }
 })

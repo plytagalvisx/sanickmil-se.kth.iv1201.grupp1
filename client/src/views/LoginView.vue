@@ -31,20 +31,25 @@
       }
     },
     methods: {
-      ...mapActions({
-        logIn: 'logIn'
-      }),
+      ...mapActions([
+        'logIn',
+        'setError'
+      ]),
       async onSubmit(evt) {
         evt.preventDefault();
+        // eslint-disable-next-line
+        console.log(typeof this.logIn);
         await UserService.login(this.form.username, this.form.password)
           .then(() => {
             this.logIn({name: this.form.username, role: 'DEFAULT DEV'});
+            // eslint-disable-next-line
+            console.log('setting logged in');
             this.$router.push('/');
           })
           // eslint-disable-next-line
-          .catch(err => console.log('ERROR EHERE', err));
-        this.form.username = ''
-        this.form.password = ''
+          .catch(err => this.setError('HEJSAN'));
+        // this.form.username = ''
+        // this.form.password = ''
       },
       onReset (evt) {
         evt.preventDefault();

@@ -3,7 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import BootstrapVue from 'bootstrap-vue'
-import UserService from './services/UserService'
+// import UserService from './services/UserService'
 import VueCookie from 'vue-cookie'
 
 import 'bootstrap/dist/css/bootstrap.css'
@@ -22,15 +22,14 @@ Vue.config.productionTip = false
  * page as well.
  */
 router.beforeEach( async(to, from, next) => {
+  let loggedIn = store.state.loggedIn;
+  // eslint-disable-next-line
+  console.log(typeof store.state.loggedIn);
   if (to.fullPath === '/login' || to.fullPath === '/register') {
     next();
   } else {
-    try {
-      await UserService.checkToken();
-    } catch(err) {
-      if (to.fullPath !== '/login' && to.fullPath !== '/register') {
-        router.push('/login');
-      }
+    if (!loggedIn) {
+      router.push('/login');
     }
   }
   next();

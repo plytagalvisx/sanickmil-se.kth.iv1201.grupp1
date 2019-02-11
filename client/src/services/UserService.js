@@ -5,15 +5,12 @@ const AUTH = 'api/auth';
 class UserService {
 
   static login(username, password) {
-    return axios.get(USER, {
+    return axios.get(AUTH, {
       params: {
         username,
         password
       }
     }).then(response => response.data);
-  }
-  static checkToken() {
-    return axios.get(`${AUTH}`).then(response => response.data);
   }
 
   static logout() {
