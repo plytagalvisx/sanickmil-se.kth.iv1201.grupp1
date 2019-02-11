@@ -17,6 +17,10 @@ const user = require('./routes/api/user');
 const application = require('./routes/api/application');
 const skills = require('./routes/api/skills');
 const auth = require('./routes/api/auth');
+const authentication =  require('./routes/api/authentication');
+
+/* Authenticates each */
+app.use(/.*/, authentication);
 
 app.use('/api/user', user);
 app.use('/api/auth', auth);

@@ -1,44 +1,58 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const config = require('../../config');
+const mongodb = require('mongodb');
+const bcrypt = require('bcryptjs');
 const router = express.Router();
+
+//TODO: Duplicate code, refactor
+async function loadUsersCollection() {
+  const client = await mongodb.MongoClient.connect(config.MONGODB_URI, {
+    useNewUrlParser: true
+  });
+  return client.db('sanickmil-recruitment').collection('users');
+}
 
 /**
  * Authenticates a user and provides a cookie proving authentication
  */
 router.get('/', async (req, res) => {
-  try {
-    let token = req.cookies.jwtToken;
-  //TODO: Also move hemlighet to environment vars.
-  if (token) {
-    if (token.startsWith('Bearer ')) {
-      token = token.replace('Bearer ', '');
-    }
-    jwt.verify(token, config.SECRET, (err, decoded) => {
-      if (err) {
-        return res.status(401)
-        .json({
-          success: false,
-          message: 'Token is not valid'
-        });
-      } else {
-        return res.status(200)
-        .json({
-          success: true,
-          message: 'Token is valid',
-          decoded: decoded
-        });
-      }
-    });
-  } else {
-    return res.status(400).
-    json({
-      success: false,
-      message: 'Auth token is not supplied'
+  let username = req.query.username;
+  let password = req.query.password;
+  if (username && password) {
+    const users = await loadUsersCollection();
+    const user = await users.findOne({
+      username
     })
-  }
-  } catch (err) {
-    console.log('ERROR CAUGHT', err);
+    if (user !== null) {
+      bcrypt.compare(password, user.password, function (err, result) {
+        if (result === true) {
+          let token = 'Bearer ' + jwt.sign({
+            username
+          }, config.SECRET, {
+            expiresIn: '1h'
+          })
+          res.cookie('jwtToken', token, {
+              expire: new Date() + 15
+            })
+            .status(200).json({
+              message: 'Successfully authenticated'
+            })
+        } else {
+          res.status(401).json({
+            message: 'Incorrect username or password'
+          })
+        }
+      });
+    } else {
+      res.status(401).json({
+        message: 'Account doesn\'t exist'
+      })
+    }
+  } else {
+    res.status(400).json({
+      message: 'Authentication failed, please make sure both fields are filled in.'
+    })
   }
 })
 
@@ -55,7 +69,7 @@ router.delete('/', async (req, res) => {
   } else {
     return res.json({
       success: false,
-      message: 'You can\'t log out when you\'re not logged in.'
+      message: 'You must be logged in to log out.'
     })
   }
 })

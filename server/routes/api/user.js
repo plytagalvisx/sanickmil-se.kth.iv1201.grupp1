@@ -9,7 +9,7 @@ const router = express.Router();
 const DUPL_USER = 11000;
 
 /**
- * This is for ADDING users aka registtry.
+ * This is for ADDING users aka registry.
  */
 router.post('/', async (req, res) => {
   const users = await loadUsersCollection();
@@ -38,7 +38,7 @@ router.post('/', async (req, res) => {
           });
         }
       } else {
-        res.status(200).json({
+        res.status(201).json({
           message: 'Account created'
         });
       }
@@ -47,46 +47,10 @@ router.post('/', async (req, res) => {
 });
 
 /**
- * This is LOGIN, for "getting" a user of the info matches
+ * Get a single user, TODO:
  */
-router.get('/', async (req, res) => {
-  let username = req.query.username;
-  let password = req.query.password;
-  if (username && password) {
-    const users = await loadUsersCollection();
-    const user = await users.findOne({
-      username
-    })
-    if (user !== null) {
-      bcrypt.compare(password, user.password, function (err, result) {
-        if (result === true) {
-          let token = 'Bearer ' + jwt.sign({
-            username
-          }, config.SECRET, {
-            expiresIn: '1h'
-          })
-          res.cookie('jwtToken', token, {
-              expire: new Date() + 15
-            })
-            .status(200).json({
-              message: 'Successfully authenticated'
-            })
-        } else {
-          res.status(401).json({
-            message: 'Incorrect username or password'
-          })
-        }
-      });
-    } else {
-      res.status(401).json({
-        message: 'Account doesn\'t exist'
-      })
-    }
-  } else {
-    res.status(400).json({
-      message: 'Authentication failed, please make sure both fields are filled in.'
-    })
-  }
+router.get('/:username', async (req, res) => {
+  res.json({user: req.params.username, status: 'NOT DONE, TODO!!!'});
 });
 
 async function loadUsersCollection() {
