@@ -9,3 +9,5 @@ Run <code>npm start</code> in root directory
 Run <code>npm run serve</code> in client directory
 
 Have a good day!
+
+I'm on dev! (test)
