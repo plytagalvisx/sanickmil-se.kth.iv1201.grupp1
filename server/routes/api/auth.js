@@ -62,11 +62,11 @@ router.delete('/', async (req, res) => {
   if (token) {
     res.clearCookie('jwtToken')
     res.clearCookie('savedState')
-    return res.statusCode(200).json({
+    return res.status(200).json({
       message: 'Successfully logged out.'
     })
   } else {
-    return res.statusCode(403).json({
+    return res.status(403).json({
       message: 'You must be logged in to log out.'
     })
   }

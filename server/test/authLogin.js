@@ -63,4 +63,16 @@ describe("Authenticate POST and GET requests", function(){
         });
       });
     });
+
+    describe("DELETE request, when logged in", function(){
+      const testUrlUser = url + "?username=emil&password=lime";
+      const testUrlDelete = url;
+      it("Returns status code 200", function(done){
+        request(testUrlUser, function(err, res, body){
+          request(testUrlDelete, function(err, res, body){
+            expect(res)
+          });
+        });
+      });
+    });
 });
