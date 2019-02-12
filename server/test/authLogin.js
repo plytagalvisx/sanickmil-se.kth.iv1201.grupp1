@@ -8,7 +8,7 @@ const url = config.AUTH_URL + authUrl;
 /**
  * Tests the authentication for POST and GET requests.
  */
-describe("Authenticate POST and GET requests", function(){
+describe("Authenticate GET requests for login", function(){
   /**
    * Tests the authentication for GET requests, when the input is correct. Tests both the status code and message.
    */
@@ -60,18 +60,6 @@ describe("Authenticate POST and GET requests", function(){
         request(testUrl, function(err, res, body){
           expect(body).to.equal('{"message":"Authentication failed, please make sure both fields are filled in."}');
           done();
-        });
-      });
-    });
-
-    describe("DELETE request, when logged in", function(){
-      const testUrlUser = url + "?username=emil&password=lime";
-      const testUrlDelete = url;
-      it("Returns status code 200", function(done){
-        request(testUrlUser, function(err, res, body){
-          request(testUrlDelete, function(err, res, body){
-            expect(res)
-          });
         });
       });
     });
