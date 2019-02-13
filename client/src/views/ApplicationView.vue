@@ -1,12 +1,11 @@
 <template>
-  <main id="apply">
-    <b-jumbotron>
-      <template slot="header">Apply</template>
+  <b-jumbotron>
+    <template slot="header">Apply
+  </template>
 
-      <template slot="lead">
-        Apply for a job at <b>Amusement park</b>. You will not apply for a specific job, your specific task will be
-        decided by the recruiter, depending on your qualifications!
-      </template>
+  <template slot="lead">
+   Apply for a job at <b>Amusement park</b>. You will not apply for a specific job, your specific task will be decided by the recruiter, depending on your qualifications!
+  </template>
       <hr class="my-4">
       <b-container class="bv-example-row">
         <b-form>
@@ -72,40 +71,41 @@
         </b-form>
       </b-container>
     </b-jumbotron>
-  </main>
 </template>
 
 <script>
   import ApplicationService from '../services/ApplicationService.js'
-  import {mapState} from 'vuex'
+  import {
+    mapState
+  } from 'vuex'
   export default {
     name: 'ApplicationView',
     data() {
       return {
         skillOptions: [
-        // { value: null, text: 'Please select an expertise', disabled: true},
-        // { value: 'Slav', text: 'Slav'},
-        // { value: 'Waiter', text: 'Waiter'},
-        // { value: 'General manager', text: 'General manager' },
-        // { value: 'Boss', text: 'Boss'},
+          // { value: null, text: 'Please select an expertise', disabled: true},
+          // { value: 'Slav', text: 'Slav'},
+          // { value: 'Waiter', text: 'Waiter'},
+          // { value: 'General manager', text: 'General manager' },
+          // { value: 'Boss', text: 'Boss'},
         ],
-        qualifications:[],
-        availability:[]
+        qualifications: [],
+        availability: []
       }
     },
     computed: {
       ...mapState(['loggedIn', 'user'])
     },
-    created(){
+    created() {
       let cookie = this.$cookie.get('savedState')
-      if(cookie){
+      if (cookie) {
         cookie = cookie.substr(2, cookie.length)
         cookie = JSON.parse(cookie)
-
-        if(this.user.name === cookie.username){
+  
+        if (this.user.name === cookie.username) {
           this.qualifications = cookie.qualifications
           this.availability = cookie.availability
-          }
+        }
       }
       ApplicationService.getSkills()
         .then((res) => {
@@ -115,18 +115,24 @@
         });
     },
     methods: {
-      addExpertise(){
-        this.qualifications.push({expertise: this.qualifications.name, years: this.qualifications.years})
+      addExpertise() {
+        this.qualifications.push({
+          expertise: this.qualifications.name,
+          years: this.qualifications.years
+        })
         this.storeState()
       },
-      addAvailability(){
-        this.availability.push({startDate: this.availability.start, endDate: this.availability.end})
+      addAvailability() {
+        this.availability.push({
+          startDate: this.availability.start,
+          endDate: this.availability.end
+        })
         this.storeState()
       },
-      async storeState(){
+      async storeState() {
         await ApplicationService.saveState(this.qualifications, this.availability)
       },
-      async onReset(){
+      async onReset() {
         await ApplicationService.removeState()
         document.getElementById('expertiseSelect').value = '';
         this.qualifications.years = '';
