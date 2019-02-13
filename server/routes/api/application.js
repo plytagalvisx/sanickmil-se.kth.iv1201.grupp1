@@ -17,8 +17,7 @@ router.post('/', async (req, res) => {
       }
       jwt.verify(token, config.SECRET, (err, decoded) => {
         if (err) {
-          return res.json({
-            success: false,
+          return res.status(401).json({
             message: 'You have to have a valid token, try to log in again.'
           })
         } else {
@@ -30,15 +29,13 @@ router.post('/', async (req, res) => {
             res.cookie('savedState', result, {
                 expire: new Date() + 15
               })
-              .json({
-                success: true,
+              .status(200).json({
                 message: 'Successfully saved state',
               })
         }
       });
     } else {
-      return res.json({
-        success: false,
+      return res.status(401).json({
         message: 'You have to be logged in'
       })
     }
@@ -57,7 +54,6 @@ router.delete('/', async (req, res) => {
     if (err) {
       return res.status(401)
       .json({
-        success: false,
         message: 'Token is not valid'
       });
     } else {
@@ -67,13 +63,11 @@ router.delete('/', async (req, res) => {
 
   if (savedState.username === username) {
     res.clearCookie('savedState')
-    return res.json({
-      success: true,
+    return res.status(200).json({
       message: 'Successfully removed saved state.'
     })
   } else {
-    return res.json({
-      success: false,
+    return res.status(401).json({
       message: 'You can\'t remove the state when you\'re not logged in.'
     })
   }
