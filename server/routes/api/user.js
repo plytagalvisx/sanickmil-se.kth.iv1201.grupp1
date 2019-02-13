@@ -25,7 +25,8 @@ router.post('/', async (req, res) => {
       email: req.body.email,
       firstname: req.body.firstname,
       lastname: req.body.lastname,
-      birth: req.body.birth
+      birth: req.body.birth,
+      role: 'applicant'
     }, (err, docs) => {
       if (err) {
         if (err.code === DUPL_USER) {

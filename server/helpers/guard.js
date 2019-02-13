@@ -1,11 +1,11 @@
 const router = require('express').Router();
 const jwt = require('jsonwebtoken');
-const config = require('../../config');
+const config = require('../config');
 
 /**
  * Array of path/method combos that may be accessed without logging in.
  */
-const permittedAccess = [
+const unauthorizedAccessPaths = [
   {route: '/api/user', method: 'POST'},
   {route: '/api/auth', method: 'GET'}
 ];
@@ -24,7 +24,7 @@ function loggedOutAccess(path, method) {
   * and if such a object exists, it will not be 'undefined'
   * and the function returns true
   */
-  return permittedAccess.find(ele => (ele.route === path && ele.method === method)) !== undefined;
+  return unauthorizedAccessPaths.find(ele => (ele.route === path && ele.method === method)) !== undefined;
 }
 
 /**
@@ -66,19 +66,20 @@ async function authenticateToken(token) {
  * Otherwise the middleware will pass the baton the the actual handler.
  */
 router.all(/.*/, async (req, res, next) => {
+  if (req.headers.authorization) {
+    console.log('USER SENT AUTHORIZATION HEADER TOKEN', req.headers.authorization);
+  }
   // If the user is trying to register, or loggin in, authentication is obviously not required.
   if (loggedOutAccess(req.baseUrl, req.method)) {
-    next();
-  } else {
-    const token = req.cookies.jwtToken;
-    const authAudit = await authenticateToken(token);
-    if (!authAudit.success) {
-      res.status(401)
-      .json({message: authAudit.message});
-    } else {
-      next();
-    }
+    return next();
   }
+  const token = req.cookies.jwtToken;
+  const authAudit = await authenticateToken(token);
+  if (!authAudit.success) {
+    return res.status(401)
+    .json({message: authAudit.message});
+  }
+  next();
 });
 
 module.exports = router;

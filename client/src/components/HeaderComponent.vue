@@ -19,7 +19,7 @@
           <b-dropdown-item to="/profile">Profile</b-dropdown-item>
           <b-dropdown-item v-on:click="logout">Signout</b-dropdown-item>
         </b-nav-item-dropdown>
-        <b-nav-item to="/apply" v-if="loggedIn">Apply</b-nav-item>
+        <b-nav-item to="/apply" v-if="user.role === 'applicant'">Apply</b-nav-item>
         <b-nav-item to="/register" v-if="!loggedIn">Register</b-nav-item>
         <b-nav-item to="/login" v-if="!loggedIn">Login</b-nav-item>
       </b-navbar-nav>
@@ -33,20 +33,11 @@
   import {mapState, mapActions} from 'vuex'
   export default {
     name: 'HeaderComponent',
-    data() {
-      return {
-        form: {
-          username: '',
-          password: '',
-          email: '',
-          firstName: '',
-          lastName: '',
-          birth: ''
-        }
-      }
-    },
     computed: {
-      ...mapState(['loggedIn', 'user'])
+      ...mapState(['user']),
+      loggedIn() {
+        return this.user.token !== null;
+      }
     },
     methods: {
       ...mapActions({

@@ -27,7 +27,6 @@ router.post('/', async (req, res) => {
                 ...oldState,
                 ...{username, qualifications, availability}
             }
-            console.log(result)
             res.cookie('savedState', result, {
                 expire: new Date() + 15
               })

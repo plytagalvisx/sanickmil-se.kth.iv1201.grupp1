@@ -13,7 +13,7 @@
           <b-row>
             <b-col md="7" sm="12">
               <b-form-group label="Select expertise:" label-for="expertiseSelect">
-                <b-form-select id="expertiseSelect" :options="options" v-model="qualifications.name">
+                <b-form-select id="expertiseSelect" :options="skillOptions" v-model="qualifications.name">
                 </b-form-select>
               </b-form-group>
             </b-col>
@@ -82,16 +82,13 @@
     name: 'ApplicationView',
     data() {
       return {
-        optionsold:[
-
+        skillOptions: [
+        // { value: null, text: 'Please select an expertise', disabled: true},
+        // { value: 'Slav', text: 'Slav'},
+        // { value: 'Waiter', text: 'Waiter'},
+        // { value: 'General manager', text: 'General manager' },
+        // { value: 'Boss', text: 'Boss'},
         ],
-        options: [
-        { value: null, text: 'Please select an expertise', disabled: true},
-        { value: 'Slav', text: 'Slav'},
-        { value: 'Waiter', text: 'Waiter'},
-        { value: 'General manager', text: 'General manager' },
-        { value: 'Boss', text: 'Boss'},
-      ],
         qualifications:[],
         availability:[]
       }
@@ -110,6 +107,12 @@
           this.availability = cookie.availability
           }
       }
+      ApplicationService.getSkills()
+        .then((res) => {
+          // eslint-disable-next-line
+          console.log('SKILLS DONE', res.data);
+          this.skillOptions = res.data;
+        });
     },
     methods: {
       addExpertise(){

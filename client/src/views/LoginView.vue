@@ -40,11 +40,14 @@
         // eslint-disable-next-line
         console.log(typeof this.logIn);
         await UserService.login(this.form.username, this.form.password)
-          .then(() => {
-            this.logIn({name: this.form.username, role: 'DEFAULT DEV'});
-            // eslint-disable-next-line
-            console.log('setting logged in');
-            this.$router.push('/');
+          .then((data) => {
+            this.logIn({name: this.form.username, token: data.auth, role: data.role});
+            localStorage.setItem('userAuth', data.auth);
+            if (data.role === 'applicant') {
+               this.$router.push('/');
+            } else {
+              this.$router.push('/recruiter');
+            }
           })
           // eslint-disable-next-line
           .catch(err => this.setError('HEJSAN'));

@@ -4,6 +4,8 @@ const express = require('express');
 const router = express.Router();
 const util = require('util');
 const config = require('../../config');
+const bcrypt = require('bcryptjs');
+
 
 router.get('/', (req, res) => {
   console.log(' > /dev/dbtransfare invoked');
@@ -47,7 +49,14 @@ router.get('/', (req, res) => {
         user.username = element.username;
         user.ssn = element.ssn;
         user.email = element.email;
-        user.password = element.password;
+
+        if (element.password === null) {
+          user.password = element.password;
+        } else {
+          user.password = bcrypt.hashSync(element.password, 10);
+        }
+        // user.password = bcrypt.hashSync(new String(element.password).toString(), 10);
+
         user.applicationStatus = 'unhandled';
         user.qualifications = [];
         if (element.competence_name !== null) {

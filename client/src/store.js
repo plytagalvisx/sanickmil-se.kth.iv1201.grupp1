@@ -1,28 +1,39 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-// import VuexPersist from 'vuex-persist'
+import VuexPersist from 'vuex-persist'
+
+// TODO: Decide on wether or not to keep the persist
 
 Vue.use(Vuex)
 
-// const vuexLocalStorage = new VuexPersist({
-//   key: 'vuex-persistance',
-//   storage: window.localStorage
-// });
+const vuexLocalStorage = new VuexPersist({
+  key: 'vuex-persistance',
+  storage: window.localStorage
+});
 
 export default new Vuex.Store({
-  // plugins: [vuexLocalStorage.plugin],
+  plugins: [vuexLocalStorage.plugin],
   state: {
-    loggedIn: false,
-    user: null,
+    user: {
+      name: null,
+      token: null,
+      role: null
+    },
+    // TODO: To retain username/password when switching from login->register and vice versa
+    form: {
+      username: null,
+      password: null
+    },
     globalError: null
   },
   mutations: {
-    logIn: (state, newUser = {name: 'defaultUser', role: 'DEBUG'}) => {
+    logIn: (state, newUser) => {
       state.user = newUser;
-      state.loggedIn = true;
     },
     logOut: (state) => {
-      state.loggedIn = false;
+      state.user.name = null;
+      state.user.token = null;
+      state.user.role = null;
     },
     setError: (state, text) => {
       state.globalError = text;

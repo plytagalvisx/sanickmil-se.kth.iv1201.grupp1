@@ -28,15 +28,19 @@ router.get('/', async (req, res) => {
       bcrypt.compare(password, user.password, function (err, result) {
         if (result === true) {
           let token = 'Bearer ' + jwt.sign({
-            username
+            user: user.username,
+            role: user.role
           }, config.SECRET, {
             expiresIn: '1h'
           })
+          res.setHeader('Authorization', token);
           res.cookie('jwtToken', token, {
               expire: new Date() + 15
             })
-            .status(200).json({
-              message: 'Successfully authenticated'
+            .status(200)
+            .json({
+              message: 'Successfully authenticated',
+              role: user.role
             })
         } else {
           res.status(401).json({

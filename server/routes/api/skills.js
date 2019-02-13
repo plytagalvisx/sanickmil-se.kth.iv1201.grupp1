@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
   const skills = await loadSkillCollection();
   const loadedSkills = skills.find({}, async (err, docs) => {
     if (err) {
-      console.log('ERROR!!!1!!', err);
+      console.log('Error fetching skills: ', err);
     } else {
       try {
         const found = await docs.toArray();
