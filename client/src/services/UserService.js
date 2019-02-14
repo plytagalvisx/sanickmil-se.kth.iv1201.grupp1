@@ -26,14 +26,14 @@ class UserService {
     }).then(response => response.data)
   }
 
-  static register(username, password, email, firstname, lastname, birth) {
+  static register(username, password, email, firstname, lastname, ssn) {
     return axios.post(USER, {
       username,
       password,
       email,
       firstname,
       lastname,
-      birth
+      ssn
     });
   }
 }
