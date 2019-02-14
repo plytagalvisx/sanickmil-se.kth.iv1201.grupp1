@@ -1,5 +1,6 @@
 <template>
   <b-jumbotron header="Recruiter page" lead="Current applications are listed below.">
+    <FilterApplicationComponent/>
     <b-container class="bv-example-row" v-for="application in applications" :key="application.ssn">
       <b-card class="application" border-variant="info">
         <b-row>
@@ -16,11 +17,14 @@
           </b-col>
         </b-row>
         <b-row>
-          <b-col md="6" sm="12">
+          <b-col md="4" sm="12">
             <p><b>First name: </b> {{ application.firstname }}</p>
           </b-col>
-          <b-col md="6" sm="12">
+          <b-col md="4" sm="12">
             <p><b>Last name: </b>{{ application.lastname }}</p>
+          </b-col>
+          <b-col md="4" sm="12">
+            <p><b>Submitted: </b>{{ application.submitted.date }}</p>
           </b-col>
         </b-row>
         <div v-show="application.isOpen">
@@ -33,6 +37,7 @@
             </b-col>
           </b-row>
           <!-- HERE ARE THE TABLES -->
+          <!-- TABLE FOR QUALIFICATIONS -->
           <b-row class="tableHeader">
             <b-col md="6" sm="12">
               <p class="title">Skill</p>
@@ -49,12 +54,34 @@
               {{ qualification.yearsOfExperience }}
             </b-col>
           </b-row>
-          <b-row class="buttons">
-            <b-col md="6">
-              <b-btn variant="success" @click="onHire">Hire</b-btn>
+
+          <!-- TABLE FOR AVAILABILITY -->
+          <b-row class="tableHeader">
+            <b-col md="6" sm="12">
+              <p class="title">Available from</p>
             </b-col>
-            <b-col md="6">
-              <b-btn variant="danger" @click="onReject">Reject</b-btn>
+            <b-col md="6" sm="12">
+              <p class="title">Available to</p>
+            </b-col>
+          </b-row>
+          <b-row v-for="available in application.availability" :key="available.name" class="tableRow">
+            <b-col md="6" sm="12">
+              {{ available.from }} <br>
+            </b-col>
+            <b-col md="6" sm="12">
+              {{ available.to }}
+            </b-col>
+          </b-row>
+          <!-- HERE STARTS THE BUTTONS -->
+          <b-row class="buttons">
+            <b-col md="4" sm="12">
+              <b-btn variant="danger" size="lg" @click="onReject(application)">Reject</b-btn>
+            </b-col>
+            <b-col md="4" sm="12">
+              <b-btn variant="secondary" size="lg" @click="onUnhandled(application)">Unhandled</b-btn>
+            </b-col>
+            <b-col md="4" sm="12">
+              <b-btn variant="success" size="lg" @click="onHire(application)">Hire</b-btn>
             </b-col>
           </b-row>
         </div>
@@ -64,13 +91,17 @@
 </template>
 
 <script>
+  import FilterApplicationComponent from '../components/FilterApplicationComponent'
   export default {
+    components: {
+      FilterApplicationComponent
+    },
     data() {
       return {
         applications: [{
             isOpen: false,
             firstname: "Emil",
-            lastname: "LB",
+            lastname: "Lindholm Brandt",
             ssn: "19930324-3333",
             email: "emil93@gmail.com",
             status: "unhandled",
@@ -91,7 +122,10 @@
                 from: "2018-03-01",
                 to: "2018-08-01"
               }
-            ]
+            ],
+            submitted: {
+              date: "2017-12-23"
+            }
           },
           {
             isOpen: false,
@@ -112,9 +146,51 @@
             availability: [{
               from: "2018-04-02",
               to: "2018-12-01"
-            }]
+            }],
+            submitted: {
+              date: "2014-02-01"
+            }
+          },
+          {
+            isOpen: false,
+            firstname: "Nicklas",
+            lastname: "Ockelberg",
+            ssn: "19970629-0010",
+            email: "ockelberg@gmail.com",
+            status: "rejected",
+            qualifications: [{
+                "name": "clown",
+                "yearsOfExperience": 2
+              },
+              {
+                "name": "sockervaddssnurrare",
+                "yearsOfExperience": 15
+              },
+              {
+                "name": "karusellåkare",
+                "yearsOfExperience": 4
+              }
+            ],
+            availability: [{
+              from: "2018-04-02",
+              to: "2018-12-01"
+            }],
+            submitted: {
+              date: "2016-03-04"
+            }
           }
         ]
+      }
+    },
+    methods: {
+      onReject(application) {
+        application.status = 'rejected'
+      },
+      onHire(application) {
+        application.status = 'hired'
+      },
+      onUnhandled(application) {
+        application.status = 'unhandled'
       }
     }
   }
@@ -129,13 +205,15 @@
   .title {
     font-weight: bold;
     font-size: 1.2em;
-    border-bottom-style: solid;
-    border-width: 0.01em;
-    border-color: #d9e0e6;
+    margin-bottom:0.1em;
+    margin-top:1em;
   }
   
   .tableHeader {
-    margin-bottom: -1em;
+    border-bottom-style: solid;
+    border-width: 0.01em;
+    border-color: #d9e0e6;
+    vertical-align: center !important;
   }
   
   .tableRow {
@@ -143,6 +221,10 @@
     border-bottom-style: solid;
     border-width: 0.01em;
     border-color: #d9e0e6;
+  }
+
+  .tableRow:hover{
+    background-color:#d9e0e6;
   }
   
   .buttons {

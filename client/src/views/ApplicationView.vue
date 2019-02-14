@@ -64,10 +64,14 @@
               </b-form-group>
             </b-col>
           </b-row>
-
-          <b-button to="/receipt" variant="info">Next</b-button>
-          <b-button type="reset" variant="danger" @click="onReset">Reset</b-button>
-
+          <b-row>
+            <b-col md="6" sm="12">
+              <b-button type="reset" size="lg" variant="danger" @click="onReset">Reset</b-button>
+            </b-col>
+            <b-col md="6" sm="12">
+              <b-button to="/receipt" class="button" size="lg" variant="info" @click="onNext">Next</b-button>
+            </b-col>
+          </b-row>
         </b-form>
       </b-container>
     </b-jumbotron>
@@ -146,7 +150,10 @@
 </script>
 
 <style scoped>
-  form {
+  form{
     text-align: left;
+  }
+  .button{
+    float:right;
   }
 </style>

@@ -66,9 +66,9 @@ async function authenticateToken(token) {
  * Otherwise the middleware will pass the baton the the actual handler.
  */
 router.all(/.*/, async (req, res, next) => {
-  if (req.headers.authorization) {
+  /*if (req.headers.authorization) {
     console.log('USER SENT AUTHORIZATION HEADER TOKEN', req.headers.authorization);
-  }
+  }*/
   // If the user is trying to register, or loggin in, authentication is obviously not required.
   if (loggedOutAccess(req.baseUrl, req.method)) {
     return next();
