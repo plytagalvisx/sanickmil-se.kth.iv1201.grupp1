@@ -42,8 +42,10 @@
 
       <b-row>
         <b-col md="12" sm="12">
-          <b-form-group id="birthGroup">
-            <b-form-input id="birth" type="date" v-model="form.birth" required placeholder="dd-mm-yyyy" />
+          <b-form-group id="ssnGroup">
+            <!-- TODO: Align this to the left, or remove it -->
+            <b-label for="ssn">Social Security Number</b-label>
+            <b-form-input id="ssn" type="text" v-model="form.ssn" required placeholder="yymmdd-xxxx" />
           </b-form-group>
         </b-col>
       </b-row>
@@ -68,7 +70,7 @@
           email: '',
           firstName: '',
           lastName: '',
-          birth: ''
+          ssn: ''
         },
         show: true
       }
@@ -77,7 +79,7 @@
       async onSubmit(evt) {
         evt.preventDefault();
         await UserService.register(this.form.username, this.form.password, this.form.email, this.form.firstName, this
-          .form.lastName, this.form.birth).then(resData => {
+          .form.lastName, this.form.ssn).then(resData => {
           /* eslint-disable-next-line no-console */
           console.log(resData);
         })
@@ -86,7 +88,7 @@
           this.form.email = '',
           this.form.firstName = '',
           this.form.lastName = '',
-          this.form.birth = '' 
+          this.form.ssn = '' 
       },
       onReset(evt) {
         evt.preventDefault();
@@ -96,7 +98,7 @@
         this.form.email = '',
         this.form.firstName = '',
         this.form.lastName = '',
-        this.form.birth = ''
+        this.form.ssn = ''
         /* Trick to reset/clear native browser form validation state */
         this.show = false;
         this.$nextTick(() => {
