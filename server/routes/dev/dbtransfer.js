@@ -6,7 +6,9 @@ const util = require('util');
 const config = require('../../config');
 const bcrypt = require('bcryptjs');
 
-
+/**
+ * Transfers the content from a local database on port 8889 with username and password root.
+ */
 router.get('/', (req, res) => {
   console.log(' > /dev/dbtransfare invoked');
   let connection = mysql.createConnection({
@@ -89,8 +91,8 @@ function addAvailability(users, connection, res) {
           foundUser.availability = [];
         if (ele.from_date !== null) {
           foundUser.availability.push({
-            from: ele.from_date,
-            to: ele.to_date
+            from: ele.from_date.toISOString(),
+            to: ele.to_date.toISOString()
           });
         }
       });

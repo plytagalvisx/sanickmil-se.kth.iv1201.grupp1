@@ -1,83 +1,54 @@
 const express = require('express');
-const mongodb = require('mongodb');
-const config = require('../../config');
-const jwt = require('jsonwebtoken');
 const router = express.Router();
+const dbservice = require('../../integration/database-services');
 
+
+/**
+ * Adds a new application for a user.
+ * TODO: Each user must only be able to submit applications of their own
+ */
 router.post('/', async (req, res) => {
-    let token = req.cookies.jwtToken;
-    let qualifications = req.body.qualifications
-    let availability = req.body.availability
-    let oldState = req.cookies.savedState
-
-    //TODO: Also move secret to environment vars.
-    if (token) {
-      if (token.startsWith('Bearer ')) {
-        token = token.replace('Bearer ', '')
-      }
-      jwt.verify(token, config.SECRET, (err, decoded) => {
-        if (err) {
-          return res.status(401).json({
-            message: 'You have to have a valid token, try to log in again.'
-          })
-        } else {
-            let username = decoded.username
-            let result = {
-                ...oldState,
-                ...{username, qualifications, availability}
-            }
-            res.cookie('savedState', result, {
-                expire: new Date() + 15
-              })
-              .status(200).json({
-                message: 'Successfully saved state',
-              })
-        }
-      });
-    } else {
-      return res.status(401).json({
-        message: 'You have to be logged in'
-      })
-    }
-  });
-
-router.delete('/', async (req, res) => {
-  let savedState = req.cookies.savedState
-  let token = req.cookies.jwtToken;
-  let username = null
-
-  if (token.startsWith('Bearer ')) {
-    token = token.replace('Bearer ', '')
+  const ssn = req.body.ssn;
+  const qualifications = req.body.qualifications;
+  const availability = req.body.availability;
+  try {
+    await dbservice.submitApplication(ssn, qualifications, availability);
+    res.sendStatus(201);
+  } catch (err) {
+    res.status(500).json({message: 'Something went wrong'});
   }
+});
 
-  jwt.verify(token, config.SECRET, (err, decoded) => {
-    if (err) {
-      return res.status(401)
-      .json({
-        message: 'Token is not valid'
-      });
-    } else {
-        username = decoded.username
-    }
-  });
-
-  if (savedState.username === username) {
-    res.clearCookie('savedState')
-    return res.status(200).json({
-      message: 'Successfully removed saved state.'
-    })
-  } else {
-    return res.status(401).json({
-      message: 'You can\'t remove the state when you\'re not logged in.'
-    })
-  }
+/**
+ * Gets all applications (made by applicants).
+ * TODO: This should be protected to only be callable by recruiters
+ */
+router.get('/', async (req, res) => {
+  const applications = await dbservice.getAllApplications();
+  console.log('fetched applications:', applications);
+  res.json(applications);
 })
 
-async function loadApplicationCollection() {
-  const client = await mongodb.MongoClient.connect(config.MONGODB_URI, {
-    useNewUrlParser: true
-  });
-  return client.db('sanickmil-recruitment').collection('application');
-}
+/**
+ * Gets a application by SSN
+ * TODO: This should be protected to only be callable by recruiters
+ */
+router.get('/:ssn', async (req, res) => {
+  // TODO: Input validation
+  const application = await dbservice.getApplicationStatusBySSN(req.params.ssn);
+  if (application === null) {
+    return res.sendStatus(404);
+  }
+  res.status(200).json(application);
+})
+
+router.delete('/:ssn', async (req, res) => {
+  try {
+    await dbservice.removeApplicationBySSN(req.params.ssn);
+    res.sendStatus(200);
+  } catch (err) {
+    res.sendStatus(500);
+  }
+})
 
 module.exports = router;

@@ -1,50 +1,32 @@
 const express = require('express');
-const mongodb = require('mongodb');
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const config = require('../../config');
-
+const dbservice = require('../../integration/database-services');
 const router = express.Router();
-
-const DUPL_USER = 11000;
 
 /**
  * This is for ADDING users aka registry.
  */
 router.post('/', async (req, res) => {
-  const users = await loadUsersCollection();
-  bcrypt.hash(req.body.password, 10, function (err, hash) {
-    if (err) {
-      res.status(400).json({
-        message: 'Something went wrong: ' + err
-      })
-    }
-    users.insertOne({
+  // TODO: Input validation
+  try {
+    const hash = await bcrypt.hash(req.body.password, 10);
+    const newUser = {
       username: req.body.username,
       password: hash,
       email: req.body.email,
       firstname: req.body.firstname,
       lastname: req.body.lastname,
-      birth: req.body.birth,
+      ssn: req.body.ssn,
       role: 'applicant'
-    }, (err, docs) => {
-      if (err) {
-        if (err.code === DUPL_USER) {
-          res.status(400).send({
-            message: 'That user already exists.'
-          })
-        } else {
-          res.status(400).send({
-            message: err.errmsg
-          });
-        }
-      } else {
-        res.status(201).json({
-          message: 'Account created'
-        });
-      }
-    });
-  });
+    }
+    await dbservice.registerUser(newUser);
+    res.status(201).json({message: 'User created'});
+  } catch (err) {
+    if (err === 'DUPLICATE_USER') {
+      return res.status(409).json({message: 'A user with that username already exists'});
+    }
+    res.status(500).json({message: 'Database error'});
+  }
 });
 
 /**
@@ -53,12 +35,5 @@ router.post('/', async (req, res) => {
 router.get('/:username', async (req, res) => {
   res.json({user: req.params.username, status: 'NOT DONE, TODO!!!'});
 });
-
-async function loadUsersCollection() {
-  const client = await mongodb.MongoClient.connect(config.MONGODB_URI, {
-    useNewUrlParser: true
-  });
-  return client.db('sanickmil-recruitment').collection('users');
-}
 
 module.exports = router;

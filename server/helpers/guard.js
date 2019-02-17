@@ -6,8 +6,12 @@ const config = require('../config');
  * Array of path/method combos that may be accessed without logging in.
  */
 const unauthorizedAccessPaths = [
+  // Registring a user
   {route: '/api/user', method: 'POST'},
-  {route: '/api/auth', method: 'GET'}
+  // Trying to authenticate
+  {route: '/api/auth', method: 'GET'},
+  // Loggin out
+  {route: '/api/auth', method: 'DELETE'}
 ];
 
 /**
@@ -61,6 +65,7 @@ async function authenticateToken(token) {
 }
 
 /**
+ * AUTHENTICATION (LOGIN + PASSWORD)
  * This is called every request to see if the requested path is permitted
  * If the user is not authenticated, the response will be 401 - Unauthorized.
  * Otherwise the middleware will pass the baton the the actual handler.
