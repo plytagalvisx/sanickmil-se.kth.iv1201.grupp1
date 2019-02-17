@@ -1,18 +1,18 @@
 <template>
   <b-jumbotron>
     <template slot="header">Apply
-  </template>
+</template>
 
-  <template slot="lead">
+<template slot="lead">
    Apply for a job at <b>Amusement park</b>. You will not apply for a specific job, your specific task will be decided by the recruiter, depending on your qualifications!
-  </template>
+</template>
       <hr class="my-4">
       <b-container class="bv-example-row">
-        <b-form>
+        <b-form @submit="onSubmit">
           <b-row>
             <b-col md="7" sm="12">
               <b-form-group label="Select expertise:" label-for="expertiseSelect">
-                <b-form-select id="expertiseSelect" :options="skillOptions" v-model="qualifications.name">
+                <b-form-select required id="expertiseSelect" :options="skillOptions" v-model="qualifications.name">
                 </b-form-select>
               </b-form-group>
             </b-col>
@@ -69,7 +69,7 @@
               <b-button type="reset" size="lg" variant="danger" @click="onReset">Reset</b-button>
             </b-col>
             <b-col md="6" sm="12">
-              <b-button to="/receipt" class="button" size="lg" variant="info" @click="onNext">Next</b-button>
+              <b-button class="button" type="submit" size="lg" variant="info" @click="onNext">Next</b-button>
             </b-col>
           </b-row>
         </b-form>
@@ -86,13 +86,7 @@
     name: 'ApplicationView',
     data() {
       return {
-        skillOptions: [
-          // { value: null, text: 'Please select an expertise', disabled: true},
-          // { value: 'Slav', text: 'Slav'},
-          // { value: 'Waiter', text: 'Waiter'},
-          // { value: 'General manager', text: 'General manager' },
-          // { value: 'Boss', text: 'Boss'},
-        ],
+        skillOptions: [],
         qualifications: [],
         availability: []
       }
@@ -145,15 +139,27 @@
         this.availability = [];
         this.qualifications = [];
       },
+      onSubmit(evt) {
+        evt.preventDefault();
+      }
     }
   }
 </script>
 
 <style scoped>
-  form{
+  form {
     text-align: left;
   }
-  .button{
-    float:right;
+  
+  .button {
+    float: right;
+  }
+  
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0;
   }
 </style>

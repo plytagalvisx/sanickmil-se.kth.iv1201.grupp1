@@ -1,5 +1,8 @@
 <template>
-  <h1>This should be the filter menu</h1>
+  <b-card class="application" border-variant="info">
+    <lable>Status: </lable>
+    <input type="checkbox" name="status">
+  </b-card>
 </template>
 
 <script>

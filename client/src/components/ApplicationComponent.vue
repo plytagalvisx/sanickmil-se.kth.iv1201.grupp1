@@ -1,8 +1,7 @@
 <template>
   <b-jumbotron header="Recruiter page" lead="Current applications are listed below.">
     <FilterApplicationComponent/>
-    <b-container class="bv-example-row" v-for="application in applications" :key="application.ssn">
-      <b-card class="application" border-variant="info">
+      <b-card class="application" border-variant="info" v-for="application in applications" :key="application.ssn">
         <b-row>
           <b-col md="1" sm="12">
             <b-badge v-if="application.status === 'hired'" variant="success">HIRED!</b-badge>
@@ -86,7 +85,6 @@
           </b-row>
         </div>
       </b-card>
-    </b-container>
   </b-jumbotron>
 </template>
 
@@ -196,9 +194,9 @@
   }
 </script>
 
-<style scoped>
+<style>
   .application {
-    background-color: #edf1f5;
+    background-color:#edf1f5 !important;
     margin-bottom: 0.5em;
   }
   

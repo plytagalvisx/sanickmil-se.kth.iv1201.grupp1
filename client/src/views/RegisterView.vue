@@ -1,7 +1,7 @@
 <template>
   <b-jumbotron class="login" header="Register" lead="Enter your preferred user information">
+    <b-alert variant="danger" :v-show="showErrorMsg">ÅH NEJ NU GICK DET SNETT</b-alert>
     <b-form @submit="onSubmit" @reset="onReset" v-if="show">
-
       <b-row>
         <b-col md="12" sm="12">
           <b-form-group id="usernameGroup">
@@ -9,7 +9,7 @@
           </b-form-group>
         </b-col>
       </b-row>
-
+  
       <b-row>
         <b-col md="12" sm="12">
           <b-form-group id="passwordGroup">
@@ -17,7 +17,7 @@
           </b-form-group>
         </b-col>
       </b-row>
-
+  
       <b-row>
         <b-col md="12" sm="12">
           <b-form-group id="emailGroup">
@@ -25,21 +25,21 @@
           </b-form-group>
         </b-col>
       </b-row>
-
+  
       <b-row>
         <b-col md="6" sm="12">
           <b-form-group id="firstNameLabel">
             <b-form-input id="firstNameInput" placeholder="First name:" v-model="form.firstName" required></b-form-input>
           </b-form-group>
         </b-col>
-
+  
         <b-col md="6" sm="12">
           <b-form-group id="lastNameLabel">
             <b-form-input id="lastNameInput" placeholder="Last name:" v-model="form.lastName" required></b-form-input>
           </b-form-group>
         </b-col>
       </b-row>
-
+  
       <b-row>
         <b-col md="12" sm="12">
           <b-form-group id="birthGroup">
@@ -47,11 +47,12 @@
           </b-form-group>
         </b-col>
       </b-row>
-      <b-button type="submit" variant="info">Register</b-button>
-      <b-button type="reset" variant="danger">Reset</b-button>
+      <b-button class="button" type="reset" variant="danger">Reset</b-button>
+      <b-button class="button" type="submit" variant="info">Register</b-button>
     </b-form>
     <hr>
-    <p>Already have an account? <router-link id="link" to="/">Login!</router-link>
+    <p>Already have an account?
+      <router-link id="link" to="/">Login!</router-link>
     </p>
   </b-jumbotron>
 </template>
@@ -70,7 +71,8 @@
           lastName: '',
           birth: ''
         },
-        show: true
+        show: true,
+        showErrorMsg: false
       }
     },
     methods: {
@@ -79,24 +81,28 @@
         await UserService.register(this.form.username, this.form.password, this.form.email, this.form.firstName, this
           .form.lastName, this.form.birth).then(resData => {
           /* eslint-disable-next-line no-console */
-          console.log(resData);
+          if (resData.status === '201') {
+            this.$router.push('/login');
+          }
+          /* eslint-disable-next-line no-console */
+          //console.log(resData);
         })
-          this.form.username = '',
+        this.form.username = '',
           this.form.password = '',
           this.form.email = '',
           this.form.firstName = '',
           this.form.lastName = '',
-          this.form.birth = '' 
+          this.form.birth = ''
       },
       onReset(evt) {
         evt.preventDefault();
         /* Reset our form values */
         this.form.username = '',
-        this.form.password = '',
-        this.form.email = '',
-        this.form.firstName = '',
-        this.form.lastName = '',
-        this.form.birth = ''
+          this.form.password = '',
+          this.form.email = '',
+          this.form.firstName = '',
+          this.form.lastName = '',
+          this.form.birth = ''
         /* Trick to reset/clear native browser form validation state */
         this.show = false;
         this.$nextTick(() => {
@@ -110,5 +116,7 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-
+  .button {
+    margin: 0.2em;
+  }
 </style>
