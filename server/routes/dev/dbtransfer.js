@@ -57,11 +57,10 @@ router.get('/', (req, res) => {
         } else {
           user.password = bcrypt.hashSync(element.password, 10);
         }
-        // user.password = bcrypt.hashSync(new String(element.password).toString(), 10);
 
-        user.applicationStatus = 'unhandled';
         user.qualifications = [];
         if (element.competence_name !== null) {
+          user.applicationStatus = 'unhandled';
           user.qualifications.push({
             competenceName: element.competence_name,
             yearsOfExperience: element.years_of_experience

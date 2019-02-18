@@ -46,6 +46,7 @@
       async logout() {
         await UserService.logout().then(() => {
           this.logOut();
+          this.$emit('displayFlash', 'Successfully logged out', 'info');
           this.$router.push('/login');
         });
       }
