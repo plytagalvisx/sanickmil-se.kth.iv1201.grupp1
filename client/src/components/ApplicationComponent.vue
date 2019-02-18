@@ -1,6 +1,5 @@
 <template>
   <b-jumbotron header="Recruiter page" lead="Current applications are listed below.">
-    <!--<FilterApplicationComponent/>-->
       <b-card class="application" border-variant="info" v-for="(application, index) in applications" :key="index">
         <b-row>
           <b-col md="1" sm="12">
@@ -95,11 +94,7 @@
 
 <script>
   import ApplicationService from '../services/ApplicationService'
-  //import FilterApplicationComponent from '../components/FilterApplicationComponent'
   export default {
-    //components: {
-    //  FilterApplicationComponent
-    //},
     data() {
       return {
         applications: []
@@ -108,14 +103,10 @@
     created() {
       ApplicationService.getApplications().then((res) => {
         let tmp = res.data;
-        // eslint-disable-next-line
-        console.log(tmp);
         tmp.map((ele) => {
           ele.isOpen = false;
         });
         this.applications = tmp;
-        // eslint-disable-next-line
-        console.log(this.applications);
       });
     },
     methods: {
@@ -127,15 +118,6 @@
       },
       onUnhandled(application) {
         application.applicationStatus = 'unhandled'
-      },
-      toggleApplication(application) {
-        // eslint-disable-next-line
-        console.log(application);
-        // eslint-disable-next-line
-        console.log("THE BUTTON WAS PRESSED!!!!!");
-        application.isOpen = !application.isOpen;
-        // eslint-disable-next-line
-        console.log("IS OPEN? ", application.isOpen);
       }
     }
   }
