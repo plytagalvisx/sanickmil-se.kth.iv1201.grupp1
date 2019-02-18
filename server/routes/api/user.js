@@ -21,13 +21,12 @@ router.post('/', async (req, res) => {
       role: 'applicant'
     }
     await dbservice.registerUser(newUser);
-    res.status(201).json({message: 'User created'});
+    res.status(201).json({message: 'Successfully registered user'});
   } catch (err) {
     if (err === 'DUPLICATE_USER') {
-      return res.status(409).json({message: 'A user with that username already exists'});
+      return res.status(409).json({message: 'A user with that username already exists, try another one!'});
     }
-    console.log("DB error in user.js, post(/) ", err)
-    res.status(500).json({message: 'Database error'});
+    res.status(500).json({message: 'Internal error'});
   }
 });
 

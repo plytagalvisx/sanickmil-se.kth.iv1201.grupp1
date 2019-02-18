@@ -16,10 +16,7 @@ router.get('/', async (req, res) => {
   try {
     authenticated = await dbservice.authenticateUser(username, password);
   } catch (err) {
-    if (err === 'NO_SUCH_USER') {
-      return res.status(500).json({message: 'No such user'});  
-    }
-    return res.status(500).json({message: 'Database communcation error'});
+    return res.status(500).json({message: 'There are no users with that username'});
   }
   if (!authenticated) {
     return res.status(401).json({
@@ -45,7 +42,7 @@ router.get('/', async (req, res) => {
     })
     .status(200)
     .json({
-      message: 'Successfully authenticated',
+      message: 'Successfully logged in!',
       role: authenticatedUser.role
     });
 })
