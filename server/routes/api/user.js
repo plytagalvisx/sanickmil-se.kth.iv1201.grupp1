@@ -4,7 +4,6 @@ const dbservice = require('../../integration/database-services');
 const router = express.Router();
 const config = require('../../config');
 
-const util = require('util')
 /**
  * This is for ADDING users aka registry.
  */
@@ -33,7 +32,7 @@ router.post('/', async (req, res) => {
 });
 
 /**
- * Get a single user, TODO:
+ * Get a single user, TODO: Who should do this?
  */
 router.get('/:username', async (req, res) => {
   try {

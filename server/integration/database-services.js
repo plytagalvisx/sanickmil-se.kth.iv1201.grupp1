@@ -201,7 +201,7 @@ class DBService {
         person_id: 0,
         role: 0
       }).toArray();
-      return applications.length === 1 ? applications : null;
+      return applications.length === 1 ? applications[0] : null;
     } catch (err) {
       console.log('Error in getApplicationStatusBySSN', err);
       throw err;

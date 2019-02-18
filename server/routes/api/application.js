@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const dbservice = require('../../integration/database-services');
 
-
 /**
  * Adds a new application for a user.
  * TODO: Each user must only be able to submit applications of their own
@@ -24,27 +23,20 @@ router.post('/', async (req, res) => {
  * Gets all applications (made by applicants).
  */
 router.get('/all', async (req, res) => {
-  const applications = await dbservice.getAllApplications();
-  console.log('fetched applications:', applications);
-  res.json(applications);
+  try {
+    const applications = await dbservice.getAllApplications();
+    res.json(applications);
+  } catch(err) {
+    res.json({message: 'Database error'})
+  }
 })
 
 /**
- * Gets the users application by its token SSN
- */
-router.get('/', async (req, res) => {
-  const applications = await dbservice.getApplicationStatusBySSN(req.userSSN);
-  console.log('fetched applications:', applications);
-  res.json(applications);
-})
-
-/**
- * Gets a application by SSN
- * TODO: This should be protected to only be callable by recruiters
+ * Gets a application by the users SSN
  */
 router.get('/', async (req, res) => {
   // TODO: Input validation
-  const application = await dbservice.getApplicationStatusBySSN(req.params.ssn);
+  const application = await dbservice.getApplicationStatusBySSN(req.userSSN);
   if (application === null) {
     return res.sendStatus(404);
   }
