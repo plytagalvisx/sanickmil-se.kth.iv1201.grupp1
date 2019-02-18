@@ -3,7 +3,6 @@ const config = require('../config');
 const bcrypt = require('bcryptjs');
 
 const DUPL_USER = 11000;
-
 class DBService {
 
   static async loadUserCollection() {
@@ -145,17 +144,68 @@ class DBService {
   static async submitApplication(ssn, qualifications, availability) {
     try {
       const application = await this.loadUserCollection();
-      await application.updateOne({
-        ssn
+      const results = await application.findOneAndUpdate({
+        ssn,
+        applicationStatus: {
+          $exists: false
+        }
       }, {
         $set: {
           qualifications,
           availability,
-          applicationStatus: 'unhandled'
+          applicationStatus: 'unhandled',
+          submissionDate: new Date().toISOString()
         }
+      }, {
+        upsert: false,
+        new: true
       });
+      if (!results.lastErrorObject.updatedExisting) {
+        console.log('Errorn in submitApplication: application already exists...')
+        throw 'APPLICATIONS_ALREADY_EXISTS'
+      }
     } catch (err) {
       console.log('Error in submitApplication: ', err);
+      throw err;
+    }
+  }
+
+  /**
+   * Updates an application
+   * @param {String} ssn The social security number of the update user
+   * @param {Object} updateObject An object containing two keys: qualifications & availability
+   */
+  static async updateApplication(ssn, updateObject) {
+    const expected = 2;
+    let count = 0;
+    for (let key in updateObject) {
+      if (updateObject.hasOwnProperty(key)) {
+        count++;
+      }
+    }
+    if ((!updateObject.qualifications || !updateObject.availability) || count !== expected)
+      throw 'A application edit must contain both availability and qualifications';
+    try {
+      const application = await this.loadUserCollection();
+      await application.findOneAndUpdate({
+        ssn
+      }, {
+        $set: {
+          ...updateObject,
+          submissionDate: new Date().toISOString()
+        }
+      }, {
+        upsert: false,
+        new: true
+      }, (err, docs) => {
+        if (err) {
+          console.log('Error in updateApplication', err);
+          throw err;
+        }
+        console.log(docs);
+      });
+    } catch (err) {
+      console.log('Error in updateApplication', err);
       throw err;
     }
   }
@@ -222,7 +272,8 @@ class DBService {
         $unset: {
           applicationStatus: '',
           qualifications: '',
-          availability: ''
+          availability: '',
+          submissionDate: ''
         }
       })
     } catch (err) {

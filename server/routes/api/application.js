@@ -15,7 +15,27 @@ router.post('/', async (req, res) => {
     await dbservice.submitApplication(ssn, qualifications, availability);
     res.sendStatus(201);
   } catch (err) {
+    if (err === 'APPLICATIONS_ALREADY_EXISTS') {
+      res.status(409).json({message: 'You already submitted this application'});
+    }
     res.status(500).json({message: 'Something went wrong'});
+  }
+});
+
+/**
+ * PATCH
+ * For editing a application partially.
+ */
+router.patch('/', async (req, res) => {
+  const ssn = req.userSSN;
+  const qualifications = req.body.qualifications;
+  const availability = req.body.availability;
+  try {
+    await dbservice.updateApplication(ssn, {qualifications, availability});
+    res.json({message: 'Application edited'});
+  } catch (err) {
+    console.log('Error in application patch: ', err);
+    res.status(500).json({message: err})
   }
 });
 

@@ -130,6 +130,7 @@ const SELF_ACTIONS = [
   {route: /^\/api\/application$/, method: 'POST'},
   // Means '/api/application/12331-12312 (ending in only numbers and dashes)
   {route: /^\/api\/application$/, method: 'DELETE'},
+  {route: /^\/api\/application$/, method: 'PATCH'},
   {route: /^\/api\/skills$/, method: 'GET'},
   {route: /^\/api\/application$/, method: 'GET'}
 ]
