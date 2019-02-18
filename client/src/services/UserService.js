@@ -36,6 +36,10 @@ class UserService {
       ssn
     });
   }
+
+  static getUser(usr) {
+    return axios.get(USER + "/" + usr)
+  }
 }
 
 export default UserService;

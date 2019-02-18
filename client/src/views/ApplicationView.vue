@@ -69,7 +69,7 @@
               <b-button type="reset" size="lg" variant="danger" @click="onReset">Reset</b-button>
             </b-col>
             <b-col md="6" sm="12">
-              <b-button class="button" type="submit" size="lg" variant="info" @click="onNext">Next</b-button>
+              <b-button class="button" href="/receipt" type="submit" size="lg" variant="info" @click="onNext">Next</b-button>
             </b-col>
           </b-row>
         </b-form>
