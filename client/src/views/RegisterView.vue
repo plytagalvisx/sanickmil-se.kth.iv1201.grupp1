@@ -82,19 +82,12 @@
         await UserService.register(this.form.username, this.form.password, this.form.email, this.form.firstName, this
           .form.lastName, this.form.ssn)
           .then(resData => {
-            // eslint-disable-next-line
-            console.log(resData);
-          // if (resData.status === '201') {
             this.$router.push('/login');
-          // }
-          this.$emit('displayFlash', resData.data.message, 'success');
-        });
-        this.form.username = '',
-          this.form.password = '',
-          this.form.email = '',
-          this.form.firstName = '',
-          this.form.lastName = '',
-          this.form.ssn = '' 
+            this.$emit('displayFlash', resData.data.message, 'success');
+          })
+          .catch(err => {
+            this.$emit('displayFlash', err.response.data.message, 'error');
+          });
       },
       onReset(evt) {
         evt.preventDefault();
