@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const jwt = require('jsonwebtoken');
 const config = require('../config');
+const dbservice = require('../integration/database-services')
 
 /**
  * Array of path/method combos that may be accessed without logging in.
@@ -65,18 +66,16 @@ async function authenticateToken(token) {
 }
 
 /**
- * AUTHENTICATION (LOGIN + PASSWORD)
- * This is called every request to see if the requested path is permitted
- * If the user is not authenticated, the response will be 401 - Unauthorized.
- * Otherwise the middleware will pass the baton the the actual handler.
+ * This middleware handles Authentication and Autorization
+ * of api endpoint access through the token info (user info)
  */
 router.all(/.*/, async (req, res, next) => {
   const route = req.baseUrl;
   const method = req.method;
+  console.log(`${method} route ${route}`);
   /*if (req.headers.authorization) {
     console.log('USER SENT AUTHORIZATION HEADER TOKEN', req.headers.authorization);
   }*/
-  // Does logged out user access this?
   if (loggedOutAccess(route, method)) {
     return next();
   }
@@ -91,23 +90,27 @@ router.all(/.*/, async (req, res, next) => {
     return res.status(401)
     .json({message: authAudit.message});
   }
-  return next();
-  // TODO: Akta, här jobbar Emil fortfarande
   const {role, user} = await decodeUsernameAndRole(token);
-  if (role === 'recruiter' && allowedRecruiterAction(route, method)) {
+  req.userSSN = await dbservice.getSSNByUsername(user);
+  if (role === 'recruit' && allowedRecruiterAction(route, method)) {
+    console.log('recruiter alowed...')
     return next();
   } else if (allowedSelfAction(route, method)) {
+    console.log('self alowed...')
     return next();
   }
-  // TODO: Remove this next once the allowed shit is working
-  // next();
   res.status(401).json({message: 'You are not authorized to do this.'})
 });
 
 // Specified which actions the Recruiters may take
 // As "ADMINS".
 const RECRUITER_ACTIONS = [
-
+  // Getting all applications
+  {route: /^\/api\/application\/all$/, method: 'GET'},
+  // Approving/Denying applications
+  {route: /^\/api\/application\/+\d+(-\d+)*$/, method: 'PATCH'},
+  // Get a specific users application
+  {route: /^\/api\/application\/+\d+(-\d+)*$/, method: 'GET'}
 ]
 
 function allowedRecruiterAction(route, method) {
@@ -115,19 +118,17 @@ function allowedRecruiterAction(route, method) {
   const allowed = RECRUITER_ACTIONS.find((action) => {
     return route.match(action.route) && method === action.method;
   }) !== undefined;
+  console.log(allowed)
   return allowed;
 }
 
-// Specifies which actions may be taken only by the user invoking it
-/*
- * Maybe add 'self reference' field here?
- * like, body, query, inferred (by token)
-*/
+// Specifies which actions may be taken only 
 const SELF_ACTIONS = [
-  {route: '/api/application', method: 'POST'},
+  {route: /^\/api\/application$/, method: 'POST'},
   // Means '/api/application/12331-12312 (ending in only numbers and dashes)
-  {route: /^\/api\/application\/+\d+(-\d+)*$/, method: 'DELETE'},
-  {route: /^\/api\/application\/+\d+(-\d+)*$/, method: 'GET'}
+  {route: /^\/api\/application$/, method: 'DELETE'},
+  {route: /^\/api\/skills$/, method: 'GET'},
+  {route: /^\/api\/application$/, method: 'GET'}
 ]
 
 function allowedSelfAction(route, method) {

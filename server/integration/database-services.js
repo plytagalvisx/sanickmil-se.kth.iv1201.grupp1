@@ -72,6 +72,32 @@ class DBService {
       throw err;
     }
   }
+/**
+ * Gets a users SSN by the username
+ * @param {String} username The username of the user.
+ * @returns {String} The SSN of the user.
+ */
+  static async getSSNByUsername(username) {
+    try {
+      const userCollection = await this.loadUserCollection();
+      const foundSSN = await userCollection.findOne({
+        username
+      }, {
+        projection: {
+          _id: 0,
+          ssn: 1,
+        }
+      });
+      if (!foundSSN) {
+        throw 'NO_SUCH_USER';
+      }
+      console.log('foundSSN', foundSSN);
+      return foundSSN.ssn;
+    } catch (err) {
+      console.log('Error in getSSNByUsername', err);
+      throw err;
+    }
+  }
 
   /**
    * Gets all skills from the database.

@@ -8,8 +8,8 @@ const dbservice = require('../../integration/database-services');
  * TODO: Each user must only be able to submit applications of their own
  */
 router.post('/', async (req, res) => {
+  const ssn = req.userSSN;
   // TODO: Input validation
-  const ssn = req.body.ssn;
   const qualifications = req.body.qualifications;
   const availability = req.body.availability;
   try {
@@ -22,10 +22,18 @@ router.post('/', async (req, res) => {
 
 /**
  * Gets all applications (made by applicants).
- * TODO: This should be protected to only be callable by recruiters
+ */
+router.get('/all', async (req, res) => {
+  const applications = await dbservice.getAllApplications();
+  console.log('fetched applications:', applications);
+  res.json(applications);
+})
+
+/**
+ * Gets the users application by its token SSN
  */
 router.get('/', async (req, res) => {
-  const applications = await dbservice.getAllApplications();
+  const applications = await dbservice.getApplicationStatusBySSN(req.userSSN);
   console.log('fetched applications:', applications);
   res.json(applications);
 })
@@ -34,7 +42,7 @@ router.get('/', async (req, res) => {
  * Gets a application by SSN
  * TODO: This should be protected to only be callable by recruiters
  */
-router.get('/:ssn', async (req, res) => {
+router.get('/', async (req, res) => {
   // TODO: Input validation
   const application = await dbservice.getApplicationStatusBySSN(req.params.ssn);
   if (application === null) {
@@ -43,9 +51,9 @@ router.get('/:ssn', async (req, res) => {
   res.status(200).json(application);
 })
 
-router.delete('/:ssn', async (req, res) => {
+router.delete('/', async (req, res) => {
   try {
-    await dbservice.removeApplicationBySSN(req.params.ssn);
+    await dbservice.removeApplicationBySSN(req.userSSN);
     res.sendStatus(200);
   } catch (err) {
     res.sendStatus(500);
