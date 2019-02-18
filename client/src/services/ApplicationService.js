@@ -26,7 +26,7 @@ class ApplicationService {
   }
 
   static getApplications() {
-    return axios.get(APPLICATION);
+    return axios.get(APPLICATION  + "/all");
   }
 
   static getSkills() {
