@@ -15,6 +15,10 @@ class ApplicationService {
     return axios.delete(APPLICATION);
   }
 
+  static getApplications() {
+    return axios.get(APPLICATION);
+  }
+
   static getSkills() {
     return axios.get(SKILLS);
   }
