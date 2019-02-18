@@ -1,32 +1,37 @@
 <template>
   <b-jumbotron header="Recruiter page" lead="Current applications are listed below.">
-    <FilterApplicationComponent/>
+    <!--<FilterApplicationComponent/>-->
       <b-card class="application" border-variant="info" v-for="application in applications" :key="application.ssn">
         <b-row>
           <b-col md="1" sm="12">
-            <b-badge v-if="application.status === 'hired'" variant="success">HIRED!</b-badge>
-            <b-badge v-else-if="application.status === 'rejected'" variant="danger">REJECTED!</b-badge>
+            <b-badge v-if="application.applicationStatus === 'hired'" variant="success">HIRED!</b-badge>
+            <b-badge v-else-if="application.applicationStatus === 'rejected'" variant="danger">REJECTED!</b-badge>
             <b-badge v-else variant="secondary">UNHANDLED</b-badge>
           </b-col>
           <b-col md="10" sm="12"></b-col>
           <b-col md="1" sm="12">
-            <b-btn variant="info" @click="application.isOpen = !application.isOpen">
+            <b-btn variant="info" @click="toggleApplication(application)">
               <i v-if="!application.isOpen" class="fas fa-plus"></i>
               <i v-else class="fas fa-minus"></i></b-btn>
           </b-col>
         </b-row>
         <b-row>
           <b-col md="4" sm="12">
-            <p><b>First name: </b> {{ application.firstname }}</p>
+            <p><b>First name: </b> {{ application.name }}</p>
           </b-col>
           <b-col md="4" sm="12">
-            <p><b>Last name: </b>{{ application.lastname }}</p>
+            <p><b>Last name: </b>{{ application.surname }}</p>
           </b-col>
+          <!-- TODO: SUBMITTED AT SKA LÄGGAS TILL I DATABASEN 
+            <b-col md="4" sm="12">
+            <p><b>is open: </b>{{ application.isOpen }}</p>
+          </b-col>
+          -->
           <b-col md="4" sm="12">
-            <p><b>Submitted: </b>{{ application.submitted.date }}</p>
+            <p><b>is open: </b>{{ application.isOpen }}</p>
           </b-col>
         </b-row>
-        <div v-show="application.isOpen">
+        <div v-show="application.isOpen === false">
           <b-row>
             <b-col md="6" sm="12">
               <p><b>Email: </b>{{ application.email }}</p>
@@ -65,10 +70,10 @@
           </b-row>
           <b-row v-for="available in application.availability" :key="available.name" class="tableRow">
             <b-col md="6" sm="12">
-              {{ available.from }} <br>
+              {{ new Date(available.from).toLocaleDateString() }} <br>
             </b-col>
             <b-col md="6" sm="12">
-              {{ available.to }}
+              {{ new Date(available.to).toLocaleDateString() }}
             </b-col>
           </b-row>
           <!-- HERE STARTS THE BUTTONS -->
@@ -89,106 +94,43 @@
 </template>
 
 <script>
-  import FilterApplicationComponent from '../components/FilterApplicationComponent'
+  import ApplicationService from '../services/ApplicationService'
+  //import FilterApplicationComponent from '../components/FilterApplicationComponent'
   export default {
-    components: {
-      FilterApplicationComponent
-    },
+    //components: {
+    //  FilterApplicationComponent
+    //},
     data() {
       return {
-        applications: [{
-            isOpen: false,
-            firstname: "Emil",
-            lastname: "Lindholm Brandt",
-            ssn: "19930324-3333",
-            email: "emil93@gmail.com",
-            status: "unhandled",
-            qualifications: [{
-                "name": "korvgrillning",
-                "yearsOfExperience": 3.5
-              },
-              {
-                "name": "jonglera",
-                "yearsOfExperience": 7
-              }
-            ],
-            availability: [{
-                from: "2018-01-01",
-                to: "2018-02-02"
-              },
-              {
-                from: "2018-03-01",
-                to: "2018-08-01"
-              }
-            ],
-            submitted: {
-              date: "2017-12-23"
-            }
-          },
-          {
-            isOpen: false,
-            firstname: "Sabina",
-            lastname: "Hauzenberger",
-            ssn: "19960611-0246",
-            email: "sabina@hauzenberger.se",
-            status: "hired",
-            qualifications: [{
-                "name": "korvgrillning",
-                "yearsOfExperience": 10
-              },
-              {
-                "name": "cirkus",
-                "yearsOfExperience": 15
-              }
-            ],
-            availability: [{
-              from: "2018-04-02",
-              to: "2018-12-01"
-            }],
-            submitted: {
-              date: "2014-02-01"
-            }
-          },
-          {
-            isOpen: false,
-            firstname: "Nicklas",
-            lastname: "Ockelberg",
-            ssn: "19970629-0010",
-            email: "ockelberg@gmail.com",
-            status: "rejected",
-            qualifications: [{
-                "name": "clown",
-                "yearsOfExperience": 2
-              },
-              {
-                "name": "sockervaddssnurrare",
-                "yearsOfExperience": 15
-              },
-              {
-                "name": "karusellåkare",
-                "yearsOfExperience": 4
-              }
-            ],
-            availability: [{
-              from: "2018-04-02",
-              to: "2018-12-01"
-            }],
-            submitted: {
-              date: "2016-03-04"
-            }
-          }
-        ]
+        applications: []
       }
+    },
+    created() {
+      ApplicationService.getApplications().then((res) => {
+        this.applications = res.data;
+        this.applications.map((ele) => {
+          ele.isOpen = false;
+        });
+        // eslint-disable-next-line
+        console.log(this.applications);
+      });
     },
     methods: {
       onReject(application) {
-        application.status = 'rejected'
+        application.applicationStatus = 'rejected'
       },
       onHire(application) {
-        application.status = 'hired'
+        application.applicationStatus = 'hired'
       },
       onUnhandled(application) {
-        application.status = 'unhandled'
+        application.applicationStatus = 'unhandled'
+      },
+      toggleApplication(application) {
+        // eslint-disable-next-line
+        console.log("THE BUTTON WAS PRESSED!!!!!");
+        application.isOpen = !application.isOpen;
+        // eslint-disable-next-line
+        console.log("IS OPEN? ", application.isOpen);
       }
     }
   }
