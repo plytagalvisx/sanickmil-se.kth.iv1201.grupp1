@@ -38,16 +38,16 @@ router.get('/', (req, res) => {
       if (last === element.person_id) {
         // Get only period
         user.qualifications.push({
-          name: element.competence_name,
+          competenceName: element.competence_name,
           yearsOfExperience: element.years_of_experience
         })
         console.log('duplicate');
       } else {
         user = {};
         user.person_id = element.person_id;
-        user.name = element.name;
+        user.firstname = element.name;
+        user.lastname = element.surname;
         user.role = element.role_name;
-        user.surname = element.surname;
         user.username = element.username;
         user.ssn = element.ssn;
         user.email = element.email;
@@ -63,7 +63,7 @@ router.get('/', (req, res) => {
         user.qualifications = [];
         if (element.competence_name !== null) {
           user.qualifications.push({
-            name: element.competence_name,
+            competenceName: element.competence_name,
             yearsOfExperience: element.years_of_experience
           });
         }
@@ -100,7 +100,7 @@ function addAvailability(users, connection, res) {
       const client = await mongodb.MongoClient.connect(config.MONGODB_URI, {
         useNewUrlParser: true
       });
-      const userCollection = client.db('sanickmil-recruitment').collection('users');
+      const userCollection = client.db('sanickmil-recruitment').collection('user');
       userCollection.insertMany(users);
       res.send(users);
       connection.end();

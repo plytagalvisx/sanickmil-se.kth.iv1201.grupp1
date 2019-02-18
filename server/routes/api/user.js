@@ -33,7 +33,12 @@ router.post('/', async (req, res) => {
  * Get a single user, TODO:
  */
 router.get('/:username', async (req, res) => {
-  res.json({user: req.params.username, status: 'NOT DONE, TODO!!!'});
+  try {
+    const fetchedUser = await dbservice.getBasicUserInfo(req.params.username);
+    res.json(fetchedUser);
+  } catch (err) {
+    res.sendStatus(500);
+  }
 });
 
 module.exports = router;
