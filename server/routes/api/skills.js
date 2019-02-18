@@ -1,33 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const mongodb = require('mongodb');
-const config = require('../../config');
+const dbservice = require('../../integration/database-services')
 
-async function loadSkillCollection() {
-  const client = await mongodb.MongoClient.connect(config.MONGODB_URI, {
-    useNewUrlParser: true
-  });
-  return client.db('sanickmil-recruitment').collection('skill');
-}
 /**
  * Gets all skills from the Skill collection
  */
 router.get('/', async (req, res) => {
-  const skills = await loadSkillCollection();
-  const loadedSkills = skills.find({}, async (err, docs) => {
-    if (err) {
-      console.log('Error fetching skills: ', err);
-    } else {
-      try {
-        const found = await docs.toArray();
-        const namesOfFound = found.map((ele) => ele.name);
-        res.status(200).send(namesOfFound);
-      } catch (docsErr) {
-        res.status(500).send({
-          message: docsErr
-        });
-      }
-    }
-  });
-});
+  try {
+    const skills = await dbservice.getSkills();
+    res.status(200).json(skills);
+  } catch (err) {
+    res.status(500).json({message: 'Database connection error'})
+  }
+})
+
 module.exports = router;

@@ -2,6 +2,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+
+try {
+  require('dotenv').config();
+} catch (err){}
 const config = require('./config')
 
 const app = express();
@@ -18,6 +22,7 @@ const application = require('./routes/api/application');
 const skills = require('./routes/api/skills');
 const auth = require('./routes/api/auth');
 const guard =  require('./helpers/guard');
+
 
 /* Authenticates each */
 app.use(/.*/, guard);

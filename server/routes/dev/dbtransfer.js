@@ -6,7 +6,9 @@ const util = require('util');
 const config = require('../../config');
 const bcrypt = require('bcryptjs');
 
-
+/**
+ * Transfers the content from a local database on port 8889 with username and password root.
+ */
 router.get('/', (req, res) => {
   console.log(' > /dev/dbtransfare invoked');
   let connection = mysql.createConnection({
@@ -36,16 +38,16 @@ router.get('/', (req, res) => {
       if (last === element.person_id) {
         // Get only period
         user.qualifications.push({
-          name: element.competence_name,
+          competenceName: element.competence_name,
           yearsOfExperience: element.years_of_experience
         })
         console.log('duplicate');
       } else {
         user = {};
         user.person_id = element.person_id;
-        user.name = element.name;
+        user.firstname = element.name;
+        user.lastname = element.surname;
         user.role = element.role_name;
-        user.surname = element.surname;
         user.username = element.username;
         user.ssn = element.ssn;
         user.email = element.email;
@@ -61,7 +63,7 @@ router.get('/', (req, res) => {
         user.qualifications = [];
         if (element.competence_name !== null) {
           user.qualifications.push({
-            name: element.competence_name,
+            competenceName: element.competence_name,
             yearsOfExperience: element.years_of_experience
           });
         }
@@ -89,8 +91,8 @@ function addAvailability(users, connection, res) {
           foundUser.availability = [];
         if (ele.from_date !== null) {
           foundUser.availability.push({
-            from: ele.from_date,
-            to: ele.to_date
+            from: ele.from_date.toISOString(),
+            to: ele.to_date.toISOString()
           });
         }
       });
@@ -98,7 +100,7 @@ function addAvailability(users, connection, res) {
       const client = await mongodb.MongoClient.connect(config.MONGODB_URI, {
         useNewUrlParser: true
       });
-      const userCollection = client.db('sanickmil-recruitment').collection('users');
+      const userCollection = client.db('sanickmil-recruitment').collection('user');
       userCollection.insertMany(users);
       res.send(users);
       connection.end();

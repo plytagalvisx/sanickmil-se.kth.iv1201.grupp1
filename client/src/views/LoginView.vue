@@ -44,7 +44,7 @@
             this.logIn({name: this.form.username, token: data.auth, role: data.role});
             localStorage.setItem('userAuth', data.auth);
             if (data.role === 'applicant') {
-               this.$router.push('/');
+              this.$router.push('/');
             } else {
               this.$router.push('/recruiter');
             }

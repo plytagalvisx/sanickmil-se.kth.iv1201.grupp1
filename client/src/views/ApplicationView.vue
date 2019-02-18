@@ -1,19 +1,18 @@
 <template>
-  <main id="apply">
-    <b-jumbotron>
-      <template slot="header">Apply</template>
+  <b-jumbotron>
+    <template slot="header">Apply
+</template>
 
-      <template slot="lead">
-        Apply for a job at <b>Amusement park</b>. You will not apply for a specific job, your specific task will be
-        decided by the recruiter, depending on your qualifications!
-      </template>
+<template slot="lead">
+   Apply for a job at <b>Amusement park</b>. You will not apply for a specific job, your specific task will be decided by the recruiter, depending on your qualifications!
+</template>
       <hr class="my-4">
       <b-container class="bv-example-row">
-        <b-form>
+        <b-form @submit="onSubmit">
           <b-row>
             <b-col md="7" sm="12">
               <b-form-group label="Select expertise:" label-for="expertiseSelect">
-                <b-form-select id="expertiseSelect" :options="skillOptions" v-model="qualifications.name">
+                <b-form-select required id="expertiseSelect" :options="skillOptions" v-model="qualifications.name">
                 </b-form-select>
               </b-form-group>
             </b-col>
@@ -65,47 +64,46 @@
               </b-form-group>
             </b-col>
           </b-row>
-
-          <b-button to="/receipt" variant="info">Next</b-button>
-          <b-button type="reset" variant="danger" @click="onReset">Reset</b-button>
-
+          <b-row>
+            <b-col md="6" sm="12">
+              <b-button type="reset" size="lg" variant="danger" @click="onReset">Reset</b-button>
+            </b-col>
+            <b-col md="6" sm="12">
+              <b-button class="button" type="submit" size="lg" variant="info" @click="onNext">Next</b-button>
+            </b-col>
+          </b-row>
         </b-form>
       </b-container>
     </b-jumbotron>
-  </main>
 </template>
 
 <script>
   import ApplicationService from '../services/ApplicationService.js'
-  import {mapState} from 'vuex'
+  import {
+    mapState
+  } from 'vuex'
   export default {
     name: 'ApplicationView',
     data() {
       return {
-        skillOptions: [
-        // { value: null, text: 'Please select an expertise', disabled: true},
-        // { value: 'Slav', text: 'Slav'},
-        // { value: 'Waiter', text: 'Waiter'},
-        // { value: 'General manager', text: 'General manager' },
-        // { value: 'Boss', text: 'Boss'},
-        ],
-        qualifications:[],
-        availability:[]
+        skillOptions: [],
+        qualifications: [],
+        availability: []
       }
     },
     computed: {
       ...mapState(['loggedIn', 'user'])
     },
-    created(){
+    created() {
       let cookie = this.$cookie.get('savedState')
-      if(cookie){
+      if (cookie) {
         cookie = cookie.substr(2, cookie.length)
         cookie = JSON.parse(cookie)
-
-        if(this.user.name === cookie.username){
+  
+        if (this.user.name === cookie.username) {
           this.qualifications = cookie.qualifications
           this.availability = cookie.availability
-          }
+        }
       }
       ApplicationService.getSkills()
         .then((res) => {
@@ -115,18 +113,24 @@
         });
     },
     methods: {
-      addExpertise(){
-        this.qualifications.push({expertise: this.qualifications.name, years: this.qualifications.years})
+      addExpertise() {
+        this.qualifications.push({
+          expertise: this.qualifications.name,
+          years: this.qualifications.years
+        })
         this.storeState()
       },
-      addAvailability(){
-        this.availability.push({startDate: this.availability.start, endDate: this.availability.end})
+      addAvailability() {
+        this.availability.push({
+          startDate: this.availability.start,
+          endDate: this.availability.end
+        })
         this.storeState()
       },
-      async storeState(){
+      async storeState() {
         await ApplicationService.saveState(this.qualifications, this.availability)
       },
-      async onReset(){
+      async onReset() {
         await ApplicationService.removeState()
         document.getElementById('expertiseSelect').value = '';
         this.qualifications.years = '';
@@ -135,6 +139,9 @@
         this.availability = [];
         this.qualifications = [];
       },
+      onSubmit(evt) {
+        evt.preventDefault();
+      }
     }
   }
 </script>
@@ -142,5 +149,17 @@
 <style scoped>
   form {
     text-align: left;
+  }
+  
+  .button {
+    float: right;
+  }
+  
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0;
   }
 </style>

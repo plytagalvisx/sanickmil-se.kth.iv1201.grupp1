@@ -1,11 +1,15 @@
 <template>
-  <h1>IM  A LUMBERJACK AND IM OKAY</h1>
+    <ApplicationComponent/>
 </template>
-<script>
-export default {
-  
-}
-</script>
-<style scoped>
 
+<script>
+  import ApplicationComponent from '../components/ApplicationComponent'
+  export default {
+    components: {
+      ApplicationComponent
+    }
+  }
+</script>
+
+<style scoped>
 </style>
