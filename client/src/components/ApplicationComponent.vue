@@ -27,7 +27,7 @@
           </b-col>
           -->
           <b-col md="4" sm="12">
-            <p><b>is open: </b>{{ application.isOpen }}</p>
+            <p><b>Submisson date: </b>{{ new Date(application.submissionDate).toLocaleDateString() }}</p>
           </b-col>
         </b-row>
         <div v-show="application.isOpen">
