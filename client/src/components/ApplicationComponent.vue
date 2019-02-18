@@ -1,7 +1,7 @@
 <template>
   <b-jumbotron header="Recruiter page" lead="Current applications are listed below.">
     <!--<FilterApplicationComponent/>-->
-      <b-card class="application" border-variant="info" v-for="application in applications" :key="application.ssn">
+      <b-card class="application" border-variant="info" v-for="(application, index) in applications" :key="index">
         <b-row>
           <b-col md="1" sm="12">
             <b-badge v-if="application.applicationStatus === 'hired'" variant="success">HIRED!</b-badge>
@@ -10,17 +10,17 @@
           </b-col>
           <b-col md="10" sm="12"></b-col>
           <b-col md="1" sm="12">
-            <b-btn variant="info" @click="toggleApplication(application)">
+            <b-btn variant="info" @click="application.isOpen = !application.isOpen">
               <i v-if="!application.isOpen" class="fas fa-plus"></i>
               <i v-else class="fas fa-minus"></i></b-btn>
           </b-col>
         </b-row>
         <b-row>
           <b-col md="4" sm="12">
-            <p><b>First name: </b> {{ application.name }}</p>
+            <p><b>First name: </b> {{ application.firstname }}</p>
           </b-col>
           <b-col md="4" sm="12">
-            <p><b>Last name: </b>{{ application.surname }}</p>
+            <p><b>Last name: </b>{{ application.lastname }}</p>
           </b-col>
           <!-- TODO: SUBMITTED AT SKA LÄGGAS TILL I DATABASEN 
             <b-col md="4" sm="12">
@@ -31,7 +31,7 @@
             <p><b>is open: </b>{{ application.isOpen }}</p>
           </b-col>
         </b-row>
-        <div v-show="application.isOpen === false">
+        <div v-show="application.isOpen">
           <b-row>
             <b-col md="6" sm="12">
               <p><b>Email: </b>{{ application.email }}</p>
@@ -52,7 +52,7 @@
           </b-row>
           <b-row v-for="qualification in application.qualifications" :key="qualification.name" class="tableRow">
             <b-col md="6" sm="12">
-              {{ qualification.name }} <br>
+              {{ qualification.competenceName }} <br>
             </b-col>
             <b-col md="6" sm="12">
               {{ qualification.yearsOfExperience }}
@@ -107,10 +107,13 @@
     },
     created() {
       ApplicationService.getApplications().then((res) => {
-        this.applications = res.data;
-        this.applications.map((ele) => {
+        let tmp = res.data;
+        // eslint-disable-next-line
+        console.log(tmp);
+        tmp.map((ele) => {
           ele.isOpen = false;
         });
+        this.applications = tmp;
         // eslint-disable-next-line
         console.log(this.applications);
       });
@@ -126,6 +129,8 @@
         application.applicationStatus = 'unhandled'
       },
       toggleApplication(application) {
+        // eslint-disable-next-line
+        console.log(application);
         // eslint-disable-next-line
         console.log("THE BUTTON WAS PRESSED!!!!!");
         application.isOpen = !application.isOpen;

@@ -6,6 +6,8 @@ const SKILLS = 'api/skills';
 class ApplicationService {
 
   static saveState(qualifications, availability) {
+    // eslint-disable-next-line
+    console.log("In saveState")
     return axios.post(APPLICATION, {
       qualifications,
       availability

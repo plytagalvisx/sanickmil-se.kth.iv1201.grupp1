@@ -11,7 +11,7 @@ const util = require('util')
 router.post('/', async (req, res) => {
   // TODO: Input validation
   try {
-    const hash = await bcrypt.hash(req.body.password, config.BCRYPTSECRET);
+    const hash = await bcrypt.hash(req.body.password, config.BCRYPTSALT);
     const newUser = {
       username: req.body.username,
       password: hash,
@@ -27,6 +27,7 @@ router.post('/', async (req, res) => {
     if (err === 'DUPLICATE_USER') {
       return res.status(409).json({message: 'A user with that username already exists'});
     }
+    console.log("DB error in user.js, post(/) ", err)
     res.status(500).json({message: 'Database error'});
   }
 });

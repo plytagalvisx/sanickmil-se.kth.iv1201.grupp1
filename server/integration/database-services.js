@@ -38,6 +38,7 @@ class DBService {
         }
       });
       if (!foundUser) {
+        console.log("Error in authenticateUser, no user found: ", err)
         throw 'NO_SUCH_USER';
       }
       return await bcrypt.compare(password, foundUser.password);
