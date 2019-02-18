@@ -10,7 +10,7 @@ class DBService {
     const client = await mongodb.MongoClient.connect(config.MONGODB_URI, {
       useNewUrlParser: true
     });
-    return client.db('sanickmil-recruitment').collection('users');
+    return client.db('sanickmil-recruitment').collection('user');
   }
 
   static async loadSkillCollection() {
@@ -32,11 +32,14 @@ class DBService {
       const foundUser = await userCollection.findOne({
         username
       }, {
-        fields: {
+        projection: {
           _id: 0,
           password: 1
         }
       });
+      if (!foundUser) {
+        throw 'NO_SUCH_USER';
+      }
       return await bcrypt.compare(password, foundUser.password);
     } catch (err) {
       console.log('Error in authenticateUser: ', err);
@@ -55,7 +58,7 @@ class DBService {
       return await userCollection.findOne({
         username
       }, {
-        fields: {
+        projection: {
           _id: 0,
           username: 1,
           firstname: 1,
@@ -178,6 +181,10 @@ class DBService {
     }
   }
 
+  /**
+   * Removes a application from a user.
+   * @param {String} ssn The SSN of the person who wants to remove their application
+   */
   static async removeApplicationBySSN(ssn) {
     // TODO: Validate ssn
     try {

@@ -22,13 +22,13 @@ const unauthorizedAccessPaths = [
  * @param {String} method The request method.
  * @returns {Boolean} Whether or not the access is permitted.
  */
-function loggedOutAccess(path, method) {
+function loggedOutAccess(route, method) {
   /*
   * Fancy way of "filtering" out a sought for object by its properties,
   * and if such a object exists, it will not be 'undefined'
   * and the function returns true
   */
-  return unauthorizedAccessPaths.find(ele => (ele.route === path && ele.method === method)) !== undefined;
+  return unauthorizedAccessPaths.find(ele => (ele.route === route && ele.method === method)) !== undefined;
 }
 
 /**
@@ -71,20 +71,82 @@ async function authenticateToken(token) {
  * Otherwise the middleware will pass the baton the the actual handler.
  */
 router.all(/.*/, async (req, res, next) => {
+  const route = req.baseUrl;
+  const method = req.method;
   /*if (req.headers.authorization) {
     console.log('USER SENT AUTHORIZATION HEADER TOKEN', req.headers.authorization);
   }*/
-  // If the user is trying to register, or loggin in, authentication is obviously not required.
-  if (loggedOutAccess(req.baseUrl, req.method)) {
+  // Does logged out user access this?
+  if (loggedOutAccess(route, method)) {
     return next();
   }
-  const token = req.cookies.jwtToken;
+
+  // Is the user logged in?
+  let token = req.cookies.jwtToken;
+  if (token.startsWith('Bearer ')) {
+    token = token.replace('Bearer ', '');
+  }
   const authAudit = await authenticateToken(token);
   if (!authAudit.success) {
     return res.status(401)
     .json({message: authAudit.message});
   }
-  next();
+  return next();
+  // TODO: Akta, här jobbar Emil fortfarande
+  const {role, user} = await decodeUsernameAndRole(token);
+  if (role === 'recruiter' && allowedRecruiterAction(route, method)) {
+    return next();
+  } else if (allowedSelfAction(route, method)) {
+    return next();
+  }
+  // TODO: Remove this next once the allowed shit is working
+  // next();
+  res.status(401).json({message: 'You are not authorized to do this.'})
 });
+
+// Specified which actions the Recruiters may take
+// As "ADMINS".
+const RECRUITER_ACTIONS = [
+
+]
+
+function allowedRecruiterAction(route, method) {
+  route = route.trim();
+  const allowed = RECRUITER_ACTIONS.find((action) => {
+    return route.match(action.route) && method === action.method;
+  }) !== undefined;
+  return allowed;
+}
+
+// Specifies which actions may be taken only by the user invoking it
+/*
+ * Maybe add 'self reference' field here?
+ * like, body, query, inferred (by token)
+*/
+const SELF_ACTIONS = [
+  {route: '/api/application', method: 'POST'},
+  // Means '/api/application/12331-12312 (ending in only numbers and dashes)
+  {route: /^\/api\/application\/+\d+(-\d+)*$/, method: 'DELETE'},
+  {route: /^\/api\/application\/+\d+(-\d+)*$/, method: 'GET'}
+]
+
+function allowedSelfAction(route, method) {
+  // Unsure wether this need to be trimmed. but better to be safe than sorry
+  route = route.trim();
+  const allowed = SELF_ACTIONS.find((action) => {
+    return route.match(action.route) && method === action.method;
+  }) !== undefined;
+  return allowed;
+}
+
+async function decodeUsernameAndRole(token) {
+  try {
+    const {role, user} = await jwt.verify(token, config.SECRET);
+    return {role, user};
+  } catch (err) {
+    console.log('Error in getUserType', err);
+    throw err;
+  }
+}
 
 module.exports = router;
