@@ -15,7 +15,8 @@ class UserService {
         ...response.data,
         auth: response.headers.authorization
       }
-    });
+    })
+    // .catch(err => err);
   }
 
   static logout() {

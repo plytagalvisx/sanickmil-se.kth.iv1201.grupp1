@@ -44,8 +44,7 @@
         <b-col md="12" sm="12">
           <b-form-group id="ssnGroup">
             <!-- TODO: Align this to the left, or remove it -->
-            <b-label name="ssn">Social Security Number</b-label>
-            <b-form-input name="ssn" id="ssn" type="text" v-model="form.ssn" required placeholder="YYYYMMDD-XXXX" />
+            <b-form-input id="ssn" type="text" v-model="form.ssn" required placeholder="YYYYMMDD-XXXX" />
           </b-form-group>
         </b-col>
       </b-row>
@@ -81,14 +80,15 @@
       async onSubmit(evt) {
         evt.preventDefault();
         await UserService.register(this.form.username, this.form.password, this.form.email, this.form.firstName, this
-          .form.lastName, this.form.ssn).then(resData => {
-          /* eslint-disable-next-line no-console */
-          if (resData.status === '201') {
+          .form.lastName, this.form.ssn)
+          .then(resData => {
+            // eslint-disable-next-line
+            console.log(resData);
+          // if (resData.status === '201') {
             this.$router.push('/login');
-          }
-          /* eslint-disable-next-line no-console */
-          //console.log(resData);
-        })
+          // }
+          this.$emit('displayFlash', resData.data.message, 'success');
+        });
         this.form.username = '',
           this.form.password = '',
           this.form.email = '',
