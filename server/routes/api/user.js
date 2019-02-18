@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const dbservice = require('../../integration/database-services');
 const router = express.Router();
+const config = require('../../config');
 
 /**
  * This is for ADDING users aka registry.
@@ -9,7 +10,7 @@ const router = express.Router();
 router.post('/', async (req, res) => {
   // TODO: Input validation
   try {
-    const hash = await bcrypt.hash(req.body.password, 10);
+    const hash = await bcrypt.hash(req.body.password, config.BCRYPTSECRET);
     const newUser = {
       username: req.body.username,
       password: hash,
@@ -33,7 +34,12 @@ router.post('/', async (req, res) => {
  * Get a single user, TODO:
  */
 router.get('/:username', async (req, res) => {
-  res.json({user: req.params.username, status: 'NOT DONE, TODO!!!'});
+  try {
+    const fetchedUser = await dbservice.getBasicUserInfo(req.params.username);
+    res.json(fetchedUser);
+  } catch (err) {
+    res.sendStatus(500);
+  }
 });
 
 module.exports = router;

@@ -8,6 +8,7 @@ const dbservice = require('../../integration/database-services');
  * TODO: Each user must only be able to submit applications of their own
  */
 router.post('/', async (req, res) => {
+  // TODO: Input validation
   const ssn = req.body.ssn;
   const qualifications = req.body.qualifications;
   const availability = req.body.availability;

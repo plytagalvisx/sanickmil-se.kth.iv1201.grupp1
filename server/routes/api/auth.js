@@ -16,6 +16,9 @@ router.get('/', async (req, res) => {
   try {
     authenticated = await dbservice.authenticateUser(username, password);
   } catch (err) {
+    if (err === 'NO_SUCH_USER') {
+      return res.status(500).json({message: 'No such user'});  
+    }
     return res.status(500).json({message: 'Database communcation error'});
   }
   if (!authenticated) {
