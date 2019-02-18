@@ -13,7 +13,7 @@ router.post('/', async (req, res) => {
   const availability = req.body.availability;
   try {
     await dbservice.submitApplication(ssn, qualifications, availability);
-    res.sendStatus(201);
+    res.sendStatus(201).json({message: 'Successfully submitted application'});
   } catch (err) {
     if (err === 'APPLICATIONS_ALREADY_EXISTS') {
       res.status(409).json({message: 'You already submitted this application'});
@@ -66,7 +66,7 @@ router.get('/', async (req, res) => {
 router.delete('/', async (req, res) => {
   try {
     await dbservice.removeApplicationBySSN(req.userSSN);
-    res.sendStatus(200);
+    res.sendStatus(200).json({message: 'Successfully deleted application'});
   } catch (err) {
     res.sendStatus(500);
   }
