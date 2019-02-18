@@ -51,15 +51,16 @@ router.get('/', (req, res) => {
         user.username = element.username;
         user.ssn = element.ssn;
         user.email = element.email;
-
+        
         if (element.password === null) {
           user.password = element.password;
         } else {
-          user.password = bcrypt.hashSync(element.password, 10);
+          user.password = bcrypt.hashSync(element.password, config.BCRYPTSALT);
         }
-
+        
         user.qualifications = [];
         if (element.competence_name !== null) {
+          user.submissionDate = new Date().toISOString();
           user.applicationStatus = 'unhandled';
           user.qualifications.push({
             competenceName: element.competence_name,
