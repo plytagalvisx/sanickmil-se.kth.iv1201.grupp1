@@ -262,6 +262,11 @@ class DBService {
     }
   }
 
+  /**
+   * Gets the application by SSN
+   * @param {String} ssn The Social Security Number of the applicant
+   * @returns {Object} An application object
+   */
   static async getApplicationStatusBySSN(ssn) {
     try {
       const applicationCollection = await this.loadUserCollection();
@@ -281,6 +286,32 @@ class DBService {
       return applications.length === 1 ? applications[0] : null;
     } catch (err) {
       console.log('Error in getApplicationStatusBySSN', err);
+      throw err;
+    }
+  }
+
+  /**
+   * Allows a recruiter to handle the application, by setting its status.
+   * @param {String} ssn Social security number of the application
+   * @param {String} status Application status. Might be: accepted|rejected|unhandled
+   */
+  static async handleApplication(ssn, status) {
+    if (!(status === 'accepted' || status === 'rejected' || status === 'unhandled'))
+      throw 'INCORRECT_PARAMETERS';
+    try {
+      const userCollection = await this.loadUserCollection();
+      userCollection.findOneAndUpdate({
+        ssn,
+        applicationStatus: {
+          $exists: true
+        }
+      }, {
+        $set: {
+          applicationStatus: status
+        }
+      });
+    } catch (err) {
+      console.log('Error in handleApplication:', err);
       throw err;
     }
   }

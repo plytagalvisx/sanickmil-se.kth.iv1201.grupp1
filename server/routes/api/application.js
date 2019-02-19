@@ -40,6 +40,22 @@ router.patch('/', async (req, res) => {
 });
 
 /**
+ * 
+ */
+router.patch('/:ssn', async (req, res) => {
+  const ssn = req.params.ssn;
+  const status = req.body.status;
+  try {
+    await dbservice.handleApplication(ssn, status);
+    res.sendStatus(200);
+  } catch (err) {
+    if (err === 'INCORRECT_PARAMETERS')
+      return res.status(401).json({message: 'The status must be accepted, rejected or unhandled'});
+    res.status(500).json({message: 'Database error'});
+  }
+});
+
+/**
  * Gets all applications (made by applicants).
  */
 router.get('/all', async (req, res) => {
