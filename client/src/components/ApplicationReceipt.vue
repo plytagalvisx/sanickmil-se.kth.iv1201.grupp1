@@ -16,21 +16,49 @@
         <p><b>SSN: </b>{{this.userInfo.ssn}}</p>
       </b-col>
     </b-row>
-    <b-row>
-      <b-table striped hover :items="qualifications" :fields="fieldsQual"></b-table>
+    <!-- TABLE FOR QUALIFICATIONS -->
+    <b-row class="tableHeader">
+      <b-col md="6" sm="12">
+        <p class="title">Skill</p>
+      </b-col>
+      <b-col md="6" sm="12">
+        <p class="title">Years</p>
+      </b-col>
     </b-row>
-    <b-row>
-      <b-table striped hover :items="availability" :fields="fieldsAvailability"></b-table>
+    <b-row v-for="qualification in qualifications" :key="qualification.name" class="tableRow">
+      <b-col md="6" sm="12">
+        {{ qualification.competenceName }} <br>
+      </b-col>
+      <b-col md="6" sm="12">
+        {{ qualification.yearsOfExperience }}
+      </b-col>
     </b-row>
-    <hr>
-    <b-row>
+  
+    <!-- TABLE FOR AVAILABILITY -->
+    <b-row class="tableHeader">
+      <b-col md="6" sm="12">
+        <p class="title">Available from</p>
+      </b-col>
+      <b-col md="6" sm="12">
+        <p class="title">Available to</p>
+      </b-col>
+    </b-row>
+    <b-row v-for="(available, index) in availability" :key="index" class="tableRow">
+      <b-col md="6" sm="12">
+        {{ new Date(available.from).toLocaleDateString() }} <br>
+      </b-col>
+      <b-col md="6" sm="12">
+        {{ new Date(available.to).toLocaleDateString() }}
+      </b-col>
+    </b-row>
+    <b-row style="margin-top: 1em;">
       <b-col md="6" sm="12">
         <b-button variant="info" size="lg" to="apply">Edit application</b-button>
         <!-- TODO: Att detta endast görs när ansökan inte är hanterad! -->
       </b-col>
       <b-col md="6" sm="12">
-        <p v-if="['profile'].indexOf($route.name) > - 1"><b>Status:</b> Unhandled</p>
-        <b-button variant="info" size="lg" v-if="['receipt'].indexOf($route.name) > - 1" @click="onSubmit">Submit </b-button>
+        <b-badge class="status" v-if="['profile'].indexOf($route.name) > - 1" v-bind:class="{unhandled : application.applicationStatus === 'unhandled', hired : application.applicationStatus === 'accepted', rejected : application.applicationStatus === 'rejected'}"> {{ this.application.applicationStatus }}</b-badge>
+        <b-button class="submit" variant="info" size="lg" v-if="['receipt'].indexOf($route.name) > - 1" @click="onSubmit">Submit</b-button>
         <!-- TODO: Fixa så man kan submitta -->
       </b-col>
     </b-row>
@@ -43,36 +71,16 @@
   export default {
     data() {
       return {
-        // eslint-disable-next-line 
         userInfo: {},
         qualifications: [],
-        // eslint-disable-next-line 
-        availability: [],
-        fieldsAvailability: {
-          from: {
-            label: 'Availability from',
-            sortable: true
-          },
-          to: {
-            label: 'Availability to',
-            sortable: true
-          }
-        },
-        fieldsQual: {
-          competenceName: {
-            sortable: true
-          },
-          yearsOfExperience: {
-            sortable: true
-          }
-        },
+        availability: []
       }
     },
     async created(){
       let cookie = this.$cookies.get('savedState')
-      if (cookie) { 
-          this.qualifications = cookie.qualifications
-          this.availability = cookie.availability
+      if (cookie) {
+        this.qualifications = cookie.qualifications
+        this.availability = cookie.availability
       }
       this.userInfo = await UserService.getUserInfo()
       .then((res) => this.userInfo = res.data)
@@ -80,23 +88,31 @@
       // eslint-disable-next-line
       console.log("userinfo: ", this.userInfo)
     },
-    methods:{
-      async onSubmit(){
+    methods: {
+      async onSubmit() {
         let availability = this.availability.map((e) => {
-          return {from: new Date(e.from).toISOString(), to: new Date(e.to).toISOString()}
-          })
-          // eslint-disable-next-line
-        console.log(availability)
+          return {
+            from: new Date(e.from).toISOString(),
+            to: new Date(e.to).toISOString()
+          }
+        })
         await ApplicationService.saveState(this.qualifications, availability)
       }
-    }
+    },
+    props: [
+      'application'
+    ]
   }
 </script>
 
 <style scoped>
-  .badge {
-    float: right;
-    font-weight: 2em;
+  .status {
+    font-size: 1.7em;
+    float:right;
+  }
+
+  .submit {
+    float:right;
   }
   
   .unhandled {
@@ -109,11 +125,6 @@
   
   .hired {
     background-color: green;
-  }
-  
-  .noEdit {
-    opacity: 0.65;
-    cursor: not-allowed;
   }
   
   .textStyle {
