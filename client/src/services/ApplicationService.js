@@ -5,24 +5,26 @@ const SKILLS = 'api/skills';
 
 class ApplicationService {
 
-  static saveState(qualifications, availability) {
+  static updateApplication(qualifications, availability) {
     // eslint-disable-next-line
-    console.log("In saveState")
+    console.log("In update")
     return axios.patch(APPLICATION, {
       qualifications,
       availability
     });
   }
-  static removeState(){
-    return axios.delete(APPLICATION);
-  }
 
-  static submitApplication(ssn, qualifications, availability) {
+  static submitApplication(qualifications, availability) {
+    // eslint-disable-next-line
+    console.log("In submit")
     return axios.post(APPLICATION, {
-      ssn,
       qualifications,
       availability
     });
+  }
+
+  static removeState(){
+    return axios.delete(APPLICATION);
   }
 
   static getApplications() {
