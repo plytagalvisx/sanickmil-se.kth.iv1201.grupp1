@@ -36,6 +36,7 @@ class DBService {
           password: 1
         }
       });
+      console.log('found user', foundUser);
       if (!foundUser) {
         console.log("Error in authenticateUser, no user found: ", err)
         throw 'NO_SUCH_USER';
@@ -53,10 +54,36 @@ class DBService {
    * @returns {Object} A object containing the: username, firstname, lastname, email, role
    */
   static async getBasicUserInfo(ssn) {
+    console.log('got this ssn:', ssn);
     try {
       const userCollection = await this.loadUserCollection();
       return await userCollection.findOne({
         ssn
+      }, {
+        projection: {
+          _id: 0,
+          username: 1,
+          firstname: 1,
+          lastname: 1,
+          email: 1,
+          role: 1,
+        }
+      });
+    } catch (err) {
+      console.log('Error in getBasicUserInfo', err);
+      throw err;
+    }
+  }
+
+  /**
+   * 
+   * @param {String} username Username
+   */
+  static async getBasicUserInfoByUsername(username) {
+    try {
+      const userCollection = await this.loadUserCollection();
+      return await userCollection.findOne({
+        username
       }, {
         projection: {
           _id: 0,

@@ -26,7 +26,7 @@ router.get('/', async (req, res) => {
 
   let authenticatedUser = null;
   try {
-    authenticatedUser = await dbservice.getBasicUserInfo(req.userSSN);
+    authenticatedUser = await dbservice.getBasicUserInfoByUsername(username);
   } catch (err) {
     return res.status(500).json({message: 'Database communcation error'});
   }

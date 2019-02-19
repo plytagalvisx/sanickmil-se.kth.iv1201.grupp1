@@ -94,7 +94,11 @@ router.all(/.*/, async (req, res, next) => {
     .json({message: authAudit.message});
   }
   const {role, user} = await decodeUsernameAndRole(token);
-  req.userSSN = await dbservice.getSSNByUsername(user);
+  try {
+    req.userSSN = await dbservice.getSSNByUsername(user);
+  } catch (err) {
+    res.status(500).json({message: 'You might not exist...'});
+  }
   if (role === 'recruit' && allowedRecruiterAction(route, method)) {
     console.log('recruiter alowed...')
     return next();
