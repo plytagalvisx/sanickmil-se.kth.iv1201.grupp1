@@ -128,11 +128,11 @@
   }
   
   .rejected {
-    background-color: crimson;
+    background-color: #ee143e;
   }
   
   .hired {
-    background-color: green;
+    background-color: #00ac34;
   }
   
   .textStyle {
