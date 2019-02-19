@@ -49,14 +49,14 @@ class DBService {
 
   /**
    * 
-   * @param {String} username The user to get info of
+   * @param {String} SSN The user to get info of
    * @returns {Object} A object containing the: username, firstname, lastname, email, role
    */
-  static async getBasicUserInfo(username) {
+  static async getBasicUserInfo(ssn) {
     try {
       const userCollection = await this.loadUserCollection();
       return await userCollection.findOne({
-        username
+        ssn
       }, {
         projection: {
           _id: 0,

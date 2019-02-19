@@ -31,11 +31,11 @@ router.post('/', async (req, res) => {
 });
 
 /**
- * Get a single user, TODO: Who should do this?
+ * Get a single user basic info
  */
-router.get('/:username', async (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const fetchedUser = await dbservice.getBasicUserInfo(req.params.username);
+    const fetchedUser = await dbservice.getBasicUserInfo(req.userSSN);
     res.json(fetchedUser);
   } catch (err) {
     res.sendStatus(500);
