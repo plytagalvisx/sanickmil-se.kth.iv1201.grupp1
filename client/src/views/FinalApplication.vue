@@ -19,8 +19,6 @@
     },
     methods: {
       displayParentFlash(message, type) {
-        // eslint-disable-next-line
-        console.log("I AM IN FINAL APPLICATION, GOING TO APP. MESSAGE: ", message, " TYPE: ", type);
         this.$emit('displayFlash', message, type);
       }
     }

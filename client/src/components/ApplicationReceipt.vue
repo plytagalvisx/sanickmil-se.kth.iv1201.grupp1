@@ -96,8 +96,6 @@
         })
         await ApplicationService.saveState(this.qualifications, availability)
         .then( (res) => {
-          // eslint-disable-next-line
-          console.log(res);
           this.$emit('displayParentFlash', res.data.message, 'success');
           this.$router.push('/');
         })
