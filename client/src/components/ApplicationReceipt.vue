@@ -76,15 +76,24 @@
         availability: []
       }
     },
+<<<<<<< HEAD
     async created() {
       this.userInfo = await UserService.getUserInfo()
         .then((res) => this.userInfo = res.data)
         .catch((err) => err)
+=======
+    async created(){
+>>>>>>> minor changes
       let cookie = this.$cookies.get('savedState')
       if (cookie) {
         this.qualifications = cookie.qualifications
         this.availability = cookie.availability
       }
+      this.userInfo = await UserService.getUserInfo()
+      .then((res) => this.userInfo = res.data)
+      .catch((err) => err) 
+      // eslint-disable-next-line
+      console.log("userinfo: ", this.userInfo)
     },
     methods: {
       async onSubmit() {
