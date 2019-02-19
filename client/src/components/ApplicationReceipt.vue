@@ -72,17 +72,26 @@
     data() {
       return {
         userInfo: {},
+        applicationData: {},
         qualifications: [],
         availability: []
       }
     },
     async created(){
       let cookie = this.$cookies.get('savedState')
-      if (cookie) {
+      await ApplicationService.getApplication()
+      .then((res) => this.applicationData = res.data)
+      .catch((err) => err)
+      if(['profile'].indexOf(this.$route.name) > - 1){
+        // eslint-disable-next-line
+        console.log("applicationData: ", this.applicationData)
+        this.qualifications = this.applicationData.qualifications
+        this.availability = this.applicationData.availability
+      }else if (cookie) {
         this.qualifications = cookie.qualifications
         this.availability = cookie.availability
       }
-      this.userInfo = await UserService.getUserInfo()
+      await UserService.getUserInfo()
       .then((res) => this.userInfo = res.data)
       .catch((err) => err) 
       // eslint-disable-next-line
@@ -96,7 +105,13 @@
             to: new Date(e.to).toISOString()
           }
         })
-        await ApplicationService.saveState(this.qualifications, availability)
+            // eslint-disable-next-line
+            console.log("app data: ", this.applicationData)
+        if(this.applicationData.submissionDate){
+          await ApplicationService.updateApplication(this.qualifications, availability)
+        }else{
+          await ApplicationService.submitApplication(this.qualifications, availability)
+        }
       }
     },
     props: [
