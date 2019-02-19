@@ -95,12 +95,9 @@
       ...mapState(['loggedIn', 'user'])
     },
     created() {
-      let cookie = this.$cookie.get('savedState')
-      if (cookie) {
-        cookie = cookie.substr(2, cookie.length)
-        cookie = JSON.parse(cookie)
-  
-        if (this.user.name === cookie.username) {
+      let cookie = this.$cookies.get('savedState')
+      if (cookie) { 
+         if (this.user.name === cookie.username) {
           this.qualifications = cookie.qualifications
           this.availability = cookie.availability
         }
@@ -128,10 +125,15 @@
         this.storeState()
       },
       async storeState() {
-        await ApplicationService.saveState(this.qualifications, this.availability)
+        this.$cookies.set('savedState', {username: this.user.name, qualifications: this.qualifications, availability: this.availability}, 3600)
+      
+        //For submit:
+        // await ApplicationService.saveState(this.qualifications, this.availability)
       },
       async onReset() {
-        await ApplicationService.removeState()
+        //Can be used for removing application (I thinkz) :
+        //await ApplicationService.removeState()
+        this.$cookies.remove('savedState')
         document.getElementById('expertiseSelect').value = '';
         this.qualifications.years = '';
         this.availability.start = '';
