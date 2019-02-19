@@ -69,7 +69,7 @@
               <b-button type="reset" size="lg" variant="danger" @click="onReset">Reset</b-button>
             </b-col>
             <b-col md="6" sm="12">
-              <b-button class="button" href="/receipt" type="submit" size="lg" variant="info" @click="onNext">Next</b-button>
+              <b-button class="button" to="receipt" type="submit" size="lg" variant="info" @click="onNext">Next</b-button>
             </b-col>
           </b-row>
         </b-form>
@@ -112,23 +112,20 @@
     methods: {
       addExpertise() {
         this.qualifications.push({
-          qualification: this.qualifications.name,
-          years: this.qualifications.years
+          competenceName: this.qualifications.name,
+          yearsOfExperience: Number.parseInt(this.qualifications.years)
         })
         this.storeState()
       },
       addAvailability() {
         this.availability.push({
-          availabilityFrom: this.availability.start,
-          availabilityTo: this.availability.end
+          from: this.availability.start,
+          to: this.availability.end
         })
         this.storeState()
       },
       async storeState() {
         this.$cookies.set('savedState', {username: this.user.name, qualifications: this.qualifications, availability: this.availability}, 3600)
-      
-        //For submit:
-        // await ApplicationService.saveState(this.qualifications, this.availability)
       },
       async onReset() {
         //Can be used for removing application (I thinkz) :

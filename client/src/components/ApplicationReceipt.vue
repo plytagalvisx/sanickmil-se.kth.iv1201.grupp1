@@ -25,7 +25,7 @@
     <hr>
     <b-row>
       <b-col md="6" sm="12">
-        <b-button variant="info" size="lg">Edit application</b-button>
+        <b-button variant="info" size="lg" to="apply">Edit application</b-button>
         <!-- TODO: Att detta endast görs när ansökan inte är hanterad! -->
       </b-col>
       <b-col md="6" sm="12">
@@ -49,20 +49,20 @@
         // eslint-disable-next-line 
         availability: [],
         fieldsAvailability: {
-          availabilityFrom: {
+          from: {
             label: 'Availability from',
             sortable: true
           },
-          availabilityTo: {
+          to: {
             label: 'Availability to',
             sortable: true
           }
         },
         fieldsQual: {
-          qualification: {
+          competenceName: {
             sortable: true
           },
-          years: {
+          yearsOfExperience: {
             sortable: true
           }
         },
@@ -82,7 +82,12 @@
     },
     methods:{
       async onSubmit(){
-        await ApplicationService.saveState(this.qualifications, this.availability)
+        let availability = this.availability.map((e) => {
+          return {from: new Date(e.from).toISOString(), to: new Date(e.to).toISOString()}
+          })
+          // eslint-disable-next-line
+        console.log(availability)
+        await ApplicationService.saveState(this.qualifications, availability)
       }
     }
   }
