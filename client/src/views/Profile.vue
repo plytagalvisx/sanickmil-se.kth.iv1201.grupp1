@@ -20,7 +20,7 @@
       }
     },
     created() {
-      ApplicationService.getPersonalApplication()
+      ApplicationService.getApplication()
         .then((res) => {
           this.loading = false;
           this.application = res.data;
