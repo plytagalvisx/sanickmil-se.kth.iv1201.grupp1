@@ -1,5 +1,5 @@
 <template>
-  <b-jumbotron class="login" header="Login" lead="You need to login in order to use the service. Please login, or create a new user!">
+  <b-jumbotron header="Login" lead="You need to login in order to use the service. Please login, or create a new user!">
     <b-form @submit="onSubmit" v-if="show">
       <b-form-group id="usernameGroup">
         <b-form-input id="username" type="text" v-model="form.username" required placeholder="Enter username" />

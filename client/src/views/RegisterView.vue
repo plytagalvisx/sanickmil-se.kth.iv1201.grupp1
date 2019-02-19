@@ -1,6 +1,5 @@
 <template>
   <b-jumbotron class="login" header="Register" lead="Enter your preferred user information">
-    <b-alert variant="danger" :v-show="showErrorMsg">ÅH NEJ NU GICK DET SNETT</b-alert>
     <b-form @submit="onSubmit" @reset="onReset" v-if="show">
       <b-row>
         <b-col md="12" sm="12">
@@ -43,7 +42,6 @@
       <b-row>
         <b-col md="12" sm="12">
           <b-form-group id="ssnGroup">
-            <!-- TODO: Align this to the left, or remove it -->
             <b-form-input id="ssn" type="text" v-model="form.ssn" required placeholder="YYYYMMDD-XXXX" />
           </b-form-group>
         </b-col>
@@ -73,7 +71,6 @@
           ssn: ''
         },
         show: true,
-        showErrorMsg: false
       }
     },
     methods: {

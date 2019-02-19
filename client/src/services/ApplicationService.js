@@ -29,8 +29,18 @@ class ApplicationService {
     return axios.get(APPLICATION  + "/all");
   }
 
+  static getPersonalApplication() {
+    return axios.get(APPLICATION);
+  }
+
   static getSkills() {
     return axios.get(SKILLS);
+  }
+
+  static changeStatus(ssn, status) {
+    return axios.patch(APPLICATION + "/" + ssn, {
+      status
+    });
   }
 }
 

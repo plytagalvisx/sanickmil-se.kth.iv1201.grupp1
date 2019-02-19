@@ -1,15 +1,17 @@
 <template>
-  <b-jumbotron header="Recruiter page" lead="Current applications are listed below.">
+<div>
+  <div v-if="!applications">LOADING</div>
+  <b-jumbotron v-else header="Recruiter page" lead="Current applications are listed below.">
     <b-card class="application" border-variant="info" v-for="(application, index) in applications" :key="index">
       <b-row>
         <b-col md="1" sm="12">
-          <b-badge v-if="application.applicationStatus === 'hired'" variant="success">HIRED!</b-badge>
+          <b-badge v-if="application.applicationStatus === 'accepted'" variant="success">HIRED!</b-badge>
           <b-badge v-else-if="application.applicationStatus === 'rejected'" variant="danger">REJECTED!</b-badge>
           <b-badge v-else variant="secondary">UNHANDLED</b-badge>
         </b-col>
         <b-col md="10" sm="12"></b-col>
         <b-col md="1" sm="12">
-          <b-btn variant="info" @click="application.isOpen = !application.isOpen">
+          <b-btn variant="info" size="sm" @click="application.isOpen = !application.isOpen">
             <i v-if="!application.isOpen" class="fas fa-plus"></i>
             <i v-else class="fas fa-minus"></i></b-btn>
         </b-col>
@@ -21,13 +23,8 @@
         <b-col md="4" sm="12">
           <p><b>Last name: </b>{{ application.lastname }}</p>
         </b-col>
-        <!-- TODO: SUBMITTED AT SKA LÄGGAS TILL I DATABASEN 
-                <b-col md="4" sm="12">
-                <p><b>is open: </b>{{ application.isOpen }}</p>
-              </b-col>
-              -->
         <b-col md="4" sm="12">
-          <p><b>is open: </b>{{ application.isOpen }}</p>
+          <p><b>Submission date: </b>{{ new Date(application.submissionDate).toLocaleDateString() }}</p>
         </b-col>
       </b-row>
       <div v-show="application.isOpen">
@@ -67,7 +64,7 @@
             <p class="title">Available to</p>
           </b-col>
         </b-row>
-        <b-row v-for="available in application.availability" :key="available.name" class="tableRow">
+        <b-row v-for="(available, index) in application.availability" :key="index" class="tableRow">
           <b-col md="6" sm="12">
             {{ new Date(available.from).toLocaleDateString() }} <br>
           </b-col>
@@ -78,18 +75,19 @@
         <!-- HERE STARTS THE BUTTONS -->
         <b-row class="buttons">
           <b-col md="4" sm="12">
-            <b-btn variant="danger" size="lg" @click="onReject(application)">Reject</b-btn>
+            <b-btn variant="danger" size="lg" @click="onStatus(application, 'rejected')">Reject</b-btn>
           </b-col>
           <b-col md="4" sm="12">
-            <b-btn variant="secondary" size="lg" @click="onUnhandled(application)">Unhandled</b-btn>
+            <b-btn variant="secondary" size="lg" @click="onStatus(application, 'unhandled')">Unhandled</b-btn>
           </b-col>
           <b-col md="4" sm="12">
-            <b-btn variant="success" size="lg" @click="onHire(application)">Hire</b-btn>
+            <b-btn variant="success" size="lg" @click="onStatus(application, 'accepted')">Hire</b-btn>
           </b-col>
         </b-row>
       </div>
     </b-card>
   </b-jumbotron>
+</div>
 </template>
 
 <script>
@@ -97,8 +95,7 @@
   export default {
     data() {
       return {
-        applications: [],
-        checkedStatus: []
+        applications: []
       }
     },
     created() {
@@ -111,14 +108,13 @@
       });
     },
     methods: {
-      onReject(application) {
-        application.applicationStatus = 'rejected'
-      },
-      onHire(application) {
-        application.applicationStatus = 'hired'
-      },
-      onUnhandled(application) {
-        application.applicationStatus = 'unhandled'
+      onStatus(application, status) {
+        let oldStatus = application.applicationStatus;
+        ApplicationService.changeStatus(application.ssn, status)
+        .catch(() => {
+          application.applicationStatus = oldStatus;
+        });
+        application.applicationStatus = status;
       }
     }
   }
