@@ -56,6 +56,7 @@ router.get('/all', async (req, res) => {
  */
 router.get('/', async (req, res) => {
   // TODO: Input validation
+  console.log(req.userSSN)
   const application = await dbservice.getApplicationStatusBySSN(req.userSSN);
   if (application === null) {
     return res.sendStatus(404);

@@ -2,22 +2,22 @@
   <b-container class="bv-example-row textStyle">
     <b-row>
       <b-col md="6" sm="12">
-        <p><b>First name: </b> Emil</p>
+        <p><b>First name: </b> {{this.userInfo.firstname}}</p>
       </b-col>
       <b-col md="6" sm="12">
-        <p><b>Last name: </b>Lindholm Brandt</p>
+        <p><b>Last name: </b>{{this.userInfo.lastname}}</p>
       </b-col>
     </b-row>
     <b-row>
       <b-col md="6" sm="12">
-        <p><b>Email: </b>emil@apa.se</p>
+        <p><b>Email: </b>{{this.userInfo.email}}</p>
       </b-col>
       <b-col md="6" sm="12">
-        <p><b>SSN: </b>19930324-3333</p>
+        <p><b>SSN: </b>{{this.userInfo.ssn}}</p>
       </b-col>
     </b-row>
     <b-row>
-      <b-table striped hover :items="qual" :fields="fieldsQual"></b-table>
+      <b-table striped hover :items="qualifications" :fields="fieldsQual"></b-table>
     </b-row>
     <b-row>
       <b-table striped hover :items="availability" :fields="fieldsAvailability"></b-table>
@@ -38,43 +38,16 @@
 </template>
 
 <script>
-  const qualifications = [{
-      qualification: 'Slav',
-      years: '17'
-    },
-    {
-      qualification: 'Waiter',
-      years: '3'
-    },
-    {
-      qualification: 'General manager',
-      years: '3'
-    },
-    {
-      qualification: 'Boss',
-      years: '23'
-    }
-  ]
-  const availability = [{
-      availabilityFrom: '2019-02-01',
-      availabilityTo: '2019-03-01'
-    },
-    {
-      availabilityFrom: '2019-01-01',
-      availabilityTo: '2019-02-01'
-    },
-    {
-      availabilityFrom: '2019-01-01',
-      availabilityTo: '2019-02-01'
-    },
-    {
-      availabilityFrom: '2019-01-01',
-      availabilityTo: '2019-02-01'
-    }
-  ]
+  import UserService from '../services/UserService.js'
+  import ApplicationService from '../services/ApplicationService.js'
   export default {
     data() {
       return {
+        // eslint-disable-next-line 
+        userInfo: {},
+        qualifications: [],
+        // eslint-disable-next-line 
+        availability: [],
         fieldsAvailability: {
           availabilityFrom: {
             label: 'Availability from',
@@ -82,6 +55,7 @@
           },
           availabilityTo: {
             label: 'Availability to',
+            sortable: true
           }
         },
         fieldsQual: {
@@ -92,8 +66,23 @@
             sortable: true
           }
         },
-        qual: qualifications,
-        availability: availability
+      }
+    },
+    async created(){
+      this.userInfo = await UserService.getUserInfo()
+      .then((res) => this.userInfo = res.data)
+      .catch((err) => err) 
+      // eslint-disable-next-line
+      console.log("userinfo: ", this.userInfo)
+      let cookie = this.$cookies.get('savedState')
+      if (cookie) { 
+          this.qualifications = cookie.qualifications
+          this.availability = cookie.availability
+      }
+    },
+    methods:{
+      async onSubmit(){
+        await ApplicationService.saveState(this.qualifications, this.availability)
       }
     }
   }

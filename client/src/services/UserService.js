@@ -41,6 +41,11 @@ class UserService {
   static getUser(usr) {
     return axios.get(USER + "/" + usr)
   }
+
+  //Gets necessary information for application receipt
+  static getUserInfo(){
+    return axios.get(USER)
+  }
 }
 
 export default UserService;

@@ -66,6 +66,7 @@ class DBService {
           firstname: 1,
           lastname: 1,
           email: 1,
+          ssn: 1,
           role: 1,
         }
       });

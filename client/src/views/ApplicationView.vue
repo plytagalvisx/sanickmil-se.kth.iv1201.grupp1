@@ -112,15 +112,15 @@
     methods: {
       addExpertise() {
         this.qualifications.push({
-          competenceName: this.qualifications.name,
-          yearsOfExperience: this.qualifications.years
+          qualification: this.qualifications.name,
+          years: this.qualifications.years
         })
         this.storeState()
       },
       addAvailability() {
         this.availability.push({
-          from: this.availability.start,
-          to: this.availability.end
+          availabilityFrom: this.availability.start,
+          availabilityTo: this.availability.end
         })
         this.storeState()
       },
