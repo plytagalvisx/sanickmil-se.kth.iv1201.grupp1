@@ -132,7 +132,8 @@ const SELF_ACTIONS = [
   {route: /^\/api\/application$/, method: 'DELETE'},
   {route: /^\/api\/application$/, method: 'PATCH'},
   {route: /^\/api\/skills$/, method: 'GET'},
-  {route: /^\/api\/application$/, method: 'GET'}
+  {route: /^\/api\/application$/, method: 'GET'},
+  {route: /^\/api\/user\/\w{1,}$/, method: 'GET'}
 ]
 
 function allowedSelfAction(route, method) {
