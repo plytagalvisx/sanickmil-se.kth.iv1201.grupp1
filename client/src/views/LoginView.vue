@@ -51,12 +51,9 @@
           .catch(err => {
             this.$emit('displayFlash', err.response.data.message, 'error');
           });
-        // this.form.username = ''
-        // this.form.password = ''
       },
       onReset (evt) {
         evt.preventDefault();
-        /* Reset our form values */
         this.form.username = '';
         this.form.password = '';
         /* Trick to reset/clear native browser form validation state */
@@ -67,7 +64,6 @@
   }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
 
   #link {

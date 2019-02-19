@@ -32,7 +32,7 @@ router.patch('/', async (req, res) => {
   const availability = req.body.availability;
   try {
     await dbservice.updateApplication(ssn, {qualifications, availability});
-    res.json({message: 'Application edited'});
+    res.status(201).json({message: 'Application edited'});
   } catch (err) {
     console.log('Error in application patch: ', err);
     res.status(500).json({message: err})
