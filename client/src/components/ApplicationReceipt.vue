@@ -112,8 +112,11 @@
 
 <style scoped>
   .status {
-    font-size: 1.7em;
+    font-size:1.25rem;
     float:right;
+    font-weight:normal;
+    padding:0.5rem 1rem;
+    line-height: 1.5;
   }
 
   .submit {
