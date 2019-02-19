@@ -19,6 +19,7 @@
         loading: false
       }
     },
+    //Might want to be async to avoid freezing when going to profile from menu
     created() {
       ApplicationService.getApplication()
         .then((res) => {
