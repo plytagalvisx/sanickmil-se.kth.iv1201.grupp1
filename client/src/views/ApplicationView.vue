@@ -69,7 +69,7 @@
               <b-button type="reset" size="lg" variant="danger" @click="onReset">Reset</b-button>
             </b-col>
             <b-col md="6" sm="12">
-              <b-button class="button" href="/receipt" type="submit" size="lg" variant="info" @click="onNext">Next</b-button>
+              <b-button class="button" to="receipt" type="submit" size="lg" variant="info" @click="onNext">Next</b-button>
             </b-col>
           </b-row>
         </b-form>
@@ -95,12 +95,9 @@
       ...mapState(['loggedIn', 'user'])
     },
     created() {
-      let cookie = this.$cookie.get('savedState')
-      if (cookie) {
-        cookie = cookie.substr(2, cookie.length)
-        cookie = JSON.parse(cookie)
-  
-        if (this.user.name === cookie.username) {
+      let cookie = this.$cookies.get('savedState')
+      if (cookie) { 
+         if (this.user.name === cookie.username) {
           this.qualifications = cookie.qualifications
           this.availability = cookie.availability
         }
@@ -116,7 +113,7 @@
       addExpertise() {
         this.qualifications.push({
           competenceName: this.qualifications.name,
-          yearsOfExperience: this.qualifications.years
+          yearsOfExperience: Number.parseInt(this.qualifications.years)
         })
         this.storeState()
       },
@@ -128,10 +125,12 @@
         this.storeState()
       },
       async storeState() {
-        await ApplicationService.saveState(this.qualifications, this.availability)
+        this.$cookies.set('savedState', {username: this.user.name, qualifications: this.qualifications, availability: this.availability}, 3600)
       },
       async onReset() {
-        await ApplicationService.removeState()
+        //Can be used for removing application (I thinkz) :
+        //await ApplicationService.removeState()
+        this.$cookies.remove('savedState')
         document.getElementById('expertiseSelect').value = '';
         this.qualifications.years = '';
         this.availability.start = '';
