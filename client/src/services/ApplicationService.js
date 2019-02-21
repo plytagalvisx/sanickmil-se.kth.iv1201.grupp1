@@ -44,6 +44,10 @@ class ApplicationService {
       status
     });
   }
+
+  static deleteApplication() {
+    return axios.delete(APPLICATION);
+  }
 }
 
 export default ApplicationService;

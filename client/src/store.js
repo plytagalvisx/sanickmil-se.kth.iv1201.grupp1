@@ -19,7 +19,6 @@ export default new Vuex.Store({
       token: null,
       role: null
     },
-    // TODO: To retain username/password when switching from login->register and vice versa
     form: {
       username: null,
       password: null

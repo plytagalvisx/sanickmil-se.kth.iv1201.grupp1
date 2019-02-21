@@ -62,6 +62,8 @@
         <!-- TODO: Fixa så man kan submitta -->
       </b-col>
     </b-row>
+    <b-row>
+    </b-row>
   </b-container>
 </template>
 
@@ -141,7 +143,7 @@
 <style scoped>
   .status {
     font-size: 1.25rem;
-    float: right;
+    float:right;
     font-weight: normal;
     padding: 0.5rem 1rem;
     line-height: 1.5;
@@ -166,5 +168,9 @@
   .textStyle {
     font-size: 1.2em;
     text-align: left;
+  }
+
+  .delete {
+    margin: 0 auto;
   }
 </style>
