@@ -53,11 +53,11 @@
     </b-row>
     <b-row style="margin-top: 1em;">
       <b-col md="6" sm="12">
-        <b-button variant="info" size="lg" to="apply">Edit application</b-button>
-        <!-- TODO: Att detta endast görs när ansökan inte är hanterad! -->
+        <b-button type="button" v-if="application.applicationStatus === 'unhandled'" variant="info" size="lg" to="apply">Edit application</b-button>
       </b-col>
       <b-col md="6" sm="12">
-        <b-badge class="status" v-if="['profile'].indexOf($route.name) > - 1" v-bind:class="{unhandled : application.applicationStatus === 'unhandled', hired : application.applicationStatus === 'accepted', rejected : application.applicationStatus === 'rejected'}"> {{ this.application.applicationStatus }}</b-badge>
+        <b-badge class="status" v-if="['profile'].indexOf($route.name) > - 1" v-bind:class="{unhandled : application.applicationStatus === 'unhandled', hired : application.applicationStatus === 'accepted', rejected : application.applicationStatus === 'rejected'}">
+          {{ this.application.applicationStatus }}</b-badge>
         <b-button class="submit" variant="info" size="lg" v-if="['receipt'].indexOf($route.name) > - 1" @click="onSubmit">Submit</b-button>
         <!-- TODO: Fixa så man kan submitta -->
       </b-col>
@@ -97,6 +97,13 @@
           }
         })
         await ApplicationService.saveState(this.qualifications, availability)
+          .then((res) => {
+            this.$emit('displayParentFlash', res.data.message, 'success');
+            this.$router.push('/');
+          })
+          .catch(err => {
+            this.$emit('displayParentFlash', err.response.data.message, 'error');
+          });
       }
     },
     props: [
@@ -107,12 +114,15 @@
 
 <style scoped>
   .status {
-    font-size: 1.7em;
-    float:right;
+    font-size: 1.25rem;
+    float: right;
+    font-weight: normal;
+    padding: 0.5rem 1rem;
+    line-height: 1.5;
   }
-
+  
   .submit {
-    float:right;
+    float: right;
   }
   
   .unhandled {
@@ -120,11 +130,11 @@
   }
   
   .rejected {
-    background-color: crimson;
+    background-color: #ee143e;
   }
   
   .hired {
-    background-color: green;
+    background-color: #00ac34;
   }
   
   .textStyle {
