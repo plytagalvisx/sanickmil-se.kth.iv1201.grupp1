@@ -1,7 +1,7 @@
 <template>
+<div v-if="stage1"> 
   <b-jumbotron>
-    <template slot="header">Apply
-</template>
+  <template slot="header">Apply</template>
 
 <template slot="lead">
    Apply for a job at <b>Amusement park</b>. You will not apply for a specific job, your specific task will be decided by the recruiter, depending on your qualifications!
@@ -69,23 +69,31 @@
               <b-button type="reset" size="lg" variant="danger" @click="onReset">Reset</b-button>
             </b-col>
             <b-col md="6" sm="12">
-              <b-button class="button" to="receipt" type="submit" size="lg" variant="info">Next</b-button>
+              <b-button class="button" @click="stage1 = false; stage2 = true" size="lg" variant="info">Next</b-button>
             </b-col>
           </b-row>
         </b-form>
       </b-container>
     </b-jumbotron>
+    </div>
+    <ApplicationReceiptComponent :receiptType="'apply'" v-else-if="stage2"/>
 </template>
 
 <script>
   import ApplicationService from '../services/ApplicationService.js'
+  import ApplicationReceiptComponent from '../components/ApplicationReceiptComponent.vue'
   import {
     mapState
   } from 'vuex'
   export default {
+    components: {
+      ApplicationReceiptComponent
+    },
     name: 'ApplicationView',
     data() {
       return {
+        stage1: true,
+        stage2: false,
         skillOptions: [],
         qualifications: [],
         availability: []
@@ -95,13 +103,7 @@
       ...mapState(['loggedIn', 'user'])
     },
     created() {
-      let cookie = this.$cookies.get('savedState')
-      if (cookie) { 
-         if (this.user.name === cookie.username) {
-          this.qualifications = cookie.qualifications
-          this.availability = cookie.availability
-        }
-      }
+
       ApplicationService.getSkills()
         .then((res) => {
           this.skillOptions = res.data;
@@ -113,17 +115,12 @@
           competenceName: this.qualifications.name,
           yearsOfExperience: Number.parseInt(this.qualifications.years)
         })
-        this.storeState()
       },
       addAvailability() {
         this.availability.push({
           from: this.availability.start,
           to: this.availability.end
         })
-        this.storeState()
-      },
-      async storeState() {
-        this.$cookies.set('savedState', {username: this.user.name, qualifications: this.qualifications, availability: this.availability}, 3600)
       },
       async onReset() {
         //Can be used for removing application (I thinkz) :

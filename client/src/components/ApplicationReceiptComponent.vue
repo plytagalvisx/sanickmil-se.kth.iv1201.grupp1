@@ -1,5 +1,7 @@
 <template>
-  <b-container class="bv-example-row textStyle">
+<div v-if="loading">loading...</div>
+<div v-else> 
+   <b-container class="bv-example-row textStyle">
     <b-row>
       <b-col md="6" sm="12">
         <p><b>First name: </b> {{this.userInfo.firstname}}</p>
@@ -10,10 +12,10 @@
     </b-row>
     <b-row>
       <b-col md="6" sm="12">
-        <p><b>Email: </b>{{this.userInfo.email}}</p>
+        <p><b>Email: </b>{{application.email}}</p>
       </b-col>
       <b-col md="6" sm="12">
-        <p><b>SSN: </b>{{this.userInfo.ssn}}</p>
+        <p><b>SSN: </b>{{application.ssn}}</p>
       </b-col>
     </b-row>
     <!-- TABLE FOR QUALIFICATIONS -->
@@ -25,7 +27,7 @@
         <p class="title">Years</p>
       </b-col>
     </b-row>
-    <b-row v-for="qualification in qualifications" :key="qualification.name" class="tableRow">
+    <b-row v-for="qualification in application.qualifications" :key="qualification.name" class="tableRow">
       <b-col md="6" sm="12">
         {{ qualification.competenceName }} <br>
       </b-col>
@@ -43,7 +45,7 @@
         <p class="title">Available to</p>
       </b-col>
     </b-row>
-    <b-row v-for="(available, index) in availability" :key="index" class="tableRow">
+    <b-row v-for="(available, index) in this.application.availability" :key="index" class="tableRow">
       <b-col md="6" sm="12">
         {{ new Date(available.from).toLocaleDateString() }} <br>
       </b-col>
@@ -53,16 +55,18 @@
     </b-row>
     <b-row style="margin-top: 1em;">
       <b-col md="6" sm="12">
-        <b-button type="button" v-if="application.applicationStatus === 'unhandled'" variant="info" size="lg" to="apply">Edit application</b-button>
+        {{this.application.applicationstatus}}
+        <b-button type="button" :disabled="this.application.applicationStatus !== 'unhandled' " variant="info" size="lg" to="apply">Edit application</b-button>
       </b-col>
       <b-col md="6" sm="12">
-        <b-badge class="status" v-if="['profile'].indexOf($route.name) > - 1" v-bind:class="{unhandled : application.applicationStatus === 'unhandled', hired : application.applicationStatus === 'accepted', rejected : application.applicationStatus === 'rejected'}">
+        <b-badge class="status" v-if="receiptType === 'profile'" v-bind:class="{unhandled : application.applicationStatus === 'unhandled', hired : application.applicationStatus === 'accepted', rejected : application.applicationStatus === 'rejected'}">
           {{ this.application.applicationStatus }}</b-badge>
-        <b-button class="submit" variant="info" size="lg" v-if="['receipt'].indexOf($route.name) > - 1" @click="onSubmit">Submit</b-button>
+        <b-button class="submit" variant="info" size="lg" v-if="receiptType === 'apply'" @click="onSubmit">Submit</b-button>
         <!-- TODO: Fixa så man kan submitta -->
       </b-col>
     </b-row>
   </b-container>
+  </div>
 </template>
 
 <script>
@@ -71,22 +75,25 @@
   export default {
     data() {
       return {
+        loading: true,
         userInfo: {},
-        qualifications: [],
-        availability: []
+        application: {}
       }
     },
     async created(){
-      let cookie = this.$cookies.get('savedState')
-      if (cookie) {
-        this.qualifications = cookie.qualifications
-        this.availability = cookie.availability
+      if(!this.inheritedApplication){
+        await ApplicationService.getApplication()
+        .then((res) => this.application = res.data)
+        .catch((err) => err)
+      } else {
+        this.application = this.inheritedApplication
       }
-      this.userInfo = await UserService.getUserInfo()
-      .then((res) => this.userInfo = res.data)
+      await UserService.getUserInfo()
+      .then((res) => {
+        this.userInfo = res.data
+        this.loading = false;
+        })
       .catch((err) => err) 
-      // eslint-disable-next-line
-      console.log("userinfo: ", this.userInfo)
     },
     methods: {
       async onSubmit() {
@@ -96,7 +103,7 @@
             to: new Date(e.to).toISOString()
           }
         })
-        await ApplicationService.saveState(this.qualifications, availability)
+        await ApplicationService.saveState(this.application.qualifications, availability)
           .then((res) => {
             this.$emit('displayParentFlash', res.data.message, 'success');
             this.$router.push('/');
@@ -104,10 +111,18 @@
           .catch(err => {
             this.$emit('displayParentFlash', err.response.data.message, 'error');
           });
+            // eslint-disable-next-line
+            console.log("app data: ", this.application)
+        if(this.application.submissionDate){
+          await ApplicationService.updateApplication(this.application.qualifications, availability)
+        }else{
+          await ApplicationService.submitApplication(this.application.qualifications, availability)
+        }
       }
     },
     props: [
-      'application'
+      'inheritedApplication',
+      'receiptType'
     ]
   }
 </script>

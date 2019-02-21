@@ -4,13 +4,13 @@
 
     <template slot="lead">{{ showLead }}</template>
     <hr>
-    <ApplicationReceipt :application="application" v-if="hasApplication" />
+    <ApplicationReceiptComponent :inheritedApplication="application" :receiptType="'profile'" v-if="hasApplication" />
   </b-jumbotron>
 </template>
 
 <script>
   import ApplicationService from '../services/ApplicationService'
-  import ApplicationReceipt from '../components/ApplicationReceipt'
+  import ApplicationReceiptComponent from '../components/ApplicationReceiptComponent'
   export default {
     data() {
       return {
@@ -33,22 +33,16 @@
         this.loading = true;
     },
     components: {
-      ApplicationReceipt
+      ApplicationReceiptComponent
     },
     computed: {
       showHeader() {
         if (this.loading) {
-          //  eslint-disable-next-line
-          console.log('THIS HAPPENDS');
           return '';
         }
         if (this.hasApplication) {
-          //  eslint-disable-next-line
-          console.log('ONE');
           return 'Your application';
         } else {
-          //  eslint-disable-next-line
-          console.log('TWO');
           return 'No application';
         }
       },
