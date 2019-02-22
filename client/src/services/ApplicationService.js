@@ -6,8 +6,6 @@ const SKILLS = 'api/skills';
 class ApplicationService {
 
   static updateApplication(qualifications, availability) {
-    // eslint-disable-next-line
-    console.log("In update")
     return axios.patch(APPLICATION, {
       qualifications,
       availability
@@ -15,8 +13,6 @@ class ApplicationService {
   }
 
   static submitApplication(qualifications, availability) {
-    // eslint-disable-next-line
-    console.log("In submit")
     return axios.post(APPLICATION, {
       qualifications,
       availability

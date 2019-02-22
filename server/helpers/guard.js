@@ -100,10 +100,8 @@ router.all(/.*/, async (req, res, next) => {
     res.status(500).json({message: 'You might not exist...'});
   }
   if (role === 'recruit' && allowedRecruiterAction(route, method)) {
-    console.log('recruiter alowed...')
     return next();
   } else if (allowedSelfAction(route, method)) {
-    console.log('self alowed...')
     return next();
   }
   res.status(401).json({message: 'You are not authorized to do this.'})
