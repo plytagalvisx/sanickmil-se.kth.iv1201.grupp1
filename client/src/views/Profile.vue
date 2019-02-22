@@ -4,7 +4,7 @@
 
     <template slot="lead">{{ showLead }}</template>
     <hr>
-    <ApplicationReceipt :application="application" v-if="hasApplication" />
+    <ApplicationReceiptComponent :application="application" v-if="hasApplication" />
   </b-jumbotron>
 </template>
 
@@ -34,7 +34,7 @@
         this.loading = true;
     },
     components: {
-      ApplicationReceipt
+      ApplicationReceiptComponent
     },
     computed: {
       showHeader() {
