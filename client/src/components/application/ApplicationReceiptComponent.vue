@@ -1,21 +1,21 @@
 <template>
-<div v-if="loading">loading...</div>
-<div v-else> 
-   <b-container class="bv-example-row textStyle">
+  <div v-if="loading">loading...</div>
+  <div v-else>
+    <b-container class="bv-example-row textStyle">
     <b-row>
       <b-col md="6" sm="12">
-        <p><b>First name: </b> {{this.userInfo.firstname}}</p>
+        <p><b>First name: </b> {{this.application.firstname}}</p>
       </b-col>
       <b-col md="6" sm="12">
-        <p><b>Last name: </b>{{this.userInfo.lastname}}</p>
+        <p><b>Last name: </b>{{this.application.lastname}}</p>
       </b-col>
     </b-row>
     <b-row>
       <b-col md="6" sm="12">
-        <p><b>Email: </b>{{application.email}}</p>
+        <p><b>Email: </b>{{this.application.email}}</p>
       </b-col>
       <b-col md="6" sm="12">
-        <p><b>SSN: </b>{{application.ssn}}</p>
+        <p><b>SSN: </b>{{this.application.ssn}}</p>
       </b-col>
     </b-row>
     <!-- TABLE FOR QUALIFICATIONS -->
@@ -27,7 +27,7 @@
         <p class="title">Years</p>
       </b-col>
     </b-row>
-    <b-row v-for="qualification in application.qualifications" :key="qualification.name" class="tableRow">
+    <b-row v-for="qualification in this.application.qualifications" :key="qualification.name" class="tableRow">
       <b-col md="6" sm="12">
         {{ qualification.competenceName }} <br>
       </b-col>
@@ -35,7 +35,7 @@
         {{ qualification.yearsOfExperience }}
       </b-col>
     </b-row>
-  
+
     <!-- TABLE FOR AVAILABILITY -->
     <b-row class="tableHeader">
       <b-col md="6" sm="12">
@@ -56,7 +56,8 @@
     <b-row style="margin-top: 1em;">
       <b-col md="6" sm="12">
         {{this.application.applicationstatus}}
-        <b-button type="button" :disabled="this.application.applicationStatus !== 'unhandled' " variant="info" size="lg" to="apply">Edit application</b-button>
+        <b-button type="button" v-if="this.application.applicationStatus" :disabled="this.application.applicationStatus !== 'unhandled' "
+          variant="info" size="lg" to="apply">Edit application</b-button>
       </b-col>
       <b-col md="6" sm="12">
         <b-badge class="status" v-if="receiptType === 'profile'" v-bind:class="{unhandled : application.applicationStatus === 'unhandled', hired : application.applicationStatus === 'accepted', rejected : application.applicationStatus === 'rejected'}">
@@ -70,58 +71,68 @@
 </template>
 
 <script>
-  import UserService from '../services/UserService.js'
-  import ApplicationService from '../services/ApplicationService.js'
+  import ApplicationService from '../../services/ApplicationService.js'
+  import UserService from '../../services/UserService.js'
+  import {
+    mapState,
+    mapGetters,
+    mapActions
+  } from 'vuex';
   export default {
+    name: 'ApplicationReceiptComponent',
     data() {
       return {
-        loading: true,
-        userInfo: {},
-        application: {}
+        loading: false,
+        showApplication: false
       }
     },
-    async created(){
-      if(!this.inheritedApplication){
+    computed: {
+      ...mapState('applicationModule', ['application']),
+      ...mapGetters('applicationModule', ['applicationState'])
+    },
+    async created() {
+      if (this.applicationState === 'partial') {
+        const userInfo = await UserService.getUserInfo()
+          .then(res => res.data);
+        this.completeApplicationInfo(userInfo);
+      } else if (this.applicationState === 'empty') {
+        // 1 Loading
+        this.loading = true;
         await ApplicationService.getApplication()
-        .then((res) => this.application = res.data)
-        .catch((err) => err)
-      } else {
-        this.application = this.inheritedApplication
+          .then((res) => {
+            this.setApplication(res.data);
+            this.showApplication = true;
+          })
+          .catch(() => {
+            this.showApplication = true;
+          })
+          .finally(() => {
+            this.loading = false;
+          })
+
       }
-      await UserService.getUserInfo()
-      .then((res) => {
-        this.userInfo = res.data
-        this.loading = false;
-        })
-      .catch((err) => err) 
     },
     methods: {
+      ...mapActions('applicationModule', ['setApplication', 'completeApplicationInfo', 'clearApplication']),
       async onSubmit() {
-        let availability = this.availability.map((e) => {
+        let availability = this.application.availability.map((e) => {
           return {
             from: new Date(e.from).toISOString(),
             to: new Date(e.to).toISOString()
           }
         })
-        await ApplicationService.saveState(this.application.qualifications, availability)
-          .then((res) => {
-            this.$emit('displayParentFlash', res.data.message, 'success');
-            this.$router.push('/');
-          })
-          .catch(err => {
-            this.$emit('displayParentFlash', err.response.data.message, 'error');
-          });
-            // eslint-disable-next-line
-            console.log("app data: ", this.application)
-        if(this.application.submissionDate){
-          await ApplicationService.updateApplication(this.application.qualifications, availability)
-        }else{
-          await ApplicationService.submitApplication(this.application.qualifications, availability)
+        try {
+          const res = await ApplicationService.submitApplication(this.application.qualifications, availability);
+          this.$emit('propagateFlash', res.data.message, 'success');
+          this.$router.push('/profile')
+        } catch (err) {
+          this.$emit('propagateFlash', err, 'error');
+        } finally {
+          this.clearApplication();
         }
       }
     },
     props: [
-      'inheritedApplication',
       'receiptType'
     ]
   }
@@ -135,23 +146,23 @@
     padding: 0.5rem 1rem;
     line-height: 1.5;
   }
-  
+
   .submit {
     float: right;
   }
-  
+
   .unhandled {
     background-color: grey;
   }
-  
+
   .rejected {
     background-color: #ee143e;
   }
-  
+
   .hired {
     background-color: #00ac34;
   }
-  
+
   .textStyle {
     font-size: 1.2em;
     text-align: left;

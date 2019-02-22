@@ -34,15 +34,13 @@
   export default {
     name: 'HeaderComponent',
     computed: {
-      ...mapState(['user']),
+      ...mapState('userModule', ['user']),
       loggedIn() {
         return this.user.token !== null;
       }
     },
     methods: {
-      ...mapActions({
-        logOut: 'logOut'
-      }),
+      ...mapActions('userModule', ['logOut']),
       async logout() {
         await UserService.logout().then(() => {
           this.logOut();

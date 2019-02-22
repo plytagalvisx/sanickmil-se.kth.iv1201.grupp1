@@ -1,12 +1,12 @@
 <template>
-    <ApplicationComponent/>
+    <RecruiterDashboardComponent/>
 </template>
 
 <script>
-  import ApplicationComponent from '../components/ApplicationComponent'
+  import RecruiterDashboardComponent from '../components/RecruiterDashboardComponent'
   export default {
     components: {
-      ApplicationComponent
+      RecruiterDashboardComponent
     }
   }
 </script>

@@ -8,23 +8,19 @@ Vue.use(Vuex)
 
 const vuexLocalStorage = new VuexPersist({
   key: 'vuex-persistance',
-  storage: window.localStorage
+  storage: window.localStorage,
+  modules: ['userModule']
 });
 
-export default new Vuex.Store({
-  plugins: [vuexLocalStorage.plugin],
+const userModule = {
+  namespaced: true,
+  // plugins: [vuexLocalStorage.plugin],
   state: {
     user: {
       name: null,
       token: null,
       role: null
-    },
-    // TODO: To retain username/password when switching from login->register and vice versa
-    form: {
-      username: null,
-      password: null
-    },
-    globalError: null
+    }
   },
   mutations: {
     logIn: (state, newUser) => {
@@ -34,9 +30,6 @@ export default new Vuex.Store({
       state.user.name = null;
       state.user.token = null;
       state.user.role = null;
-    },
-    setError: (state, text) => {
-      state.globalError = text;
     }
   },
   actions: {
@@ -45,9 +38,86 @@ export default new Vuex.Store({
     },
     logOut: ({commit}) => {
       commit('logOut');
-    },
-    setError: ({commit}, payload) => {
-      commit('setError', payload);
     }
   }
+}
+
+const applicationModule = {
+  namespaced: true,
+  state: {
+    application: {
+      qualifications: [],
+      availability: []
+    },
+    form: {
+      username: null,
+      password: null
+    }
+  },
+  getters: {
+    applicationExists: (state) => state.application.qualifications.length > 0 || state.application.availability.length > 0,
+    applicationState: (state) => {
+      const availAndQual = (state.application.qualifications.length > 0 || state.application.availability.length > 0);
+      if (availAndQual && state.application.submissionDate !== undefined) {
+        return 'complete';
+      } else if(availAndQual) {
+        return 'partial';
+      } else {
+        return 'empty'
+      }
+    }
+  },
+  mutations: {
+    addAvailability: (state, avail) => {
+      state.application.availability.push(avail);
+    },
+    addQualification: (state, qual) => {
+      state.application.qualifications.push(qual);
+    },
+    setApplication: (state, appl) => {
+      state.application = appl;
+    },
+    completeApplicationInfo: (state, userInfo) => {
+      state.application = {
+        ...state.application,
+        ...userInfo
+      }
+    },
+    clearApplication: (state) => {
+      state.application = {
+        qualifications: [],
+        availability: []
+      }
+    }
+  },
+  actions: {
+    addAvailability: ({commit}, payload) => {
+      commit('addAvailability', payload);
+    },
+    addQualification: ({commit}, payload) => {
+      commit('addQualification', payload);
+    },
+    setApplication: ({commit}, payload) => {
+      commit('setApplication', payload);
+    },
+    completeApplicationInfo: ({commit}, payload) => {
+      commit('completeApplicationInfo', payload);
+    },
+    clearApplication: ({commit}) => {
+      commit('clearApplication')
+    }
+  }
+}
+
+export default new Vuex.Store({
+  plugins: [vuexLocalStorage.plugin],
+  modules: {
+    userModule,
+    applicationModule
+  }
 })
+
+/*
+store.state.applicationModule ->
+store.state.userModule ->
+*/

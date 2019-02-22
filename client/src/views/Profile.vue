@@ -10,7 +10,7 @@
 
 <script>
   import ApplicationService from '../services/ApplicationService'
-  import ApplicationReceiptComponent from '../components/ApplicationReceiptComponent'
+  import ApplicationReceiptComponent from '../components/application/ApplicationReceiptComponent'
   export default {
     data() {
       return {
