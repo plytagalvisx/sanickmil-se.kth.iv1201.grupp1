@@ -1,19 +1,49 @@
-import axios from 'axios';
+import axios from './RequestObject';
 
 const APPLICATION = 'api/application';
+const SKILLS = 'api/skills';
 
 class ApplicationService {
 
-static saveState(qualifications, availability) {
+  static updateApplication(qualifications, availability) {
+    // eslint-disable-next-line
+    console.log("In update")
+    return axios.patch(APPLICATION, {
+      qualifications,
+      availability
+    });
+  }
+
+  static submitApplication(qualifications, availability) {
+    // eslint-disable-next-line
+    console.log("In submit")
     return axios.post(APPLICATION, {
       qualifications,
       availability
     });
   }
-static removeState(){
-    return axios.delete(APPLICATION, {
+
+  static removeState(){
+    return axios.delete(APPLICATION);
+  }
+
+  static getApplications() {
+    return axios.get(APPLICATION  + "/all");
+  }
+
+  static getApplication() {
+    return axios.get(APPLICATION);
+  }
+
+  static getSkills() {
+    return axios.get(SKILLS);
+  }
+
+  static changeStatus(ssn, status) {
+    return axios.patch(APPLICATION + "/" + ssn, {
+      status
     });
-}
+  }
 }
 
 export default ApplicationService;

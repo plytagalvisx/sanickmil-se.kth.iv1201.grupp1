@@ -1,5 +1,5 @@
 <template>
-  <b-jumbotron class="login" header="Login" lead="You need to login in order to use the service. Please login, or create a new user!">
+  <b-jumbotron header="Login" lead="You need to login in order to use the service. Please login, or create a new user!">
     <b-form @submit="onSubmit" v-if="show">
       <b-form-group id="usernameGroup">
         <b-form-input id="username" type="text" v-model="form.username" required placeholder="Enter username" />
@@ -31,29 +31,28 @@
       }
     },
     methods: {
-      ...mapActions([
-        'logIn',
-        'setError'
+      ...mapActions('userModule', [
+        'logIn'
       ]),
       async onSubmit(evt) {
         evt.preventDefault();
-        // eslint-disable-next-line
-        console.log(typeof this.logIn);
         await UserService.login(this.form.username, this.form.password)
-          .then(() => {
-            this.logIn({name: this.form.username, role: 'DEFAULT DEV'});
-            // eslint-disable-next-line
-            console.log('setting logged in');
-            this.$router.push('/');
+          .then((data) => {
+            this.logIn({name: this.form.username, token: data.auth, role: data.role});
+            localStorage.setItem('userAuth', data.auth);
+            this.$emit('displayFlash', data.message, 'success');
+            if (data.role === 'applicant') {
+              this.$router.push('/');
+            } else {
+              this.$router.push('/recruiter');
+            }
           })
-          // eslint-disable-next-line
-          .catch(err => this.setError('HEJSAN'));
-        // this.form.username = ''
-        // this.form.password = ''
+          .catch(err => {
+            this.$emit('displayFlash', err.response.data.message, 'error');
+          });
       },
       onReset (evt) {
         evt.preventDefault();
-        /* Reset our form values */
         this.form.username = '';
         this.form.password = '';
         /* Trick to reset/clear native browser form validation state */
@@ -64,7 +63,6 @@
   }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
 
   #link {
