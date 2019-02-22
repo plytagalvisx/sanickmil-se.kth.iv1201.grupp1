@@ -6,7 +6,7 @@
 </template>
 
 <script>
-  import ApplicationReceipt from '../components/ApplicationReceipt'
+  import ApplicationReceiptComponent from '../components/application/ApplicationReceiptComponent'
   export default {
     data() {
       return {

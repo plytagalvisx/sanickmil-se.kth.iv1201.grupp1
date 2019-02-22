@@ -28,7 +28,7 @@ export default {
   }
 
   .info {
-    color: #00a2b9;
+    color: #053561;
     background-color: #b6e9f0;
   }
 

@@ -6,7 +6,6 @@ import ApplicationView from './views/ApplicationView'
 import DashboardView from './views/DashboardView'
 import RecruiterDashboard from './views/RecruiterDashboard'
 import Profile from './views/Profile'
-import FinalApplication from './views/FinalApplication'
 import store from './store'
 
 Vue.use(Router)
@@ -41,11 +40,6 @@ const router = new Router({
       component: Profile
     },
     {
-      path: '/receipt',
-      name: 'receipt',
-      component: FinalApplication
-    },
-    {
       path: '/recruiter',
       name: 'recruiter',
       component: RecruiterDashboard
@@ -60,7 +54,7 @@ const router = new Router({
  * page as well.
  */
 router.beforeEach( async(to, from, next) => {
-  let loggedIn = store.state.user.token !== null;
+  let loggedIn = store.state.userModule.user.token !== null;
   if (to.fullPath === '/login' || to.fullPath === '/register') {
     next();
   } else {

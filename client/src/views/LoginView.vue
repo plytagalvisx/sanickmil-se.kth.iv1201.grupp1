@@ -31,9 +31,8 @@
       }
     },
     methods: {
-      ...mapActions([
-        'logIn',
-        'setError'
+      ...mapActions('userModule', [
+        'logIn'
       ]),
       async onSubmit(evt) {
         evt.preventDefault();
