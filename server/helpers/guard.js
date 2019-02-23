@@ -123,7 +123,6 @@ function allowedRecruiterAction(route, method) {
   const allowed = RECRUITER_ACTIONS.find((action) => {
     return route.match(action.route) && method === action.method;
   }) !== undefined;
-  console.log(allowed)
   return allowed;
 }
 

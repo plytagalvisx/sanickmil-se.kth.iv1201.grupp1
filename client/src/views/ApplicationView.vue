@@ -47,8 +47,6 @@
         this.reviewApplication = true;
       },
       propagateFlash(message, type) {
-        // eslint-disable-next-line
-        console.log('caught emit', message, type);
         this.$emit('displayFlash', message, type);
       }
     }

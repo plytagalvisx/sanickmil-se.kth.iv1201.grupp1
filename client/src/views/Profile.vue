@@ -39,17 +39,11 @@
     computed: {
       showHeader() {
         if (this.loading) {
-          //  eslint-disable-next-line
-          console.log('THIS HAPPENDS');
           return '';
         }
         if (this.hasApplication) {
-          //  eslint-disable-next-line
-          console.log('ONE');
           return 'Your application';
         } else {
-          //  eslint-disable-next-line
-          console.log('TWO');
           return 'No application';
         }
       },
