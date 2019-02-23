@@ -4,7 +4,7 @@
 
     <template slot="lead">{{ showLead }}</template>
     <hr>
-    <ApplicationReceiptComponent :application="application" v-if="hasApplication" />
+    <ApplicationReceiptComponent :inheritedApplication="application" :receiptType="'profile'" v-if="hasApplication" />
   </b-jumbotron>
 </template>
 
