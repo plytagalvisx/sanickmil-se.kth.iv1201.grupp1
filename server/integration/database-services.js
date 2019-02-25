@@ -36,7 +36,6 @@ class DBService {
           password: 1
         }
       });
-      console.log('found user', foundUser);
       if (!foundUser) {
         console.log("Error in authenticateUser, no user found: ", err)
         throw 'NO_SUCH_USER';
