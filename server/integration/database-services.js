@@ -48,7 +48,7 @@ class DBService {
   }
 
   /**
-   * 
+   * Gets basic user information by SSN.
    * @param {String} SSN The user to get info of
    * @returns {Object} A object containing the: username, firstname, lastname, email, role
    */
@@ -76,8 +76,9 @@ class DBService {
   }
 
   /**
-   * 
+   * Gets basic user information by username
    * @param {String} username Username
+   * @returns {Object} A object containing the: username, firstname, lastname, email, role
    */
   static async getBasicUserInfoByUsername(username) {
     try {
@@ -237,7 +238,7 @@ class DBService {
   }
 
   /**
-   * Gets all the applications of applicants who has a applicationStatus
+   * Gets all the applications of applicants who has an applicationStatus
    */
   static async getAllApplications() {
     try {

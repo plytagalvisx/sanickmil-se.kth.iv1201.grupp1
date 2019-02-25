@@ -103,6 +103,9 @@ router.get('/', async (req, res) => {
   res.status(200).json(application);
 })
 
+/**
+ * Deletes an application
+ */
 router.delete('/', async (req, res) => {
   try {
     await dbservice.removeApplicationBySSN(req.userSSN);
