@@ -119,7 +119,6 @@ class DBService {
       if (!foundSSN) {
         throw 'NO_SUCH_USER';
       }
-      console.log('foundSSN', foundSSN);
       return foundSSN.ssn;
     } catch (err) {
       console.log('Error in getSSNByUsername', err);

@@ -75,7 +75,6 @@ router.all(/.*/, async (req, res, next) => {
   if (req.baseUrl === '/dev/dbtransfer' && process.env.NODE_ENV !== 'production') {
     next();
   }
-  console.log(`${method} route ${route}`);
   /*if (req.headers.authorization) {
     console.log('USER SENT AUTHORIZATION HEADER TOKEN', req.headers.authorization);
   }*/
