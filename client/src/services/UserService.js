@@ -2,6 +2,9 @@ import axios from './RequestObject';
 
 const USER = 'api/user';
 const AUTH = 'api/auth';
+/**
+ * Works as a service between the front-end and back-end. The functions in this class are all database calls regarding users
+ */
 class UserService {
 
   static login(username, password) {

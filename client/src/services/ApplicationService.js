@@ -4,7 +4,7 @@ const APPLICATION = 'api/application';
 const SKILLS = 'api/skills';
 
 /**
- * Works as a service between the front-end and back-end. The functions in this class are all database calls
+ * Works as a service between the front-end and back-end. The functions in this class are all database calls regarding applications
  */
 class ApplicationService {
 
