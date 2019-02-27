@@ -90,7 +90,11 @@ router.all(/.*/, async (req, res, next) => {
       token = token.replace('Bearer ', '');
     }
   } catch (err) {
-    return res.status(500).json({message: 'No token supplied'})
+    return res.status(500).json({
+      message: 'No token supplied',
+      path: route,
+      method
+    })
   }
   const authAudit = await authenticateToken(token);
   if (!authAudit.success) {
