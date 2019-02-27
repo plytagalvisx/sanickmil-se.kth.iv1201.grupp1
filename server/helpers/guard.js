@@ -40,29 +40,19 @@ function loggedOutAccess(route, method) {
  * a message field with more information.
  */
 async function authenticateToken(token) {
-  if (token) {
-    if (token.startsWith('Bearer ')) {
-      token = token.replace('Bearer ', '');
+  return await jwt.verify(token, config.SECRET, (err, decoded) => {
+    if (err) {
+      return {
+        success: false,
+        message: 'Token is not valid'
+      };
+    } else {
+      return {
+        success: true,
+        message: 'Token is valid',
+      };
     }
-    return await jwt.verify(token, config.SECRET, (err, decoded) => {
-      if (err) {
-        return {
-          success: false,
-          message: 'Token is not valid'
-        };
-      } else {
-        return {
-          success: true,
-          message: 'Token is valid',
-        };
-      }
-    });
-  } else {
-    return {
-      success: false,
-      message: 'You must log in to see access this.'
-    };
-  }
+  });
 }
 
 /**
@@ -83,27 +73,33 @@ router.all(/.*/, async (req, res, next) => {
   }
 
   // Is the user logged in?
-  let token = req.cookies.jwtToken;
-  if (token.startsWith('Bearer ')) {
-    token = token.replace('Bearer ', '');
-  }
+  // let token = req.cookies.jwtToken;
+  // if (token.startsWith('Bearer ')) {
+    //   token = token.replace('Bearer ', '');
+    // }
+  let token = req.headers.authorization;
+  if (!token)
+    return res.status(400).json({message: 'No token supplied'});
+  if (!token.startsWith('Bearer'))
+    return res.status(400).json({message: 'Invalid Token'});
+  token = token.replace('Bearer ', '');
+
   const authAudit = await authenticateToken(token);
-  if (!authAudit.success) {
-    return res.status(401)
-    .json({message: authAudit.message});
-  }
+  if (!authAudit.success)
+    return res.status(401).json({message: authAudit.message});
+
   const {role, user} = await decodeUsernameAndRole(token);
   try {
     req.userSSN = await dbservice.getSSNByUsername(user);
   } catch (err) {
-    res.status(500).json({message: 'You might not exist...'});
+    return res.status(500).json({message: 'You might not exist...'});
   }
   if (role === 'recruit' && allowedRecruiterAction(route, method)) {
     return next();
   } else if (allowedSelfAction(route, method)) {
     return next();
   }
-  res.status(401).json({message: 'You are not authorized to do this.'})
+  return res.status(401).json({message: 'You are not authorized to do this.'})
 });
 
 // Specified which actions the Recruiters may take

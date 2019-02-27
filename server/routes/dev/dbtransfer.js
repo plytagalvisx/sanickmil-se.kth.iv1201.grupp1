@@ -98,8 +98,8 @@ function addAvailability(users, connection, res) {
       });
       const userCollection = client.db('sanickmil-recruitment').collection('user');
       userCollection.insertMany(users);
-      res.send(users);
       connection.end();
+      return res.send(users);
     });
 }
 module.exports = router;

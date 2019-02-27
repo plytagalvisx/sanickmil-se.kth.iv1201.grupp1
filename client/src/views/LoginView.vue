@@ -77,8 +77,11 @@
         evt.preventDefault();
         await UserService.login(this.form.username, this.form.password)
           .then((data) => {
-            this.logIn({name: this.form.username, token: data.auth, role: data.role});
-            localStorage.setItem('userAuth', data.auth);
+            this.logIn({
+              name: data.username,
+              role: data.role,
+              token: `${data.token_type} ${data.access_token}`
+              });
             this.$emit('displayFlash', data.message, 'success');
             if (data.role === 'applicant') {
               this.$router.push('/');

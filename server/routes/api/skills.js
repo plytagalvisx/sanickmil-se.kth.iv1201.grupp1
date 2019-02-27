@@ -8,9 +8,9 @@ const dbservice = require('../../integration/database-services')
 router.get('/', async (req, res) => {
   try {
     const skills = await dbservice.getSkills();
-    res.status(200).json(skills);
+    return res.status(200).json(skills);
   } catch (err) {
-    res.status(500).json({message: 'Database connection error'})
+    return res.status(500).json({message: 'Database connection error'})
   }
 })
 
