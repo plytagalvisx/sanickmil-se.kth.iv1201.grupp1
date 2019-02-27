@@ -75,7 +75,6 @@ router.all(/.*/, async (req, res, next) => {
   if (req.baseUrl === '/dev/dbtransfer' && process.env.NODE_ENV !== 'production') {
     next();
   }
-  console.log(`${method} route ${route}`);
   /*if (req.headers.authorization) {
     console.log('USER SENT AUTHORIZATION HEADER TOKEN', req.headers.authorization);
   }*/
@@ -107,10 +106,8 @@ router.all(/.*/, async (req, res, next) => {
     return res.status(500).json({message: 'You might not exist...'});
   }
   if (role === 'recruit' && allowedRecruiterAction(route, method)) {
-    console.log('recruiter alowed...')
     return next();
   } else if (allowedSelfAction(route, method)) {
-    console.log('self alowed...')
     return next();
   }
   res.status(401).json({message: 'You are not authorized to do this.'})
@@ -132,7 +129,6 @@ function allowedRecruiterAction(route, method) {
   const allowed = RECRUITER_ACTIONS.find((action) => {
     return route.match(action.route) && method === action.method;
   }) !== undefined;
-  console.log(allowed)
   return allowed;
 }
 

@@ -10,7 +10,6 @@ const bcrypt = require('bcryptjs');
  * Transfers the content from a local database on port 8889 with username and password root.
  */
 router.get('/', (req, res) => {
-  console.log(' > /dev/dbtransfare invoked');
   let connection = mysql.createConnection({
     host: 'localhost',
     port: 8889,
@@ -34,14 +33,12 @@ router.get('/', (req, res) => {
     let user = null;
     let last = null;
     rows.forEach((element) => {
-      console.log(' === ROW ===');
       if (last === element.person_id) {
         // Get only period
         user.qualifications.push({
           competenceName: element.competence_name,
           yearsOfExperience: element.years_of_experience
         })
-        console.log('duplicate');
       } else {
         user = {};
         user.person_id = element.person_id;
@@ -96,7 +93,6 @@ function addAvailability(users, connection, res) {
           });
         }
       });
-      console.log(util.inspect(users, false, null, true));
       const client = await mongodb.MongoClient.connect(config.MONGODB_URI, {
         useNewUrlParser: true
       });

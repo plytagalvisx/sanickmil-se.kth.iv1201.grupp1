@@ -1,14 +1,24 @@
 const express = require('express');
 const router = express.Router();
 const dbservice = require('../../integration/database-services');
+const { validationResult } = require('express-validator/check');
+const validateSubmitApplication = require('../../validation/validateSubmitApplication');
+const validatingUpdateStatus = require('../../validation/validateUpdateStatus');
+const { prettyValidation } = require('../../helpers/formatValidationError');
 
 /**
  * Adds a new application for a user.
- * TODO: Each user must only be able to submit applications of their own
  */
-router.post('/', async (req, res) => {
+router.post('/', validateSubmitApplication, async (req, res) => {
+  const result = validationResult(req); 
+  
+  if (!result.isEmpty()) {
+    const error = prettyValidation(result);
+    return res.status(400).json(error);
+  }
+
   const ssn = req.userSSN;
-  // TODO: Input validation
+
   const qualifications = req.body.qualifications;
   const availability = req.body.availability;
   try {
@@ -26,7 +36,14 @@ router.post('/', async (req, res) => {
  * PATCH
  * For editing a application partially.
  */
-router.patch('/', async (req, res) => {
+router.patch('/', validateSubmitApplication, async (req, res) => {
+  const result = validationResult(req); 
+  
+  if (!result.isEmpty()) {
+    const error = prettyValidation(result);
+    return res.status(400).json(error);
+  }
+
   const ssn = req.userSSN;
   const qualifications = req.body.qualifications;
   const availability = req.body.availability;
@@ -40,9 +57,17 @@ router.patch('/', async (req, res) => {
 });
 
 /**
- * 
+ * PATCH
+ * When a recruiter wants to change an applicants application status
  */
-router.patch('/:ssn', async (req, res) => {
+router.patch('/:ssn', validatingUpdateStatus, async (req, res) => {
+  const result = validationResult(req); 
+  
+  if (!result.isEmpty()) {
+    const error = prettyValidation(result);
+    return res.status(400).json(error);
+  }
+
   const ssn = req.params.ssn;
   const status = req.body.status;
   try {
@@ -71,8 +96,6 @@ router.get('/all', async (req, res) => {
  * Gets a application by the users SSN
  */
 router.get('/', async (req, res) => {
-  // TODO: Input validation
-  console.log(req.userSSN)
   const application = await dbservice.getApplicationStatusBySSN(req.userSSN);
   if (application === null) {
     return res.sendStatus(404);
@@ -80,6 +103,9 @@ router.get('/', async (req, res) => {
   res.status(200).json(application);
 })
 
+/**
+ * Deletes an application
+ */
 router.delete('/', async (req, res) => {
   try {
     await dbservice.removeApplicationBySSN(req.userSSN);

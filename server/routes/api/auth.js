@@ -3,12 +3,21 @@ const jwt = require('jsonwebtoken');
 const config = require('../../config');
 const router = express.Router();
 const dbservice = require('../../integration/database-services.js');
+const { validationResult } = require('express-validator/check');
+const validatingLogin = require('../../validation/validateLogin');
+const { prettyValidation } = require('../../helpers/formatValidationError');
 
 /**
  * Authenticates a user and provides a cookie proving authentication
  */
-router.get('/', async (req, res) => {
-  // TODO: Input validation here
+router.get('/', validatingLogin, async (req, res) => {
+  const result = validationResult(req); 
+  
+  if (!result.isEmpty()) {
+    const error = prettyValidation(result);
+    return res.status(400).json(error);
+  }
+
   let username = req.query.username;
   let password = req.query.password;
 

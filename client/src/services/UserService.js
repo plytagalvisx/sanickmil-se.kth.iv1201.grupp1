@@ -2,6 +2,9 @@ import axios from './RequestObject';
 
 const USER = 'api/user';
 const AUTH = 'api/auth';
+/**
+ * Works as a service between the front-end and back-end. The functions in this class are all database calls regarding users
+ */
 class UserService {
 
   static login(username, password) {
@@ -27,6 +30,15 @@ class UserService {
     }).then(response => response.data)
   }
 
+  /**
+   * Adds a new user in the database
+   * @param {String} username 
+   * @param {String} password 
+   * @param {String} email 
+   * @param {String} firstname 
+   * @param {String} lastname 
+   * @param {Object} ssn 
+   */
   static register(username, password, email, firstname, lastname, ssn) {
     return axios.post(USER, {
       username,
@@ -42,7 +54,9 @@ class UserService {
     return axios.get(USER + "/" + usr)
   }
 
-  //Gets necessary information for application receipt
+  /**
+   * Gets necessary information for application receipt
+   */
   static getUserInfo(){
     return axios.get(USER)
   }
