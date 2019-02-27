@@ -85,8 +85,12 @@ router.all(/.*/, async (req, res, next) => {
 
   // Is the user logged in?
   let token = req.cookies.jwtToken;
-  if (token.startsWith('Bearer ')) {
-    token = token.replace('Bearer ', '');
+  try {
+    if (token.startsWith('Bearer ')) {
+      token = token.replace('Bearer ', '');
+    }
+  } catch (err) {
+    return res.status(500).json({message: 'No token supplied'})
   }
   const authAudit = await authenticateToken(token);
   if (!authAudit.success) {
