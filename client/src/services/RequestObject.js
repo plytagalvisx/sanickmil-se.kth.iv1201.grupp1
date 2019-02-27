@@ -1,7 +1,13 @@
 import store from '../store'
-let auth = store.state.userModule.user.token === null ? '' : store.state.userModule.user.token;
-if (auth === '')// eslint-disable-next-line
-  console.log('NO AUTHORIZATION', store.state.userModule.user.token)
-export default require('axios').create({
-  // headers: {'Authorization': auth}
+let axiosInstance = require('axios').create({
+  timeout: 1000
 });
+axiosInstance.interceptors.request.use(config => {
+  if (store.state.userModule.user.token) {
+    config.headers.authorization = store.state.userModule.user.token;
+  }
+  return config;
+  },
+  error => Promise.reject(error)
+);
+export default axiosInstance;
