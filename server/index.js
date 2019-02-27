@@ -25,7 +25,7 @@ const guard =  require('./helpers/guard');
 
 
 /* Authenticates each */
-app.use(/.*/, guard);
+app.use(/\/api\/.{1,}/, guard);
 
 app.use('/api/user', user);
 app.use('/api/auth', auth);
