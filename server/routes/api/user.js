@@ -29,12 +29,12 @@ router.post('/', validatingRegister, async (req, res) => {
       role: 'applicant'
     }
     await dbservice.registerUser(newUser);
-    res.status(201).json({message: 'Successfully registered user'});
+    return res.status(201).json({message: 'Successfully registered user'});
   } catch (err) {
     if (err === 'DUPLICATE_USER') {
       return res.status(409).json({message: 'A user with that username already exists, try another one!'});
     }
-    res.status(500).json({message: 'Internal error'});
+    return res.status(500).json({message: 'Internal error'});
   }
 });
 
@@ -44,9 +44,9 @@ router.post('/', validatingRegister, async (req, res) => {
 router.get('/', async (req, res) => {
   try {
     const fetchedUser = await dbservice.getBasicUserInfo(req.userSSN);
-    res.json(fetchedUser);
+    return res.json(fetchedUser);
   } catch (err) {
-    res.sendStatus(500);
+    return res.sendStatus(500);
   }
 });
 
