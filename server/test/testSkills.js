@@ -1,9 +1,8 @@
 const expect = require('chai').expect;
 const request = require('request');
-const config = require('./configTest');
 
-const skillUrl = config.AUTH_URL + '/api/skills';
-const loginUrl = config.AUTH_URL + '/api/auth?username=emil&password=lime';
+const skillUrl = 'http://localhost:3000/api/skills';
+const loginUrl = 'http://localhost:3000/api/auth?username=sabina&password=sabina';
 
 /**
  * Testing the GET request for the different skills
