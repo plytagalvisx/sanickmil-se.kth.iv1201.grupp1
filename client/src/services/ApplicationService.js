@@ -1,5 +1,4 @@
-import axios from 'axios';
-// import store from 'vuex';
+import axios from './RequestObject';
 
 const APPLICATION = 'api/application';
 const SKILLS = 'api/skills';

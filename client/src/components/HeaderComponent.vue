@@ -41,9 +41,11 @@
     },
     methods: {
       ...mapActions('userModule', ['logOut']),
+      ...mapActions('applicationModule', ['clearApplication']),
       async logout() {
         await UserService.logout().then(() => {
           this.logOut();
+          this.clearApplication();
           this.$emit('displayFlash', 'Successfully logged out', 'info');
           this.$router.push('/login');
         });
