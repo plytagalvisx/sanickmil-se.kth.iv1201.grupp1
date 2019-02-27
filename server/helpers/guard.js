@@ -93,7 +93,8 @@ router.all(/.*/, async (req, res, next) => {
     return res.status(500).json({
       message: 'No token supplied',
       path: route,
-      method
+      method,
+      nodeenv: process.env.NODE_ENV
     })
   }
   const authAudit = await authenticateToken(token);
