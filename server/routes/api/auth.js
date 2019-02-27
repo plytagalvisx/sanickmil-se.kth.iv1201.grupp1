@@ -3,12 +3,21 @@ const jwt = require('jsonwebtoken');
 const config = require('../../config');
 const router = express.Router();
 const dbservice = require('../../integration/database-services.js');
+const { validationResult } = require('express-validator/check');
+const validatingLogin = require('../../validation/validateLogin');
+const { prettyValidation } = require('../../helpers/formatValidationError');
 
 /**
  * Authenticates a user and provides a cookie proving authentication
  */
-router.get('/', async (req, res) => {
-  // TODO: Input validation here
+router.get('/', validatingLogin, async (req, res) => {
+  const result = validationResult(req); 
+  
+  if (!result.isEmpty()) {
+    const error = prettyValidation(result);
+    return res.status(400).json(error);
+  }
+
   let username = req.query.username;
   let password = req.query.password;
 
@@ -24,27 +33,27 @@ router.get('/', async (req, res) => {
     });
   }
 
-  let authenticatedUser = null;
   try {
-    authenticatedUser = await dbservice.getBasicUserInfoByUsername(username);
-  } catch (err) {
-    return res.status(500).json({message: 'Database communcation error'});
-  }
-  const token = 'Bearer ' + jwt.sign({
-    user: authenticatedUser.username,
-    role: authenticatedUser.role
-  }, config.SECRET, {
-    expiresIn: '1h'
-  });
-  res.setHeader('Authorization', token);
-  res.cookie('jwtToken', token, {
-      expire: new Date() + 15
-    })
-    .status(200)
-    .json({
-      message: 'Successfully logged in!',
+    const authenticatedUser = await dbservice.getBasicUserInfoByUsername(username);
+
+    const token = jwt.sign({
+      user: authenticatedUser.username,
+      role: authenticatedUser.role
+    }, config.SECRET, {
+      expiresIn: '1h'
+    });
+
+    return res.status(200).json({
+      message: 'Successfully logged in',
+      access_token: token,
+      token_type: 'Bearer',
+      username: authenticatedUser.username,
       role: authenticatedUser.role
     });
+  } catch (err) {
+    console.log('Token error kinda', err);
+    return res.status(500).json({message: 'Database communcation error'});
+  }
 })
 
 /**
@@ -57,7 +66,7 @@ router.delete('/', async (req, res) => {
     res.clearCookie('jwtToken')
     res.clearCookie('savedState')
   }
-  res.status(200).json({
+  return res.status(200).json({
     message: 'Successfully logged out.'
   });
 })
