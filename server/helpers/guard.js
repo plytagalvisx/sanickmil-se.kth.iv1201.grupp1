@@ -84,10 +84,17 @@ router.all(/.*/, async (req, res, next) => {
   }
 
   // Is the user logged in?
-  let token = req.cookies.jwtToken;
-  if (token.startsWith('Bearer ')) {
-    token = token.replace('Bearer ', '');
-  }
+  // let token = req.cookies.jwtToken;
+  // if (token.startsWith('Bearer ')) {
+    //   token = token.replace('Bearer ', '');
+    // }
+  let token = req.headers.authorization;
+  if (!token)
+    return res.status(400).json({message: 'No token supplied'});
+  if (!token.startsWith('Bearer'))
+    return res.status(400).json({message: 'Invalid Token'});
+  token = token.replace('Bearer ', '');
+
   const authAudit = await authenticateToken(token);
   if (!authAudit.success) {
     return res.status(401)
@@ -97,7 +104,7 @@ router.all(/.*/, async (req, res, next) => {
   try {
     req.userSSN = await dbservice.getSSNByUsername(user);
   } catch (err) {
-    res.status(500).json({message: 'You might not exist...'});
+    return res.status(500).json({message: 'You might not exist...'});
   }
   if (role === 'recruit' && allowedRecruiterAction(route, method)) {
     console.log('recruiter alowed...')

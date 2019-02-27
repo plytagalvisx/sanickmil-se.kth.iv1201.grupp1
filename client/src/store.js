@@ -24,6 +24,8 @@ const userModule = {
   },
   mutations: {
     logIn: (state, newUser) => {
+      // eslint-disable-next-line
+      console.log('chaning state in store....');
       state.user = newUser;
     },
     logOut: (state) => {

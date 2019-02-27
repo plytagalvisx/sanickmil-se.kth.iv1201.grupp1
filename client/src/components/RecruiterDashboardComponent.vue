@@ -99,6 +99,8 @@
       }
     },
     created() {
+      // eslint-disable-next-line
+      console.log('token:', this.$store.state.userModule.user.token);
       ApplicationService.getApplications().then((res) => {
         let tmp = res.data;
         tmp.map((ele) => {
