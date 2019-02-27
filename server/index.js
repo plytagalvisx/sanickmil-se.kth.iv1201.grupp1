@@ -34,12 +34,14 @@ app.use('/api/skills', skills);
 
 //Handle production
 if(process.env.NODE_ENV === 'production'){
+  console.log('Setting up for production enviroment...')
   //Static folder
   app.use(express.static(__dirname + '/public/'));
-
+  
   //Handle SPA
   app.get(/.*/, (req, res) => res.sendFile(__dirname + '/public/index.html'));
 } else {
+  console.log('Setting up for DEVelopment enviroment...')
   // Used for being able to transfer the SQLDB to MongoDB
   app.use('/dev/dbtransfer', require('./routes/dev/dbtransfer'));
 }
