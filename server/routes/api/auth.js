@@ -10,7 +10,7 @@ const MyError = require('../../helpers/MyError')
 const ERROR = require('../../helpers/errors')
 
 /**
- * Authenticates a user and provides a cookie proving authentication
+ * Authenticates a user and provides a token proving authentication
  */
 router.get('/', validatingLogin, async (req, res) => {
   const result = validationResult(req); 
@@ -68,18 +68,10 @@ router.get('/', validatingLogin, async (req, res) => {
 })
 
 /**
- * TODO: If the token is decided to be a Authorization header instead, remove this.
- * Deletes the jwt token cookie
+ * Logs out
  */
 router.delete('/', async (req, res) => {
-  let token = req.cookies.jwtToken;
-  if (token) {
-    res.clearCookie('jwtToken')
-    res.clearCookie('savedState')
-  }
-  return res.status(200).json({
-    message: 'Successfully logged out.'
-  });
+  res.json({message: 'Not implemented any longer'})
 })
 
 module.exports = router;

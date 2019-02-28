@@ -67,18 +67,10 @@ router.all(/.*/, async (req, res, next) => {
   if (req.baseUrl === '/dev/dbtransfer' && process.env.NODE_ENV !== 'production') {
     next();
   }
-  /*if (req.headers.authorization) {
-    console.log('USER SENT AUTHORIZATION HEADER TOKEN', req.headers.authorization);
-  }*/
   if (loggedOutAccess(route, method)) {
     return next();
   }
 
-  // Is the user logged in?
-  // let token = req.cookies.jwtToken;
-  // if (token.startsWith('Bearer ')) {
-    //   token = token.replace('Bearer ', '');
-    // }
   let token = req.headers.authorization;
   if (!token)
     return res.status(400).json({message: 'No token supplied'});
