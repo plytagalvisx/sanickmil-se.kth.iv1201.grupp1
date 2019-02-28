@@ -93,7 +93,7 @@ router.get('/all', async (req, res) => {
 })
 
 /**
- * Gets a application by the users SSN
+ * Get an application for the logged in user
  */
 router.get('/', async (req, res) => {
   const application = await dbservice.getApplicationStatusBySSN(req.userSSN);

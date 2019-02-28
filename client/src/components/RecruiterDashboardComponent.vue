@@ -1,8 +1,8 @@
 <template>
 <div>
-  <div v-if="!applications">LOADING</div>
-  <b-jumbotron v-else header="Recruiter page" lead="Current applications are listed below.">
-    <b-card class="application" border-variant="info" v-for="(application, index) in applications" :key="index">
+  <b-jumbotron header="Recruiter page" lead="Current applications are listed below.">
+    <Stretch v-if="loading"/>
+    <b-card v-else class="application" border-variant="info" v-for="(application, index) in applications" :key="index">
       <b-row>
         <b-col md="1" sm="12">
           <b-badge v-if="application.applicationStatus === 'accepted'" variant="success">HIRED!</b-badge>
@@ -92,21 +92,25 @@
 
 <script>
   import ApplicationService from '../services/ApplicationService'
+  import {Stretch} from 'vue-loading-spinner';
   export default {
     data() {
       return {
-        applications: []
+        applications: [],
+        loading: true
       }
     },
     created() {
-      // eslint-disable-next-line
-      console.log('token:', this.$store.state.userModule.user.token);
       ApplicationService.getApplications().then((res) => {
+        this.loading = true;
         let tmp = res.data;
         tmp.map((ele) => {
           ele.isOpen = false;
         });
         this.applications = tmp;
+      })
+      .finally(() => {
+        this.loading = false;
       });
     },
     methods: {
@@ -118,6 +122,9 @@
         });
         application.applicationStatus = status;
       }
+    },
+    components: {
+      Stretch
     }
   }
 </script>

@@ -4,6 +4,7 @@
 
     <template slot="lead">{{ showLead }}</template>
     <hr>
+    <Stretch v-if="loading"></Stretch>
     <ApplicationReceiptComponent :inheritedApplication="application" :receiptType="'profile'" v-if="hasApplication" />
   </b-jumbotron>
 </template>
@@ -11,6 +12,7 @@
 <script>
   import ApplicationService from '../services/ApplicationService'
   import ApplicationReceiptComponent from '../components/application/ApplicationReceiptComponent'
+  import {Stretch} from 'vue-loading-spinner'
   export default {
     data() {
       return {
@@ -34,13 +36,11 @@
         this.loading = true;
     },
     components: {
-      ApplicationReceiptComponent
+      ApplicationReceiptComponent,
+      Stretch
     },
     computed: {
       showHeader() {
-        if (this.loading) {
-          return '';
-        }
         if (this.hasApplication) {
           return 'Your application';
         } else {
@@ -48,9 +48,6 @@
         }
       },
       showLead() {
-        if (this.loading) {
-          return '';
-        }
         if (this.hasApplication) {
           return 'Here you can see your current application. You can edit your application as long as it is "Unhandled"';
         } else {
