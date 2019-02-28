@@ -119,12 +119,12 @@ const languageModule = {
     currentLanguage: state => state.currentLanguage,
   },
   mutations: {
-    setCurrentLanguage(state, language) {
+    setCurrentLanguage: (state, language) => {
       state.currentLanguage = language;
     }
   },
   actions: {
-    setCurrentLanguage({commit}, payload){
+    setCurrentLanguage: ({commit}, payload) => {
       commit('setCurrentLanguage', payload)
     }
   }

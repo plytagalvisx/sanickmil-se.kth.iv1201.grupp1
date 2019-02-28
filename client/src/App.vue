@@ -6,7 +6,7 @@
       <LanguagePickerComponent></LanguagePickerComponent>
       <FlashMessageComponent v-if="showFlash" :flashMessage="flashMessage" :type="flashType"/>
 
-      <!-- <h2>{{ 'lbl-welcome' | translate }}</h2> -->
+      <h2>{{ 'lbl-welcome' | translate }}</h2>
     </main>
   </div>
 </template>

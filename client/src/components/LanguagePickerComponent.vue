@@ -3,7 +3,6 @@
     <div v-for ="(language, index) in availableLanguages" :key="index">
       <input type="radio" :id="language.id" :value="language.id" v-model="selectedLanguage">
       <label :for="language.id">{{language.label}}</label>
-      
     </div>
   </div>
 </template>
