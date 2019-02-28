@@ -4,12 +4,13 @@ import LoginView from './views/LoginView'
 import RegisterView from './views/RegisterView'
 import ApplicationView from './views/ApplicationView'
 import DashboardView from './views/DashboardView'
+import RecruiterDashboard from './views/RecruiterDashboard'
 import Profile from './views/Profile'
-import FinalApplication from './views/FinalApplication'
+import store from './store'
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
@@ -39,9 +40,29 @@ export default new Router({
       component: Profile
     },
     {
-      path: '/receipt',
-      name: 'receipt',
-      component: FinalApplication
+      path: '/recruiter',
+      name: 'recruiter',
+      component: RecruiterDashboard
     }
   ]
-})
+});
+
+/**
+ * Asserts that the user is logged in at each navigation.
+ * Logged out users trying to access logged in pages are
+ * redirected to the login page, and may enter the registration
+ * page as well.
+ */
+router.beforeEach( async(to, from, next) => {
+  let loggedIn = store.state.userModule.user.token !== null;
+  if (to.fullPath === '/login' || to.fullPath === '/register') {
+    next();
+  } else {
+    if (!loggedIn) {
+      router.push('/login');
+    }
+  }
+  next();
+});
+
+export default router;

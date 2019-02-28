@@ -91,5 +91,6 @@ docs/_book
 
 ### OUR OWN ###
 env.sh
+.vscode
 
 # End of https://www.gitignore.io/api/node,vuejs

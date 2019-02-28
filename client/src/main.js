@@ -2,38 +2,34 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import axios from 'axios'
 import BootstrapVue from 'bootstrap-vue'
-// import UserService from './services/UserService'
-import VueCookie from 'vue-cookie'
+import VueCookies from 'vue-cookies'
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
-Vue.use(VueCookie);
+Vue.use(VueCookies);
 Vue.use(BootstrapVue);
 Vue.use(store);
-
-Vue.config.productionTip = false
-
-/**
- * Asserts that the user is logged in at each navigation.
- * Logged out users trying to access logged in pages are
- * redirected to the login page, and may enter the registration
- * page as well.
- */
-router.beforeEach( async(to, from, next) => {
-  let loggedIn = store.state.loggedIn;
+axios.interceptors.request.use(function(config) {
   // eslint-disable-next-line
-  console.log(typeof store.state.loggedIn);
-  if (to.fullPath === '/login' || to.fullPath === '/register') {
-    next();
-  } else {
-    if (!loggedIn) {
-      router.push('/login');
-    }
-  }
-  next();
+  console.log('NOBODY EXPECTS THE SPANNISH INQUISITION')
+  // if (store.state.userModule.user === null)
+  //   return config;
+  // const token = store.state.userModule.user.token === null ? '' : store.state.userModule.user.token;
+  // // eslint-disable-next-line
+  // console.log('NOBODY EXPECTS THE SPANNISH INQUISITION')
+  // if ( token !== null ) {
+  //   // eslint-disable-next-line
+  //   console.log('adding header')
+  //   config.headers.Authorization = token;
+  // }
+  return config;
+}, function(err) {
+  return Promise.reject(err);
 });
+Vue.config.productionTip = false
 
 new Vue({
   router,

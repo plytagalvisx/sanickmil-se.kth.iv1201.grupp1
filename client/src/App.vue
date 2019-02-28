@@ -1,23 +1,51 @@
 <template>
   <div id="app">
-    <HeaderComponent />
+    <HeaderComponent v-on:displayFlash="displayFlash" />
     <main>
-      <router-view/>
+      <router-view v-on:displayFlash="displayFlash"/>
+      <FlashMessageComponent v-if="showFlash" :flashMessage="flashMessage" :type="flashType"/>
     </main>
   </div>
 </template>
 
 <script>
 import HeaderComponent from './components/HeaderComponent'
+import FlashMessageComponent from './components/FlashMessageComponent'
 
 export default {
   components: {
-    HeaderComponent
+    HeaderComponent,
+    FlashMessageComponent
+  },
+  data() {
+    return {
+      showFlash: false,
+      flashMessage: '',
+      flashType: '',
+      currentInterval: null
+    }
+  },
+  methods: {
+    displayFlash(message, type) {
+      this.flashMessage = message;
+      this.flashType = type;
+      this.showFlash = true;
+      if (this.currentInterval) {
+        window.clearInterval(this.currentInterval);
+      }
+      this.currentInterval = window.setTimeout(() => {
+        this.showFlash = false;
+        this.currentInterval = null;
+      }, 3000);
+    }    
   }
 }
 </script>
 
 <style>
+* {
+  box-sizing: border-box;
+}
   #app {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -31,5 +59,6 @@ export default {
   main {
     max-width: 900px;
     margin: 0 auto;
+    position: relative;
   }
 </style>
