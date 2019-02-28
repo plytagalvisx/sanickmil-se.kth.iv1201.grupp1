@@ -6,6 +6,8 @@ const config = require('../../config');
 const { validationResult } = require('express-validator/check');
 const validatingRegister = require('../../validation/validateRegister');
 const { prettyValidation } = require('../../helpers/formatValidationError');
+const MyError = require('../../helpers/MyError')
+const ERROR = require('../../helpers/errors')
 
 /**
  * This is for ADDING users aka registry.
@@ -31,10 +33,11 @@ router.post('/', validatingRegister, async (req, res) => {
     await dbservice.registerUser(newUser);
     return res.status(201).json({message: 'Successfully registered user'});
   } catch (err) {
-    if (err === 'DUPLICATE_USER') {
+    if (err.errorCode === ERROR.USER.DUPLICATE) {
       return res.status(409).json({message: 'A user with that username already exists, try another one!'});
     }
-    return res.status(500).json({message: 'Internal error'});
+    console.log('Unhandled error in POST /user:', err);
+    return res.sendStatus(500);
   }
 });
 
@@ -46,6 +49,10 @@ router.get('/', async (req, res) => {
     const fetchedUser = await dbservice.getBasicUserInfo(req.userSSN);
     return res.json(fetchedUser);
   } catch (err) {
+    if (err.errorCode === ERROR.USER.NOT_FOUND) {
+      return res.status(404).json({message: 'User not found.'});
+    }
+    console.log('Unhandled error in GET /user:', err);
     return res.sendStatus(500);
   }
 });
