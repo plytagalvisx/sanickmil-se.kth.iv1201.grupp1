@@ -33,21 +33,22 @@ class ApplicationService {
   }
 
   /**
-   * Fetches all applications in the database.
+   * Get all applications in the database.
+   * Can only be done by recruiters
    */
   static getApplications() {
     return axios.get(APPLICATION  + "/all");
   }
 
   /**
-   * Fetches one specific application from the database
+   * Get one specific application from the database
    */
   static getApplication() {
     return axios.get(APPLICATION);
   }
 
   /**
-   * Fetches the skills that is stored in the database in order to populate the qualifications that one can choose from
+   * Get the skills that is stored in the database in order to populate the qualifications that one can choose from
    * when applying
    */
   static getSkills() {
@@ -67,6 +68,7 @@ class ApplicationService {
 
   /**
    * Deletes one specific application
+   * This is not implemented in the user interface yet
    */
   static deleteApplication() {
     return axios.delete(APPLICATION);

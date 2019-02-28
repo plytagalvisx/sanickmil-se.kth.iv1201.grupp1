@@ -8,7 +8,7 @@ const { prettyValidation } = require('../../helpers/formatValidationError');
 const ERROR = require('../../helpers/errors');
 
 /**
- * Adds a new application for a user.
+ * POST: Adds a new application for a user.
  */
 router.post('/', validateSubmitApplication, async (req, res) => {
   const result = validationResult(req); 
@@ -35,8 +35,7 @@ router.post('/', validateSubmitApplication, async (req, res) => {
 });
 
 /**
- * PATCH
- * For editing a application partially.
+ * PATCH: When user wants to edit their application partially
  */
 router.patch('/', validateSubmitApplication, async (req, res) => {
   const result = validationResult(req); 
@@ -54,7 +53,7 @@ router.patch('/', validateSubmitApplication, async (req, res) => {
     res.status(201).json({message: 'Application edited'});
   } catch (err) {
     if (err.errorCode === ERROR.APPLICATION.INCOMPLETE_PARAMS) {
-      return res.status(400).json({message: 'Missing paramters. You must submitt at least one qualification and one availability range.'});
+      return res.status(400).json({message: 'Missing parameters. You must submit at least one qualification and one availability range.'});
     }
     console.log('Error in application patch: ', err);
     res.sendStatus(500);
@@ -62,8 +61,7 @@ router.patch('/', validateSubmitApplication, async (req, res) => {
 });
 
 /**
- * PATCH
- * When a recruiter wants to change an applicants application status
+ * PATCH: When a recruiter wants to edit an users application status. 
  */
 router.patch('/:ssn', validatingUpdateStatus, async (req, res) => {
   const result = validationResult(req); 
@@ -90,7 +88,7 @@ router.patch('/:ssn', validatingUpdateStatus, async (req, res) => {
 });
 
 /**
- * Gets all applications (made by applicants).
+ * GET: All applications made by applicants
  */
 router.get('/all', async (req, res) => {
   try {
@@ -108,7 +106,7 @@ router.get('/all', async (req, res) => {
 })
 
 /**
- * Get an application for the logged in user
+ * GET an application made by the logged in user
  */
 router.get('/', async (req, res) => {
   try {
@@ -126,7 +124,8 @@ router.get('/', async (req, res) => {
 })
 
 /**
- * Deletes an application
+ * DELETE an application
+ * This is not implemented in front-end
  */
 router.delete('/', async (req, res) => {
   try {

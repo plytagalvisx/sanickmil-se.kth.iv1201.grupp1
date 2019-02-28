@@ -58,8 +58,8 @@ async function authenticateToken(token) {
 }
 
 /**
- * This middleware handles Authentication and Autorization
- * of api endpoint access through the token info (user info)
+ * This middleware handles Authentication and Authorization
+ * of API endpoint access through the token info (user info)
  */
 router.all(/.*/, async (req, res, next) => {
   const route = req.baseUrl;
@@ -104,8 +104,10 @@ router.all(/.*/, async (req, res, next) => {
   return res.status(401).json({message: 'You are not authorized to do this.'})
 });
 
-// Specified which actions the Recruiters may take
-// As "ADMINS".
+/**
+ * Specified which actions the Recruiters may take
+ * as "ADMINS".
+ */
 const RECRUITER_ACTIONS = [
   // Getting all applications
   {route: /^\/api\/application\/all$/, method: 'GET'},
@@ -115,6 +117,7 @@ const RECRUITER_ACTIONS = [
   {route: /^\/api\/application\/+\d+(-\d+)*$/, method: 'GET'}
 ]
 
+// TODO: Comment
 function allowedRecruiterAction(route, method) {
   route = route.trim();
   const allowed = RECRUITER_ACTIONS.find((action) => {
@@ -123,7 +126,9 @@ function allowedRecruiterAction(route, method) {
   return allowed;
 }
 
-// Specifies which actions may be taken only 
+/**
+ * Specifies which actions may be taken only
+ */ 
 const SELF_ACTIONS = [
   {route: /^\/api\/application$/, method: 'POST'},
   // Means '/api/application/12331-12312 (ending in only numbers and dashes)
@@ -134,8 +139,9 @@ const SELF_ACTIONS = [
   {route: /^\/api\/user$/, method: 'GET'}
 ]
 
+// TODO: Comment
 function allowedSelfAction(route, method) {
-  // Unsure wether this need to be trimmed. but better to be safe than sorry
+  // Unsure whether this need to be trimmed. but better to be safe than sorry
   route = route.trim();
   const allowed = SELF_ACTIONS.find((action) => {
     return route.match(action.route) && method === action.method;
@@ -143,6 +149,7 @@ function allowedSelfAction(route, method) {
   return allowed;
 }
 
+// TODO: Comment
 async function decodeUsernameAndRole(token) {
   try {
     const {role, user} = await jwt.verify(token, config.SECRET);

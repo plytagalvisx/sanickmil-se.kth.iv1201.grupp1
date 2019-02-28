@@ -7,6 +7,9 @@ const MyError = require('../helpers/MyError');
 const DUPL_USER = 11000;
 class DBService {
 
+  /**
+   * Loads the user collection from MongoDB
+   */
   static async loadUserCollection() {
     const client = await mongodb.MongoClient.connect(config.MONGODB_URI, {
       useNewUrlParser: true
@@ -14,6 +17,9 @@ class DBService {
     return client.db('sanickmil-recruitment').collection('user');
   }
 
+  /**
+   * Loads the skill collection from MongoDB
+   */
   static async loadSkillCollection() {
     const client = await mongodb.MongoClient.connect(config.MONGODB_URI, {
       useNewUrlParser: true
@@ -23,8 +29,8 @@ class DBService {
 
   /**
    * Authenticates a user by their username and password
-   * @param {String} username The username
-   * @param {String} password The password
+   * @param {String} username The username to be authenticated
+   * @param {String} password The password to authenticate the username with
    * @returns {Boolean} True if the user is authenticated, otherwise false.
    */
   static async authenticateUser(username, password) {
@@ -86,7 +92,7 @@ class DBService {
 
   /**
    * Gets basic user information by username
-   * @param {String} username Username
+   * @param {String} username The username to fetch user information from
    * @returns {Object} A object containing the: username, firstname, lastname, email, role
    */
   static async getBasicUserInfoByUsername(username) {
@@ -145,7 +151,7 @@ class DBService {
 
   /**
    * Gets all skills from the database.
-   * @returns {Array} A array of all skills as astrings
+   * @returns {Array} A array of all skills as strings
    */
   static async getSkills() {
     try {
@@ -163,7 +169,7 @@ class DBService {
 
   /**
    * Registers a new user to the database
-   * @param {Object} newUser The new user to be registerd
+   * @param {Object} newUser The new user to be registered
    */
   static async registerUser(newUser) {
     try {
@@ -180,9 +186,9 @@ class DBService {
 
   /**
    * Submits a application. Overwrites any existing application.
-   * @param {String} ssn The Social Securit Number
-   * @param {Array} qualifications A array of qualifications
-   * @param {Array} availability A array of the availability periods
+   * @param {String} ssn The Social Security Number
+   * @param {Array} qualifications An array of qualifications
+   * @param {Array} availability An array of the availability periods
    */
   static async submitApplication(ssn, qualifications, availability) {
     try {

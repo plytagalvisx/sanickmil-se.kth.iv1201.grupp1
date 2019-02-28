@@ -6,11 +6,10 @@ const config = require('../../config');
 const { validationResult } = require('express-validator/check');
 const validatingRegister = require('../../validation/validateRegister');
 const { prettyValidation } = require('../../helpers/formatValidationError');
-const MyError = require('../../helpers/MyError')
 const ERROR = require('../../helpers/errors')
 
 /**
- * This is for ADDING users aka registry.
+ * POST: Register a new user
  */
 router.post('/', validatingRegister, async (req, res) => {
   const result = validationResult(req); 
@@ -42,7 +41,7 @@ router.post('/', validatingRegister, async (req, res) => {
 });
 
 /**
- * Get a single user basic info
+ * GET: a single users basic information
  */
 router.get('/', async (req, res) => {
   try {

@@ -39,13 +39,13 @@ class UserService {
   }
 
   /**
-   * Adds a new user in the database
-   * @param {String} username 
-   * @param {String} password 
-   * @param {String} email 
-   * @param {String} firstname 
-   * @param {String} lastname 
-   * @param {Object} ssn 
+   * Register a new user in the database
+   * @param {String} username The username to be registered
+   * @param {String} password The password to be registered
+   * @param {String} email The email to be registered
+   * @param {String} firstname The first name to be registered
+   * @param {String} lastname The last name to be registered
+   * @param {Object} ssn The SSN to be registered
    */
   static register(username, password, email, firstname, lastname, ssn) {
     return axios.post(USER, {
@@ -56,10 +56,6 @@ class UserService {
       lastname,
       ssn
     });
-  }
-
-  static getUser(usr) {
-    return axios.get(USER + "/" + usr)
   }
 
   /**

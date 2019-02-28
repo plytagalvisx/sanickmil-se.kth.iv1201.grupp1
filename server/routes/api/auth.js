@@ -6,11 +6,10 @@ const dbservice = require('../../integration/database-services.js');
 const { validationResult } = require('express-validator/check');
 const validatingLogin = require('../../validation/validateLogin');
 const { prettyValidation } = require('../../helpers/formatValidationError');
-const MyError = require('../../helpers/MyError')
 const ERROR = require('../../helpers/errors')
 
 /**
- * Authenticates a user and provides a token proving authentication
+ * GET: Authenticates a user and provides a token proving authentication
  */
 router.get('/', validatingLogin, async (req, res) => {
   const result = validationResult(req); 
