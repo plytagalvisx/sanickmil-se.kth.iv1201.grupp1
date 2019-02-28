@@ -57,7 +57,6 @@ class DBService {
    * @returns {Object} A object containing the: username, firstname, lastname, email, role
    */
   static async getBasicUserInfo(ssn) {
-    console.log('got this ssn:', ssn);
     try {
       const userCollection = await this.loadUserCollection();
       const foundUser = await userCollection.findOne({

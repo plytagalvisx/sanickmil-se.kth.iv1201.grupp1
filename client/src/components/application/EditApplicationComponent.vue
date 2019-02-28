@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <Stretch v-if="loading"/>
+  <div v-else>
     <hr class="my-4">
     <b-container class="bv-example-row">
       <b-form>
@@ -65,6 +66,9 @@
               <b-form-invalid-feedback id="availabilityStartDate" v-if="!$v.inputAvailability.start.required">
                 You have to select a start date
             </b-form-invalid-feedback>
+            <b-form-invalid-feedback id="availabilityStartDate" v-if="!$v.inputAvailability.start.dateForm">
+                You have to be within the 21st century
+            </b-form-invalid-feedback>
             </b-form-group>
           </b-col>
           <b-col md="5" sm="12">
@@ -80,6 +84,9 @@
             </b-form-invalid-feedback>
             <b-form-invalid-feedback id="availabilityEndLabel" v-if="!$v.inputAvailability.end.required">
                 You have to select an end date
+            </b-form-invalid-feedback>
+            <b-form-invalid-feedback id="availabilityStartDate" v-if="!$v.inputAvailability.end.dateForm">
+                You have to be within the 21st century
             </b-form-invalid-feedback>
             </b-form-group>
           </b-col>
@@ -114,38 +121,50 @@
 </template>
 
 <script>
-  import ApplicationService from '../../services/ApplicationService'
+  import ApplicationService from '../../services/ApplicationService';
   import {mapState, mapActions, mapGetters} from 'vuex';
-  import { validationMixin } from 'vuelidate'
-  import { required } from 'vuelidate/lib/validators'
+  import { validationMixin } from 'vuelidate';
+  import { required, helpers } from 'vuelidate/lib/validators';
+  import {Stretch} from 'vue-loading-spinner';
+  const checkDateForm = helpers.regex('checkDateForm', /^2\d{3}(-\d{2}){2}$/);
+
   function startDateBeforeEnd() {
     return this.inputAvailability.start < this.inputAvailability.end;
   }
+
   export default {
     name: 'EditApplicationComponent',
     data() {
       return {
         skillOptions: [],
         inputQualification: {},
-        inputAvailability: {}
+        inputAvailability: {},
+        loading: true
       }
     },
     created() {
-      // TODO: Show some loading while the skills are being fetched.
       ApplicationService.getSkills()
         .then((res) => {
+          this.loading = true;
           this.skillOptions = res.data;
+        })
+        .finally(() => {
+          this.loading = false;
         });
-      // TODO: Show some loading if this need to be fetced as well?
       if (!this.applicationExists) {
+        this.loading = true;
         ApplicationService.getApplication()
           .then((res => {
-          this.setApplication(res.data)
+            this.setApplication(res.data)
         }))
         .catch(err => {
+          this.loading = true;
           // eslint-disable-next-line
           console.log('No application was found', err.response.status, err.response.data);
           // this.$emit('propagateFlash', err.response.data, 'error')
+        })
+        .finally(() => {
+          this.loading = false;
         });
       }
     },
@@ -184,11 +203,13 @@
       },
       inputAvailability: {
         start: {
-          required: required
+          required: required,
+          dateForm: checkDateForm
         },
         end: {
           startDateBeforeEnd,
-          required: required
+          required: required,
+          dateForm: checkDateForm
         }
       },
       application: {
@@ -199,6 +220,9 @@
           required: required
         }
       }
+    },
+    components: {
+      Stretch
     }
   }
 </script>
