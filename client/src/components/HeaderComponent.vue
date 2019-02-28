@@ -29,7 +29,6 @@
 </template>
 
 <script>
-  import UserService from '../services/UserService.js'
   import {mapState, mapActions} from 'vuex'
   export default {
     name: 'HeaderComponent',
@@ -42,13 +41,11 @@
     methods: {
       ...mapActions('userModule', ['logOut']),
       ...mapActions('applicationModule', ['clearApplication']),
-      async logout() {
-        await UserService.logout().then(() => {
-          this.logOut();
-          this.clearApplication();
-          this.$emit('displayFlash', 'Successfully logged out', 'info');
-          this.$router.push('/login');
-        });
+      logout() {
+        this.logOut();
+        this.clearApplication();
+        this.$emit('displayFlash', 'Successfully logged out', 'info');
+        this.$router.push('/login');
       }
     }
   }

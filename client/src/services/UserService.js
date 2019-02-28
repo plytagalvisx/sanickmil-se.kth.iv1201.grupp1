@@ -7,6 +7,11 @@ const AUTH = 'api/auth';
  */
 class UserService {
 
+  /**
+   * Logs in a user by username and password
+   * @param {String} username Username
+   * @param {String} password Password
+   */
   static login(username, password) {
     return axios.get(AUTH, {
       params: {
@@ -22,6 +27,9 @@ class UserService {
     // .catch(err => err);
   }
 
+  /**
+   * @deprecated Logs out a user. 
+   */
   static logout() {
     return axios.delete(`${AUTH}`, {
       headers: {
