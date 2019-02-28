@@ -1,0 +1,16 @@
+language: node_js
+node_js:
+- iojs
+- '7'
+install:
+- npm install
+script:
+- npm start
+- npm test
+deploy:
+  provider: heroku
+  api_key:
+    secure: k/G4NYIRaiWM0NzVbJ8uYiOP9Fn5NH3GmYu8Hc0BXuaT070605qLsFpjfhdSnt4eydPA5wk1kPdtl3X0t81pi9WczEERyxPhSPizSFRkHtJTf245K4YChhpS4VILUAoU7LDIPwj8rVM7+vE8BB6FeC7vzRVepx023PZ7MFp1B4HK+VJ4LCkW1hrX6Te8wN0qFMxgqSkzcvcr6n6WpIu/Kf7l5BWwgYadc9xG8rqHFa0TCh0hhw+s5OFqvtMs1/3BXy7ltEpLLQJljNm9mP+ukMG6Ei+1yk++2pmMOPtP91QgtMqMfCkfm5i3oH6wXO6Qzthd1ZqLc+afuVlZvAuxAdETQPL48J12JTLfD0I7VwdAt8c3RxlqMLtyOmYx+jJZMWbKh1A0jz66UNYbE4hN8QqqaNebppQYScInBaCLeGvprEdP03i9AW4hEULZlUjeUFyw5IPOoSTRDrvgqFJNnkrce3jZNSjNz0Op9Nglzz7IlmHXufdFnfba9KsC2xn2WOflRs0Pe7F+JSZLfP9Lp79QzMy2Xm1MO92gKA24XOwKJ3KAhbFQ7ImJr3QvR6ar46tPGwGj/hzKM67eNltprHyKKaCwATWYNkV03ySyiZMXe0kRlaaDJVPDPxXgF8CRVaszNoZT8gSBA/3/0/OA9IY2r3g67cUWXyd2RlnOHJI=
+  app: sanickmil-recruitment
+  on:
+    repo: sanickmil/sanickmil-se.kth.iv1201.grupp1
