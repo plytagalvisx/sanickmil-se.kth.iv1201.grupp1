@@ -12,8 +12,11 @@ describe("Testing application", function() {
    */
   describe("GET successfully a specific application", function(){
     it("Returns status code 200", function(done){
-      request(loginSabinaUrl, () => {
-        request(url, (err, res) => {
+      request(loginSabinaUrl, (error, response, body) => {
+        request({url: url,
+          headers: {
+            'Authorization': 'Bearer ' + body.access_token
+          }}, (err, res) => {
           expect(res.statusCode).to.equal(200);
           done();
         });

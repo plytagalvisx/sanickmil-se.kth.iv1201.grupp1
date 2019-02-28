@@ -1,17 +1,18 @@
-const expect = require('chai').expect;
+/*const expect = require('chai').expect;
 const request = require('request');
+const config = require('./configTest');
 
-const skillUrl = 'http://localhost:3000/api/skills';
-const loginUrl = 'http://localhost:3000/api/auth?username=sabina&password=sabina';
+const skillUrl = config.BASE_AUTH + '/api/skills';
+const loginUrl = config.BASE_AUTH + '/api/auth?username=sabina&password=sabina';
 
 /**
  * Testing the GET request for the different skills
  */
-describe("Authenticate GET request for acquiring skills", function(){
+//describe("Authenticate GET request for acquiring skills", function(){
   /**
   * Testing the GET request when the user is logged in correctly
   */
-  describe("GET request with successful", function(){
+  /*describe("GET request with successful", function(){
     it("Returns status code 200", function(done){
       request(loginUrl, function(){
         request(skillUrl, function(err, res){
@@ -22,4 +23,4 @@ describe("Authenticate GET request for acquiring skills", function(){
       });
     });
   });
-});
+});*/
