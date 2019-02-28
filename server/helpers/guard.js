@@ -1,6 +1,8 @@
 const router = require('express').Router();
 const jwt = require('jsonwebtoken');
 const config = require('../config');
+const ERROR = require('../helpers/errors')
+const MyError = require('../helpers/MyError')
 const dbservice = require('../integration/database-services')
 
 /**
@@ -65,18 +67,10 @@ router.all(/.*/, async (req, res, next) => {
   if (req.baseUrl === '/dev/dbtransfer' && process.env.NODE_ENV !== 'production') {
     next();
   }
-  /*if (req.headers.authorization) {
-    console.log('USER SENT AUTHORIZATION HEADER TOKEN', req.headers.authorization);
-  }*/
   if (loggedOutAccess(route, method)) {
     return next();
   }
 
-  // Is the user logged in?
-  // let token = req.cookies.jwtToken;
-  // if (token.startsWith('Bearer ')) {
-    //   token = token.replace('Bearer ', '');
-    // }
   let token = req.headers.authorization;
   if (!token)
     return res.status(400).json({message: 'No token supplied'});
@@ -88,16 +82,24 @@ router.all(/.*/, async (req, res, next) => {
   if (!authAudit.success)
     return res.status(401).json({message: authAudit.message});
 
-  const {role, user} = await decodeUsernameAndRole(token);
   try {
+    const {role, user} = await decodeUsernameAndRole(token);
     req.userSSN = await dbservice.getSSNByUsername(user);
+    if (role === 'recruit' && allowedRecruiterAction(route, method)) {
+      return next();
+    } else if (allowedSelfAction(route, method)) {
+      return next();
+    }
   } catch (err) {
-    return res.status(500).json({message: 'You might not exist...'});
-  }
-  if (role === 'recruit' && allowedRecruiterAction(route, method)) {
-    return next();
-  } else if (allowedSelfAction(route, method)) {
-    return next();
+    if (err.errorCode === error.USER.NOT_FOUND)
+      return res.status(400).json({message: 'User not found'});
+    else if (err.errorCode === ERROR.DB.ERROR)
+      return res.status(500).json({message: 'Database error'});
+    else if (err.errorCode === ERROR.TOKEN.VERIFY)
+      return res.status(500).json({message: 'Cannot verify token'});
+
+    console.log('Unhandled error in guard ALL');
+    return res.sendStatus(500);
   }
   return res.status(401).json({message: 'You are not authorized to do this.'})
 });
@@ -147,7 +149,7 @@ async function decodeUsernameAndRole(token) {
     return {role, user};
   } catch (err) {
     console.log('Error in getUserType', err);
-    throw err;
+    throw new MyError('Error verifying token').setCode(ERROR.TOKEN.VERIFY);
   }
 }
 

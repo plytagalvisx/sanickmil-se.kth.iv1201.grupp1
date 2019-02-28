@@ -1,6 +1,8 @@
 const mongodb = require('mongodb');
 const config = require('../config');
 const bcrypt = require('bcryptjs');
+const ERROR = require('../helpers/errors');
+const MyError = require('../helpers/MyError');
 
 const DUPL_USER = 11000;
 class DBService {
@@ -37,13 +39,15 @@ class DBService {
         }
       });
       if (!foundUser) {
-        console.log("Error in authenticateUser, no user found: ", err)
-        throw 'NO_SUCH_USER';
+        console.log('Error in authenticateUser, no user found')
+        throw new MyError('No such user').setCode(ERROR.USER.NOT_FOUND);
       }
       return await bcrypt.compare(password, foundUser.password);
     } catch (err) {
+      if (err.errorCode === ERROR.USER.NOT_FOUND)
+        throw err;
       console.log('Error in authenticateUser: ', err);
-      throw err;
+      throw new MyError('Database error').setCode(ERROR.DB.ERROR);
     }
   }
 
@@ -55,7 +59,7 @@ class DBService {
   static async getBasicUserInfo(ssn) {
     try {
       const userCollection = await this.loadUserCollection();
-      return await userCollection.findOne({
+      const foundUser = await userCollection.findOne({
         ssn
       }, {
         projection: {
@@ -68,9 +72,15 @@ class DBService {
           role: 1,
         }
       });
+      if (!foundUser) {
+        throw new MyError('That user doesn\'t exists').setCode(ERROR.USER.NOT_FOUND);
+      }
+      return foundUser;
     } catch (err) {
+      if (err.errorCode === ERROR.USER.NOT_FOUND)
+        throw err;
       console.log('Error in getBasicUserInfo', err);
-      throw err;
+      throw new MyError('Database error').setCode(ERROR.DB.ERROR);
     }
   }
 
@@ -82,7 +92,7 @@ class DBService {
   static async getBasicUserInfoByUsername(username) {
     try {
       const userCollection = await this.loadUserCollection();
-      return await userCollection.findOne({
+      const foundUser = await userCollection.findOne({
         username
       }, {
         projection: {
@@ -94,9 +104,15 @@ class DBService {
           role: 1,
         }
       });
+      if (!foundUser) {
+        throw new MyError('No user was found by that username').setCode(ERROR.USER.NOT_FOUND);
+      }
+      return foundUser;
     } catch (err) {
+      if (err.errorCode === ERROR.USER.NOT_FOUND)
+        throw err;
       console.log('Error in getBasicUserInfo', err);
-      throw err;
+      throw new MyError('Error fetching from database').setCode(ERROR.DB.ERROR);
     }
   }
 /**
@@ -116,12 +132,14 @@ class DBService {
         }
       });
       if (!foundSSN) {
-        throw 'NO_SUCH_USER';
+        throw new MyError('No such user').setCode(ERROR.USER.NOT_FOUND);
       }
       return foundSSN.ssn;
     } catch (err) {
+      if (err.errorCode === ERROR.USER.NOT_FOUND)
+        throw err;
       console.log('Error in getSSNByUsername', err);
-      throw err;
+      throw new MyError('No such user').setCode(ERROR.DB.ERROR);
     }
   }
 
@@ -130,8 +148,8 @@ class DBService {
    * @returns {Array} A array of all skills as astrings
    */
   static async getSkills() {
-    const skillCollection = await this.loadSkillCollection();
     try {
+      const skillCollection = await this.loadSkillCollection();
       let fetchedSkills = await skillCollection.find({}).project({
         _id: 0
       }).toArray();
@@ -139,7 +157,7 @@ class DBService {
       return fetchedSkills;
     } catch (err) {
       console.log('Error in getSkills', err);
-      throw err;
+      throw new MyError('Database error').setCode(ERROR.DB.ERROR);
     }
   }
 
@@ -152,12 +170,11 @@ class DBService {
       const userCollection = await this.loadUserCollection();
       await userCollection.insertOne(newUser);
     } catch (err) {
-      if (err.code === DUPL_USER) {
-        console.log('Error in registerUser: Duplicate user');
-        throw 'DUPLICATE_USER';
-      }
-      console.log('Error in registerUser: ', err);
-      throw err;
+      if (err.code === DUPL_USER)
+        throw new MyError('A user with that username already exists').setCode(ERROR.USER.DUPLICATE);
+      
+        console.log('Error in registerUser: ', err);
+      throw new MyError('Database error').setCode(ERROR.DB.ERROR);
     }
   }
 
@@ -187,12 +204,14 @@ class DBService {
         new: true
       });
       if (!results.lastErrorObject.updatedExisting) {
-        console.log('Errorn in submitApplication: application already exists...')
-        throw 'APPLICATIONS_ALREADY_EXISTS'
+        console.log('Error in submitApplication: application already exists...')
+        throw new MyError('Application already exists. PATCH to update it instead.').setCode(ERROR.APPLICATION.ALREADY_SUBMITTED);
       }
     } catch (err) {
+      if (err.errorCode === ERROR.APPLICATION.ALREADY_SUBMITTED)
+        throw err;
       console.log('Error in submitApplication: ', err);
-      throw err;
+      throw new MyError('Database error').setCode(ERROR.DB.ERROR);
     }
   }
 
@@ -210,7 +229,7 @@ class DBService {
       }
     }
     if ((!updateObject.qualifications || !updateObject.availability) || count !== expected)
-      throw 'A application edit must contain both availability and qualifications';
+      throw new MyError('Incomplete parameters').setCode(ERROR.APPLICATION.INCOMPLETE_PARAMS);
     try {
       const application = await this.loadUserCollection();
       await application.findOneAndUpdate({
@@ -226,13 +245,14 @@ class DBService {
       }, (err, docs) => {
         if (err) {
           console.log('Error in updateApplication', err);
-          throw err;
+          throw new MyError('Database error').setCode(ERROR.DB.ERROR);
         }
         console.log(docs);
       });
     } catch (err) {
-      console.log('Error in updateApplication', err);
-      throw err;
+      if (err.errorCode === ERROR.DB.ERROR)
+        throw err;
+      throw new MyError('Database error').setCode(ERROR.DB.ERROR);
     }
   }
 
@@ -254,10 +274,14 @@ class DBService {
         person_id: 0,
         role: 0
       }).toArray();
+      if (applications.length === 0 || !applications)
+        throw new MyError('No applications was found').setCode(ERROR.APPLICATION.NOT_FOUND);
       return applications;
     } catch (err) {
+      if (err.errorCode === ERROR.APPLICATION.NOT_FOUND)
+        throw err;
       console.log('Error in getAllApplications', err);
-      throw err;
+      throw new MyError('Database error').setCode(ERROR.DB.ERROR);
     }
   }
 
@@ -269,7 +293,7 @@ class DBService {
   static async getApplicationStatusBySSN(ssn) {
     try {
       const applicationCollection = await this.loadUserCollection();
-      const applications = await applicationCollection.find({
+      const application = await applicationCollection.find({
         ssn,
         role: 'applicant',
         applicationStatus: {
@@ -282,10 +306,14 @@ class DBService {
         person_id: 0,
         role: 0
       }).toArray();
-      return applications.length === 1 ? applications[0] : null;
-    } catch (err) {
+      if (application.length === 0 || !application)
+        throw new MyError('No application was found by that SSN').setCode(ERROR.APPLICATION.NOT_FOUND);
+        return application[0];
+      } catch (err) {
+        if (err.errorCode === ERROR.APPLICATION.NOT_FOUND)
+         throw err;
       console.log('Error in getApplicationStatusBySSN', err);
-      throw err;
+      throw new MyError('Database error').setCode(ERROR.DB.ERROR);
     }
   }
 
@@ -296,22 +324,22 @@ class DBService {
    */
   static async handleApplication(ssn, status) {
     if (!(status === 'accepted' || status === 'rejected' || status === 'unhandled'))
-      throw 'INCORRECT_PARAMETERS';
-    try {
-      const userCollection = await this.loadUserCollection();
-      userCollection.findOneAndUpdate({
-        ssn,
-        applicationStatus: {
-          $exists: true
-        }
-      }, {
-        $set: {
-          applicationStatus: status
-        }
-      });
-    } catch (err) {
+      throw new MyError('Status parameter must be \'accepted\', \'rejected\' or \'unhandled\'').setCode(ERROR.APPLICATION.INCOMPLETE_PARAMS);
+      try {
+        const userCollection = await this.loadUserCollection();
+        userCollection.findOneAndUpdate({
+          ssn,
+          applicationStatus: {
+            $exists: true
+          }
+        }, {
+          $set: {
+            applicationStatus: status
+          }
+        });
+      } catch (err) {
       console.log('Error in handleApplication:', err);
-      throw err;
+      throw new MyError('Database error').setCode(ERROR.DB.ERROR);
     }
   }
 
@@ -335,7 +363,7 @@ class DBService {
       })
     } catch (err) {
       console.log('Error in removeApplicationBySSN', err);
-      throw err;
+      throw new MyError('Database error').setCode(ERROR.DB.ERROR);
     }
   }
 }
