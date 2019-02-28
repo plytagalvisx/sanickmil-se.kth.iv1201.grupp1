@@ -1,50 +1,90 @@
-const expect = require('chai').expect;
-const request = require('request');
-const config = require('./configTest');
+const chai = require('chai');
+const chaiHttp = require('chai-http');
+const server = require('../index');
+const should = chai.should();
 
-const authUrl = "/api/auth";
-const url = config.BASE_AUTH + authUrl;
+chai.use(chaiHttp);
 
 /**
  * Tests the authentication for POST and GET requests.
  */
-describe("Authenticate GET requests for login", function(){
-
-  /**
-   * Tests the authentication for GET requests, when the input is correct. Tests both the status code and message.
-   */
-  describe("GET request, successful login", function(){
-    const loginUrl = url + '?username=sabina&password=sabina';
-
-    it("Returns status code 200", function(){
-      request(loginUrl, function(err, res) {
-        expect(res.statusCode).to.equal(200);
+describe('A successful login should work', () => {
+  it('Returns status code 200', (done) => {
+    chai.request(server)
+      .get('/api/auth')
+      .query({username: 'emil', password: 'lime'})
+      .end( (err, res) => {
+        res.should.have.status(200);
         done();
       });
-    });
   });
 
-  /**
-  * Tests the authentication for GET requests, when the input is incorrect. Tests both the status code and message.
-  */
-  describe("GET request, failed login", function(){
-    const testUrl = url + "?username=sabina&password=sabina123";
-
-    it("Returns status code 401", function(done){
-      request(testUrl, function(err, res) {
-        expect(res.statusCode).to.equal(401);
+  it('Returns correct parameters', (done) => {
+    chai.request(server)
+      .get('/api/auth')
+      .query({username: 'emil', password: 'lime'})
+      .end( (err, res) => {
+        res.body.should.have.property('access_token');
+        res.body.should.have.property('token_type');
+        res.body.token_type.should.equal('Bearer');
+        res.body.access_token.should.not.equal('');
+        res.body.access_token.should.not.equal(null);
         done();
       });
-    });
+  });
+});
+
+describe('A incorrect login should fail', () => {
+  it('Returns status code 401 unauthorized', (done) => {
+    chai.request(server)
+      .get('/api/auth')
+      .query({username: 'emil', password: 'wrongpassword'})
+      .end( (err, res) => {
+        res.should.have.status(401);
+        done();
+      });
   });
 
-  describe("GET request, missing input", function(){
-    const testUrl = url + "?username=sabina";
-    it("Returns status code 400", function(done){
-      request(testUrl, function(err, res){
-        expect(res.statusCode).to.equal(400);
+  it('Returns correct parameters', (done) => {
+    chai.request(server)
+      .get('/api/auth')
+      .query({username: 'emil', password: 'wrongpassword'})
+      .end( (err, res) => {
+        // res.body.should.be.json();
+        res.body.should.have.property('message');
+        res.body.message.should.equal('Wrong username or password');
         done();
       });
-    });
+  });
+});
+
+describe('Login parameter validation should work', () => {
+  it('Returns the correct status code', (done) => {
+    chai.request(server)
+      .get('/api/auth')
+      .query({username: 'emil'})
+      .end( (err, res) => {
+        res.should.have.status(400);
+        done();
+      });
+  });
+
+  it('Identifies the correct mistakes', (done) => {
+    chai.request(server)
+      .get('/api/auth')
+      .query({username: 'emil'})
+      .end( (err, res) => {
+        res.body.should.be.a('array');
+        res.body[0].should.have.property('param');
+        res.body[0].param.should.equal('password');
+        res.body[0].should.have.property('message');
+        res.body[0].message.should.equal('The password can only contain letters and/or numbers');
+
+        res.body[1].should.have.property('param');
+        res.body[1].param.should.equal('password');
+        res.body[1].should.have.property('message');
+        res.body[1].message.should.equal('The password cannot be empty');
+        done();
+      });
   });
 });
