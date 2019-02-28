@@ -18,7 +18,7 @@ describe('A logged in user should be able to get their application', () => {
   });
 
 
-  it('hejhe', (done) => {
+  it('Returns status code 200 upon logged in GET /application', (done) => {
     chai.request(server)
       .get('/api/application')
       .set('Authorization', 'Bearer '+token)
