@@ -6,6 +6,7 @@ import BootstrapVue from 'bootstrap-vue'
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+import './filters/translateFilter'
 
 Vue.use(BootstrapVue);
 Vue.use(store);

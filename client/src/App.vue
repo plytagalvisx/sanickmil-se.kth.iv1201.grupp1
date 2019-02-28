@@ -2,8 +2,11 @@
   <div id="app">
     <HeaderComponent v-on:displayFlash="displayFlash" />
     <main>
-      <router-view v-on:displayFlash="displayFlash"/>
+      <!-- <router-view v-on:displayFlash="displayFlash"/> -->
+      <LanguagePickerComponent></LanguagePickerComponent>
       <FlashMessageComponent v-if="showFlash" :flashMessage="flashMessage" :type="flashType"/>
+
+      <!-- <h2>{{ 'lbl-welcome' | translate }}</h2> -->
     </main>
   </div>
 </template>
@@ -11,11 +14,13 @@
 <script>
 import HeaderComponent from './components/HeaderComponent'
 import FlashMessageComponent from './components/FlashMessageComponent'
+import LanguagePickerComponent from './components/LanguagePickerComponent'
 
 export default {
   components: {
     HeaderComponent,
-    FlashMessageComponent
+    FlashMessageComponent,
+    LanguagePickerComponent,
   },
   data() {
     return {

@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import VuexPersist from 'vuex-persist'
+import languages from './assets/localization/languages';
 
 // TODO: Decide on wether or not to keep the persist
 
@@ -109,11 +110,32 @@ const applicationModule = {
   }
 }
 
+const languageModule = {
+  namespaced: true,
+  state: {
+    currentLanguage: languages[0].id
+  },
+  getters: {
+    currentLanguage: state => state.currentLanguage,
+  },
+  mutations: {
+    setCurrentLanguage(state, language) {
+      state.currentLanguage = language;
+    }
+  },
+  actions: {
+    setCurrentLanguage({commit}, payload){
+      commit('setCurrentLanguage', payload)
+    }
+  }
+}
+
 export default new Vuex.Store({
   plugins: [vuexLocalStorage.plugin],
   modules: {
     userModule,
-    applicationModule
+    applicationModule,
+    languageModule,
   }
 })
 
