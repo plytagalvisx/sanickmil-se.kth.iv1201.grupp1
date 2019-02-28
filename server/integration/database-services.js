@@ -44,6 +44,8 @@ class DBService {
       }
       return await bcrypt.compare(password, foundUser.password);
     } catch (err) {
+      if (err.errorCode === ERROR.USER.NOT_FOUND)
+        throw err;
       console.log('Error in authenticateUser: ', err);
       throw new MyError('Database error').setCode(ERROR.DB.ERROR);
     }
@@ -76,6 +78,8 @@ class DBService {
       }
       return foundUser;
     } catch (err) {
+      if (err.errorCode === ERROR.USER.NOT_FOUND)
+        throw err;
       console.log('Error in getBasicUserInfo', err);
       throw new MyError('Database error').setCode(ERROR.DB.ERROR);
     }
@@ -106,6 +110,8 @@ class DBService {
       }
       return foundUser;
     } catch (err) {
+      if (err.errorCode === ERROR.USER.NOT_FOUND)
+        throw err;
       console.log('Error in getBasicUserInfo', err);
       throw new MyError('Error fetching from database').setCode(ERROR.DB.ERROR);
     }
@@ -131,6 +137,8 @@ class DBService {
       }
       return foundSSN.ssn;
     } catch (err) {
+      if (err.errorCode === ERROR.USER.NOT_FOUND)
+        throw err;
       console.log('Error in getSSNByUsername', err);
       throw new MyError('No such user').setCode(ERROR.DB.ERROR);
     }
@@ -163,10 +171,10 @@ class DBService {
       const userCollection = await this.loadUserCollection();
       await userCollection.insertOne(newUser);
     } catch (err) {
-      if (err.code === DUPL_USER) {
+      if (err.code === DUPL_USER)
         throw new MyError('A user with that username already exists').setCode(ERROR.USER.DUPLICATE);
-      }
-      console.log('Error in registerUser: ', err);
+      
+        console.log('Error in registerUser: ', err);
       throw new MyError('Database error').setCode(ERROR.DB.ERROR);
     }
   }
@@ -203,7 +211,6 @@ class DBService {
     } catch (err) {
       if (err.errorCode === ERROR.APPLICATION.ALREADY_SUBMITTED)
         throw err;
-      
       console.log('Error in submitApplication: ', err);
       throw new MyError('Database error').setCode(ERROR.DB.ERROR);
     }
@@ -272,6 +279,8 @@ class DBService {
         throw new MyError('No applications was found').setCode(ERROR.APPLICATION.NOT_FOUND);
       return applications;
     } catch (err) {
+      if (err.errorCode === ERROR.APPLICATION.NOT_FOUND)
+        throw err;
       console.log('Error in getAllApplications', err);
       throw new MyError('Database error').setCode(ERROR.DB.ERROR);
     }
@@ -299,9 +308,11 @@ class DBService {
         role: 0
       }).toArray();
       if (application.length === 0 || !application)
-        throw new MyError('No application was found by that SSN').setCode(ERROR.APPLICATION.NOT_FOUND)
+        throw new MyError('No application was found by that SSN').setCode(ERROR.APPLICATION.NOT_FOUND);
         return application[0];
       } catch (err) {
+        if (err.errorCode === ERROR.APPLICATION.NOT_FOUND)
+         throw err;
       console.log('Error in getApplicationStatusBySSN', err);
       throw new MyError('Database error').setCode(ERROR.DB.ERROR);
     }
