@@ -2,6 +2,7 @@ import store from '../store'
 let axiosInstance = require('axios').create({
   timeout: 1000
 });
+// TODO: Comment?
 axiosInstance.interceptors.request.use(config => {
   if (store.state.userModule.user.token) {
     config.headers.authorization = store.state.userModule.user.token;

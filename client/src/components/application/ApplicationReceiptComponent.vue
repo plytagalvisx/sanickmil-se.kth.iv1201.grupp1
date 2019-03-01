@@ -125,11 +125,15 @@
         try {
           const res = await ApplicationService.submitApplication(this.application.qualifications, availability);
           this.$emit('propagateFlash', res.data.message, 'success');
-          this.$router.push('/profile')
         } catch (err) {
-          this.$emit('propagateFlash', err, 'error');
+          if (err.response.status === 409) { // The application has already been made
+            this.$emit('propagateFlash', err.response.data.message, 'error');
+          } else {
+            this.$emit('propagateFlash', 'Something went wrong...', 'error');
+          }
         } finally {
           this.clearApplication();
+          this.$router.push('/profile')
         }
       }
     },

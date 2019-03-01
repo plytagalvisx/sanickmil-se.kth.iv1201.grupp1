@@ -1,6 +1,8 @@
 const router = require('express').Router();
 const jwt = require('jsonwebtoken');
 const config = require('../config');
+const ERROR = require('../helpers/errors')
+const MyError = require('../helpers/MyError')
 const dbservice = require('../integration/database-services')
 
 /**
@@ -56,8 +58,8 @@ async function authenticateToken(token) {
 }
 
 /**
- * This middleware handles Authentication and Autorization
- * of api endpoint access through the token info (user info)
+ * This middleware handles Authentication and Authorization
+ * of API endpoint access through the token info (user info)
  */
 router.all(/.*/, async (req, res, next) => {
   const route = req.baseUrl;
@@ -65,18 +67,10 @@ router.all(/.*/, async (req, res, next) => {
   if (req.baseUrl === '/dev/dbtransfer' && process.env.NODE_ENV !== 'production') {
     next();
   }
-  /*if (req.headers.authorization) {
-    console.log('USER SENT AUTHORIZATION HEADER TOKEN', req.headers.authorization);
-  }*/
   if (loggedOutAccess(route, method)) {
     return next();
   }
 
-  // Is the user logged in?
-  // let token = req.cookies.jwtToken;
-  // if (token.startsWith('Bearer ')) {
-    //   token = token.replace('Bearer ', '');
-    // }
   let token = req.headers.authorization;
   if (!token)
     return res.status(400).json({message: 'No token supplied'});
@@ -88,22 +82,32 @@ router.all(/.*/, async (req, res, next) => {
   if (!authAudit.success)
     return res.status(401).json({message: authAudit.message});
 
-  const {role, user} = await decodeUsernameAndRole(token);
   try {
+    const {role, user} = await decodeUsernameAndRole(token);
     req.userSSN = await dbservice.getSSNByUsername(user);
+    if (role === 'recruit' && allowedRecruiterAction(route, method)) {
+      return next();
+    } else if (allowedSelfAction(route, method)) {
+      return next();
+    }
   } catch (err) {
-    return res.status(500).json({message: 'You might not exist...'});
-  }
-  if (role === 'recruit' && allowedRecruiterAction(route, method)) {
-    return next();
-  } else if (allowedSelfAction(route, method)) {
-    return next();
+    if (err.errorCode === error.USER.NOT_FOUND)
+      return res.status(400).json({message: 'User not found'});
+    else if (err.errorCode === ERROR.DB.ERROR)
+      return res.status(500).json({message: 'Database error'});
+    else if (err.errorCode === ERROR.TOKEN.VERIFY)
+      return res.status(500).json({message: 'Cannot verify token'});
+
+    console.log('Unhandled error in guard ALL');
+    return res.sendStatus(500);
   }
   return res.status(401).json({message: 'You are not authorized to do this.'})
 });
 
-// Specified which actions the Recruiters may take
-// As "ADMINS".
+/**
+ * Specified which actions the Recruiters may take
+ * as "ADMINS".
+ */
 const RECRUITER_ACTIONS = [
   // Getting all applications
   {route: /^\/api\/application\/all$/, method: 'GET'},
@@ -113,6 +117,7 @@ const RECRUITER_ACTIONS = [
   {route: /^\/api\/application\/+\d+(-\d+)*$/, method: 'GET'}
 ]
 
+// TODO: Comment
 function allowedRecruiterAction(route, method) {
   route = route.trim();
   const allowed = RECRUITER_ACTIONS.find((action) => {
@@ -121,7 +126,9 @@ function allowedRecruiterAction(route, method) {
   return allowed;
 }
 
-// Specifies which actions may be taken only 
+/**
+ * Specifies which actions may be taken only
+ */ 
 const SELF_ACTIONS = [
   {route: /^\/api\/application$/, method: 'POST'},
   // Means '/api/application/12331-12312 (ending in only numbers and dashes)
@@ -132,8 +139,9 @@ const SELF_ACTIONS = [
   {route: /^\/api\/user$/, method: 'GET'}
 ]
 
+// TODO: Comment
 function allowedSelfAction(route, method) {
-  // Unsure wether this need to be trimmed. but better to be safe than sorry
+  // Unsure whether this need to be trimmed. but better to be safe than sorry
   route = route.trim();
   const allowed = SELF_ACTIONS.find((action) => {
     return route.match(action.route) && method === action.method;
@@ -141,13 +149,14 @@ function allowedSelfAction(route, method) {
   return allowed;
 }
 
+// TODO: Comment
 async function decodeUsernameAndRole(token) {
   try {
     const {role, user} = await jwt.verify(token, config.SECRET);
     return {role, user};
   } catch (err) {
     console.log('Error in getUserType', err);
-    throw err;
+    throw new MyError('Error verifying token').setCode(ERROR.TOKEN.VERIFY);
   }
 }
 
