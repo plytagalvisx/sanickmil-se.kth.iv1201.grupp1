@@ -6,7 +6,7 @@
       <b-form>
         <b-row>
           <b-col md="7" sm="12">
-            <b-form-group label="Select expertise:" label-for="expertiseSelect">
+            <b-form-group :label="'apply-competenceLabel' | translate" label-for="expertiseSelect">
               <b-form-select
                 id="expertiseSelect"
                 :options="skillOptions"
@@ -15,26 +15,26 @@
                 :state="$v.inputQualification.name.$dirty ? !$v.inputQualification.name.$error : null"
               />
               <b-form-invalid-feedback id="expertiseSelect" v-if="!$v.inputQualification.name.required">
-                You have to choose at least one qualification
+                {{'apply-edit-qualiInvalid' | translate}}
               </b-form-invalid-feedback>
             </b-form-group>
           </b-col>
           <b-col md="3" sm="12">
-            <b-form-group label="Experience (years):" label-for="yearsInput">
+            <b-form-group :label="'apply-experienceLabel' | translate" label-for="yearsInput">
               <b-form-input type="number" 
                 id="yearsInput"
-                placeholder="Years of expertise"
+                :placeholder="'apply-experiencePlaceholder' | translate"
                 v-model="inputQualification.years"
                 @input="$v.inputQualification.years.$touch()"
                 :state="$v.inputQualification.years.$dirty ? !$v.inputQualification.years.$error : null"
               />
               <b-form-invalid-feedback id="yearsInput" v-if="!$v.inputQualification.years.required">
-                Years of experience is required
+                {{'apply-edit-expInvalid' | translate}}
             </b-form-invalid-feedback>
             </b-form-group>
           </b-col>
           <b-col md="2" sm="12">
-            <b-form-group label="New entry" label-for="newExpertise">
+            <b-form-group :label="'apply-newEntry' | translate" label-for="newExpertise">
               <b-button id="newExpertise" @click="storeQualification" :disabled="$v.inputQualification.$invalid">+</b-button>
             </b-form-group>
           </b-col>
@@ -42,13 +42,13 @@
 
         <b-row>
           <b-col md="12" sm="12">
-            <b-form-group label="Qualifications:">
+            <b-form-group :label="'apply-competence' | translate">
               <b-table id="qualifications" striped :items="application.qualifications"
                 @input="$v.application.qualifications.$touch()"
                 :state="$v.application.qualifications.$dirty ? !$v.application.qualifications.$error : null"
               />
               <b-form-invalid-feedback id="qualifications" v-if="!$v.application.qualifications.required">
-                You have to add at least one availability 
+                {{'apply-edit-availNotExist' | translate}}
             </b-form-invalid-feedback>
             </b-form-group>
           </b-col>
@@ -56,7 +56,7 @@
 
         <b-row>
           <b-col md="5" sm="12">
-            <b-form-group id="availabilityStartLabel" label="Availability from:" label-for="availabilityStartDate">
+            <b-form-group id="availabilityStartLabel" :label="'apply-availabilityFrom' | translate" label-for="availabilityStartDate">
               <b-form-input id="availabilityStartDate"
                 type="date"
                 v-model="inputAvailability.start" 
@@ -64,15 +64,15 @@
                 :state="$v.inputAvailability.start.$dirty ? !$v.inputAvailability.start.$error : null"
               />
               <b-form-invalid-feedback id="availabilityStartDate" v-if="!$v.inputAvailability.start.required">
-                You have to select a start date
+                {{'apply-edit-startNotExist' | translate}}
             </b-form-invalid-feedback>
             <b-form-invalid-feedback id="availabilityStartDate" v-if="!$v.inputAvailability.start.dateForm">
-                You have to be within the 21st century
+                {{'apply-edit-dateInvalid' | translate}}
             </b-form-invalid-feedback>
             </b-form-group>
           </b-col>
           <b-col md="5" sm="12">
-            <b-form-group id="availabilityEndLabel" label="Availability to:" label-for="availabilityEndDate">
+            <b-form-group id="availabilityEndLabel" :label="'apply-availabilityTo' | translate" label-for="availabilityEndDate">
               <b-form-input id="availabilityEndDate"
                 type="date"
                 v-model="inputAvailability.end"
@@ -80,18 +80,18 @@
                 :state="$v.inputAvailability.end.$dirty ? !$v.inputAvailability.end.$error : null"
               />
               <b-form-invalid-feedback id="availabilityEndLabel" v-if="!$v.inputAvailability.end.startDateBeforeEnd">
-                End date has to be after start date
+                {{'apply-edit-endBeforeStart' | translate}}
             </b-form-invalid-feedback>
             <b-form-invalid-feedback id="availabilityEndLabel" v-if="!$v.inputAvailability.end.required">
-                You have to select an end date
+                {{'apply-edit-endNotExist' | translate}}
             </b-form-invalid-feedback>
             <b-form-invalid-feedback id="availabilityStartDate" v-if="!$v.inputAvailability.end.dateForm">
-                You have to be within the 21st century
+                {{'apply-edit-dateInvalid' | translate}}
             </b-form-invalid-feedback>
             </b-form-group>
           </b-col>
           <b-col md="2" sm="12">
-            <b-form-group id="expertise" label="New entry" label-for="newAvailability">
+            <b-form-group id="expertise" :label="'apply-newEntry' | translate" label-for="newAvailability">
               <b-button id="newAvailability" @click="storeAvailability" :disabled="$v.inputAvailability.$invalid" >+</b-button>
             </b-form-group>
           </b-col>
@@ -99,20 +99,20 @@
 
         <b-row>
           <b-col md="12" sm="12">
-            <b-form-group label="Availability:">
+            <b-form-group :label="'apply-availability' | translate">
               <b-table striped :items="application.availability"
                 @input="$v.application.availability.$touch()"
                 :state="$v.application.availability.$dirty ? !$v.application.availability.$error : null"
               />
               <b-form-invalid-feedback id="lastNameInput" v-if="!$v.application.availability.required">
-                You have to add at least one availability 
+                {{'apply-edit-availNotExist' | translate}}
             </b-form-invalid-feedback>
             </b-form-group>
           </b-col>
         </b-row>
         <b-row>
           <b-col offset="6" md="6" sm="12">
-            <b-button class="button" @click="$emit('progressStage')" size="lg" variant="info" :disabled="$v.application.$invalid">Next</b-button>
+            <b-button class="button" @click="$emit('progressStage')" size="lg" variant="info" :disabled="$v.application.$invalid">{{'apply-next' | translate}}</b-button>
           </b-col>
         </b-row>
       </b-form>

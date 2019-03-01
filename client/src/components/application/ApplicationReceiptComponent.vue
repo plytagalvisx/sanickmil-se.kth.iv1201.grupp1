@@ -4,27 +4,27 @@
     <b-container class="bv-example-row textStyle">
       <b-row>
         <b-col md="6" sm="12">
-          <p><b>First name: </b> {{this.application.firstname}}</p>
+          <p><b>{{'apply-review-firstname' | translate}} </b> {{this.application.firstname}}</p>
         </b-col>
         <b-col md="6" sm="12">
-          <p><b>Last name: </b>{{this.application.lastname}}</p>
+          <p><b>{{'apply-review-lastname' | translate}} </b>{{this.application.lastname}}</p>
         </b-col>
       </b-row>
       <b-row>
         <b-col md="6" sm="12">
-          <p><b>Email: </b>{{this.application.email}}</p>
+          <p><b>{{'apply-review-email' | translate}} </b>{{this.application.email}}</p>
         </b-col>
         <b-col md="6" sm="12">
-          <p><b>SSN: </b>{{this.application.ssn}}</p>
+          <p><b>{{'apply-review-ssn' | translate}}: </b>{{this.application.ssn}}</p>
         </b-col>
       </b-row>
       <!-- TABLE FOR QUALIFICATIONS -->
       <b-row class="tableHeader">
         <b-col md="6" sm="12">
-          <p class="title">Skill</p>
+          <p class="title">{{'apply-review-skill' | translate}}</p>
         </b-col>
         <b-col md="6" sm="12">
-          <p class="title">Years</p>
+          <p class="title">{{'apply-review-years' | translate}}</p>
         </b-col>
       </b-row>
       <b-row v-for="qualification in this.application.qualifications" :key="qualification.name" class="tableRow">
@@ -39,10 +39,10 @@
       <!-- TABLE FOR AVAILABILITY -->
       <b-row class="tableHeader">
         <b-col md="6" sm="12">
-          <p class="title">Available from</p>
+          <p class="title">{{'apply-availableFrom' | translate}}</p>
         </b-col>
         <b-col md="6" sm="12">
-          <p class="title">Available to</p>
+          <p class="title">{{'apply-availableTo' | translate}}</p>
         </b-col>
       </b-row>
       <b-row v-for="(available, index) in this.application.availability" :key="index" class="tableRow">
@@ -56,12 +56,12 @@
       <b-row style="margin-top: 1em;">
         <b-col md="6" sm="12">
           {{this.application.applicationstatus}}
-          <b-button type="button" v-if="this.application.applicationStatus" :disabled="this.application.applicationStatus !== 'unhandled' " variant="info" size="lg" to="apply">Edit application</b-button>
+          <b-button type="button" v-if="this.application.applicationStatus" :disabled="this.application.applicationStatus !== 'unhandled' " variant="info" size="lg" to="apply">{{'apply-review-edit' | translate}}</b-button>
         </b-col>
         <b-col md="6" sm="12">
           <b-badge class="status" v-if="receiptType === 'profile'" v-bind:class="{unhandled : application.applicationStatus === 'unhandled', hired : application.applicationStatus === 'accepted', rejected : application.applicationStatus === 'rejected'}">
             {{ this.application.applicationStatus }}</b-badge>
-          <b-button class="submit" variant="info" size="lg" v-if="receiptType === 'apply'" @click="onSubmit">Submit</b-button>
+          <b-button class="submit" variant="info" size="lg" v-if="receiptType === 'apply'" @click="onSubmit">{{'apply-review-submit' | translate}}</b-button>
           <!-- TODO: Fixa så man kan submitta -->
         </b-col>
       </b-row>
@@ -93,6 +93,13 @@
       ...mapGetters('applicationModule', ['applicationState'])
     },
     async created() {
+      if (this.inheritedApplication) {
+        this.setApplication(this.inheritedApplication);
+        this.showApplication = true;
+        // eslint-disable-next-line
+        console.log('already has applicaotin...')
+        return;
+      }
       if (this.applicationState === 'partial') {
         const userInfo = await UserService.getUserInfo()
           .then(res => res.data);
@@ -138,7 +145,8 @@
       }
     },
     props: [
-      'receiptType'
+      'receiptType',
+      'inheritedApplication'
     ],
     components: {
       Stretch

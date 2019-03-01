@@ -7,7 +7,9 @@ const { validationResult } = require('express-validator/check');
 const validatingLogin = require('../../validation/validateLogin');
 const { prettyValidation } = require('../../helpers/formatValidationError');
 const ERROR = require('../../helpers/errors')
+const Logger = require('../../helpers/logger');
 
+const authLogger = new Logger(`${__dirname}/../../../userActions`);
 /**
  * GET: Authenticates a user and provides a token proving authentication
  */
@@ -31,17 +33,18 @@ router.get('/', validatingLogin, async (req, res) => {
     else if (err.errorCode === ERROR.DB.ERROR)
       return res.status(500).json({message: 'Database error'});
 
-    console.log('Unhandled error in GET /auth');
+    authLogger.chaos(`Unhandled error in GET /auth when ${username} tried to log in`, err);
     return res.sendStatus(500);
   }
   if (!authenticated) {
+    authLogger.warn(`${username} tried to log in but enterd wrong credentials`);
     return res.status(401).json({
       message: 'Wrong username or password'
     });
   }
 
   try {
-    const authenticatedUser = await dbservice.getBasicUserInfoByUsername(username);
+    const authenticatedUser = await dbservice.getBasicUserInfo(username);
 
     const token = await jwt.sign({
       user: authenticatedUser.username,
@@ -49,7 +52,7 @@ router.get('/', validatingLogin, async (req, res) => {
     }, config.SECRET, {
       expiresIn: '24h'
     });
-
+    authLogger.log(`${username} has logged in`);
     return res.status(200).json({
       message: 'Successfully logged in',
       access_token: token,

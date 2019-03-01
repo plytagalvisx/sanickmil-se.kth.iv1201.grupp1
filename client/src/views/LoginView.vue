@@ -1,20 +1,20 @@
 <template>
-  <b-jumbotron header="Login" lead="You need to login in order to use the service. Please login, or create a new user!">
+  <b-jumbotron :header="'login-title' | translate" :lead="'login-subtitle' | translate">
     <b-form @submit="onSubmit" v-if="show">
       <b-form-group id="usernameGroup">
         <b-form-input id="usernameInput" 
           type="text" 
           v-model="form.username"
-          placeholder="Enter username"
+          :placeholder="'profile-usernamePlaceholder' | translate"
           @input="$v.form.username.$touch()"
           :state="$v.form.username.$dirty ? !$v.form.username.$error : null"
         />
         <b-form-invalid-feedback id="usernameInput" v-if="!$v.form.username.required">
-          Username is required
+          {{'login-usernameNotExist' | translate}}
         </b-form-invalid-feedback>
 
         <b-form-invalid-feedback id="usernameInput" v-if="!$v.form.username.pattern">
-          Username can only contain lowercase and uppercase letter and/or numbers
+          {{'login-usernameInvalid' | translate}}
         </b-form-invalid-feedback>        
 
       </b-form-group>
@@ -22,19 +22,19 @@
         <b-form-input id="password"
           type="password"
           v-model="form.password"
-          placeholder="Enter password"
+          :placeholder="'login-passwordPlaceholder' | translate"
           @input="$v.form.password.$touch()"
           :state="$v.form.password.$dirty ? !$v.form.password.$error : null"
           />
 
         <b-form-invalid-feedback id="usernameInput" v-if="!$v.form.password.required">
-          Password is required
+          {{'login-passwordNotExist' | translate}}
         </b-form-invalid-feedback>
 
       </b-form-group>
-      <b-button type="submit" variant="info" :disabled="$v.form.$invalid">Login</b-button>
+      <b-button type="submit" variant="info" :disabled="$v.form.$invalid">{{'login-loginButton' | translate}}</b-button>
     </b-form>
-    <p>Don't have an account? <router-link id="link" to="/register">Join us!</router-link>
+    <p>{{'login-noAccMessage' | translate}} <router-link id="link" to="/register">{{'login-joinUs' | translate}}</router-link>
     </p>
   </b-jumbotron>
 </template>

@@ -83,8 +83,10 @@ router.all(/.*/, async (req, res, next) => {
     return res.status(401).json({message: authAudit.message});
 
   try {
-    const {role, user} = await decodeUsernameAndRole(token);
-    req.userSSN = await dbservice.getSSNByUsername(user);
+    const {role, username} = await decodeUsernameAndRole(token);
+    const { ssn } = await dbservice.getBasicUserInfo(username);
+    req.userSSN = ssn;
+    req.userUsername = username;
     if (role === 'recruit' && allowedRecruiterAction(route, method)) {
       return next();
     } else if (allowedSelfAction(route, method)) {
@@ -153,7 +155,7 @@ function allowedSelfAction(route, method) {
 async function decodeUsernameAndRole(token) {
   try {
     const {role, user} = await jwt.verify(token, config.SECRET);
-    return {role, user};
+    return {role, username: user};
   } catch (err) {
     console.log('Error in getUserType', err);
     throw new MyError('Error verifying token').setCode(ERROR.TOKEN.VERIFY);

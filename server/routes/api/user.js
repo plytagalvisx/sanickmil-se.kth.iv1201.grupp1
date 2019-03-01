@@ -7,6 +7,9 @@ const { validationResult } = require('express-validator/check');
 const validatingRegister = require('../../validation/validateRegister');
 const { prettyValidation } = require('../../helpers/formatValidationError');
 const ERROR = require('../../helpers/errors')
+const Logger = require('../../helpers/logger');
+
+const userLogger = new Logger(`${__dirname}/../../../userActions`);
 
 /**
  * POST: Register a new user
@@ -30,12 +33,13 @@ router.post('/', validatingRegister, async (req, res) => {
       role: 'applicant'
     }
     await dbservice.registerUser(newUser);
+    userLogger.log(`${req.body.username} has successfully registered`);
     return res.status(201).json({message: 'Successfully registered user'});
   } catch (err) {
     if (err.errorCode === ERROR.USER.DUPLICATE) {
       return res.status(409).json({message: 'A user with that username already exists, try another one!'});
     }
-    console.log('Unhandled error in POST /user:', err);
+    userLogger.chaos(`Unhandled error in POST /user when ${req.userUsername} tried to register`, err);
     return res.sendStatus(500);
   }
 });
@@ -45,13 +49,13 @@ router.post('/', validatingRegister, async (req, res) => {
  */
 router.get('/', async (req, res) => {
   try {
-    const fetchedUser = await dbservice.getBasicUserInfo(req.userSSN);
+    const fetchedUser = await dbservice.getBasicUserInfo(req.userUsername);
     return res.json(fetchedUser);
   } catch (err) {
     if (err.errorCode === ERROR.USER.NOT_FOUND) {
       return res.status(404).json({message: 'User not found.'});
     }
-    console.log('Unhandled error in GET /user:', err);
+    userLogger.chaos(`Unhandled error in GET /user when ${req.userUsername} tried to get their info`, err);
     return res.sendStatus(500);
   }
 });

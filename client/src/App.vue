@@ -15,7 +15,7 @@ import FlashMessageComponent from './components/FlashMessageComponent'
 export default {
   components: {
     HeaderComponent,
-    FlashMessageComponent
+    FlashMessageComponent,
   },
   data() {
     return {

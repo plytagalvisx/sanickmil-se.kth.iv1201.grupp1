@@ -43,6 +43,10 @@ const router = new Router({
       path: '/recruiter',
       name: 'recruiter',
       component: RecruiterDashboard
+    },
+    {
+      path: '*',
+      redirect: '/'
     }
   ]
 });
