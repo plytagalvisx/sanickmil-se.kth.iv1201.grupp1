@@ -11,17 +11,19 @@
       <!-- Right aligned nav items -->
       <b-navbar-nav class="ml-auto">
 
+        <LanguagePickerComponent></LanguagePickerComponent>       
+
         <b-nav-item-dropdown right v-if="loggedIn">
           <!-- Using button-content slot -->
           <template slot="button-content">
             <em>{{user.name}}</em>
           </template>
-          <b-dropdown-item to="/profile">Profile</b-dropdown-item>
-          <b-dropdown-item v-on:click="logout">Signout</b-dropdown-item>
+          <b-dropdown-item to="/profile">{{'hdr-profile' | translate}}</b-dropdown-item>
+          <b-dropdown-item v-on:click="logout">{{'hdr-signout' | translate}}</b-dropdown-item>
         </b-nav-item-dropdown>
-        <b-nav-item to="/apply" v-if="user.role === 'applicant'">Apply</b-nav-item>
-        <b-nav-item to="/register" v-if="!loggedIn">Register</b-nav-item>
-        <b-nav-item to="/login" v-if="!loggedIn">Login</b-nav-item>
+        <b-nav-item to="/apply" v-if="user.role === 'applicant'">{{'hdr-apply' | translate}}</b-nav-item>
+        <b-nav-item to="/register" v-if="!loggedIn">{{'hdr-register' | translate}}</b-nav-item>
+        <b-nav-item to="/login" v-if="!loggedIn">{{'hdr-login' | translate}}</b-nav-item>
       </b-navbar-nav>
 
     </b-collapse>
@@ -30,7 +32,11 @@
 
 <script>
   import {mapState, mapActions} from 'vuex'
+  import LanguagePickerComponent from './LanguagePickerComponent.vue'
   export default {
+    components:{
+      LanguagePickerComponent,
+    },
     name: 'HeaderComponent',
     computed: {
       ...mapState('userModule', ['user']),

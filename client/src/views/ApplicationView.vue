@@ -1,10 +1,9 @@
 <template>
   <b-jumbotron>
-    <template slot="header">{{headerText}}</template>
+    <template slot="header">{{headerText | translate}}</template>
 
     <template slot="lead">
-      Apply for a job at <b>Amusement park</b>. You will not apply for a specific job, your specific task will be
-      decided by the recruiter, depending on your qualifications!
+      {{'apply-subtitle' | translate}}
     </template>
   <EditApplicationComponent v-on:propagateFlash="propagateFlash" v-on:progressStage="progressStage" v-if="editApplication" />
   <ApplicationReceiptComponent v-on:propagateFlash="propagateFlash" :receiptType="'apply'" v-else-if="reviewApplication" />
@@ -33,11 +32,11 @@
       ...mapState('applicationModule', ['application']),
       headerText() {
         if (this.editApplication)
-          return 'Apply';
+          return 'apply-title';
         else if (this.reviewApplication)
-          return 'Review your application';
+          return 'apply-review-Title';
         else {
-          return 'ERROR';
+          return 'apply-error-Title';
         }
       }
     },

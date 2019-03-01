@@ -1,5 +1,5 @@
 <template>
-  <b-jumbotron class="login" header="Register" lead="Enter your preferred user information">
+  <b-jumbotron class="login" :header="'register-title' | translate" :lead="'register-subtitle' | translate">
     <b-form @submit="onSubmit" @reset="onReset" v-if="show">
       <b-row>
         <b-col md="12" sm="12">
@@ -7,17 +7,17 @@
             <b-form-input id="username"
               type="text"
               v-model="form.username"
-              required placeholder="Username:"
+              required :placeholder="'register-usernamePlaceholder' | translate"
               @input="$v.form.username.$touch()"
               :state="$v.form.username.$dirty ? !$v.form.username.$error : null"
             />
 
             <b-form-invalid-feedback id="username" v-if="!$v.form.username.required">
-              Username is required
+              {{ 'register-usernameNotExist' | translate }}
             </b-form-invalid-feedback>
 
             <b-form-invalid-feedback id="username" v-if="!$v.form.username.pattern">
-              Username can only contain a-ö, A-Ö and/or 0-9
+              {{ 'register-usernameInvalid' | translate }}
             </b-form-invalid-feedback> 
           </b-form-group>
         </b-col>
@@ -30,19 +30,19 @@
               id="password"
               type="password"
               v-model="form.password"
-              placeholder="Password:"
+              :placeholder="'register-passwordPlaceholder' | translate"
               @input="$v.form.password.$touch()"
               :state="$v.form.password.$dirty ? !$v.form.password.$error : null"
             />
 
             <b-form-invalid-feedback id="password" v-if="!$v.form.password.required">
-              Password is required
+              {{ 'register-passwordNotExist' | translate }}
             </b-form-invalid-feedback>
             <b-form-invalid-feedback id="password" v-if="!$v.form.password.minLength">
-              Password has to be at least 6 characters long
+              {{ 'register-passwordInvalid' | translate }}
             </b-form-invalid-feedback>
             <b-form-invalid-feedback id="password" v-if="!$v.form.password.passwordRegex">
-              Password can only contain a-ö, A-Ö, 0-9 and/or $!%*#?&
+              {{ 'register-passwordformatInvalid' | translate }}
             </b-form-invalid-feedback>
           </b-form-group>
         </b-col>
@@ -54,15 +54,15 @@
             <b-form-input id="email"
               type="email"
               v-model="form.email"
-              placeholder="Email:"
+              :placeholder="'register-emailPlaceholder' | translate"
               @input="$v.form.email.$touch()"
               :state="$v.form.email.$dirty ? !$v.form.email.$error : null"
             />
             <b-form-invalid-feedback id="email" v-if="!$v.form.email.required">
-              Email is required
+              {{ 'register-emailNotExist' | translate }}
             </b-form-invalid-feedback>
             <b-form-invalid-feedback id="email" v-if="!$v.form.email.email">
-              The field has to be an email
+              {{ 'register-emailInvalid' | translate }}
             </b-form-invalid-feedback>
           </b-form-group>
         </b-col>
@@ -72,16 +72,16 @@
         <b-col md="6" sm="12">
           <b-form-group id="firstNameLabel">
             <b-form-input id="firstNameInput"
-              placeholder="First name:"
+              :placeholder="'register-firstnamePlaceholder' | translate"
               v-model="form.firstName"
               @input="$v.form.firstName.$touch()"
               :state="$v.form.firstName.$dirty ? !$v.form.firstName.$error : null"
             />
             <b-form-invalid-feedback id="firstNameInput" v-if="!$v.form.firstName.required">
-              Firstname is required
+              {{ 'register-firstnameNotExist' | translate }}
             </b-form-invalid-feedback>
             <b-form-invalid-feedback id="firstNameInput" v-if="!$v.form.firstName.alpha">
-              Firstname can only contain letters
+              {{ 'register-firstnameInvalid' | translate }}
             </b-form-invalid-feedback>
           </b-form-group>
         </b-col>
@@ -89,16 +89,16 @@
         <b-col md="6" sm="12">
           <b-form-group id="lastNameLabel">
             <b-form-input id="lastNameInput"
-              placeholder="Last name:"
+              :placeholder="'register-lastnamePlaceholder' | translate"
               v-model="form.lastName"
               @input="$v.form.lastName.$touch()"
               :state="$v.form.lastName.$dirty ? !$v.form.lastName.$error : null"
             />
             <b-form-invalid-feedback id="lastNameInput" v-if="!$v.form.lastName.required">
-              Lastname is required
+              {{ 'register-lastnameNotExist' | translate }}
             </b-form-invalid-feedback>
             <b-form-invalid-feedback id="lastNameInput" v-if="!$v.form.lastName.required">
-              Lastname can only contain letters
+              {{ 'register-lastnameInvalid' | translate }}
             </b-form-invalid-feedback>
           </b-form-group>
         </b-col>
@@ -110,25 +110,25 @@
             <b-form-input id="ssn"
               type="text"
               v-model="form.ssn"
-              placeholder="YYYYMMDD-XXXX"
+              :placeholder="'register-ssnPlaceholder' | translate"
               @input="$v.form.ssn.$touch()"
               :state="$v.form.ssn.$dirty ? !$v.form.ssn.$error : null"
             />
             <b-form-invalid-feedback id="ssn" v-if="!$v.form.ssn.required">
-              SSN is required
+              {{ 'register-ssnNotExist' | translate }}
             </b-form-invalid-feedback>
             <b-form-invalid-feedback id="ssn" v-if="!$v.form.ssn.ssn">
-              SSN has to be in the form YYYYMMDD-XXXX
+              {{ 'register-ssnInvalid' | translate }}
             </b-form-invalid-feedback>
           </b-form-group>
         </b-col>
       </b-row>
-      <b-button class="button" type="reset" variant="danger">Reset</b-button>
-      <b-button :disabled="$v.form.$invalid" class="button" type="submit" variant="info">Register</b-button>
+      <b-button class="button" type="reset" variant="danger">{{ 'register-reset' | translate }}</b-button>
+      <b-button :disabled="$v.form.$invalid" class="button" type="submit" variant="info">{{ 'register-registerButton' | translate }}</b-button>
     </b-form>
     <hr>
-    <p>Already have an account?
-      <router-link id="link" to="/">Login!</router-link>
+    <p>{{ 'register-accountAlready' | translate }}
+      <router-link id="link" to="/">{{ 'register-loginLink' | translate }}</router-link>
     </p>
   </b-jumbotron>
 </template>
