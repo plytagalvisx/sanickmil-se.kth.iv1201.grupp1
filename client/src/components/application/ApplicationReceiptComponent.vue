@@ -93,6 +93,13 @@
       ...mapGetters('applicationModule', ['applicationState'])
     },
     async created() {
+      if (this.inheritedApplication) {
+        this.setApplication(this.inheritedApplication);
+        this.showApplication = true;
+        // eslint-disable-next-line
+        console.log('already has applicaotin...')
+        return;
+      }
       if (this.applicationState === 'partial') {
         const userInfo = await UserService.getUserInfo()
           .then(res => res.data);
@@ -138,7 +145,8 @@
       }
     },
     props: [
-      'receiptType'
+      'receiptType',
+      'inheritedApplication'
     ],
     components: {
       Stretch

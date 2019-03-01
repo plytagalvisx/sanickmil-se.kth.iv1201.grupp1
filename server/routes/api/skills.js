@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const dbservice = require('../../integration/database-services')
 const ERROR = require('../../helpers/errors')
+const Logger = require('../../helpers/logger');
+
+const skillsLogger = new Logger(`${__dirname}/../../../userActions`);
 
 /**
  * Gets all skills from the Skill collection
@@ -13,7 +16,7 @@ router.get('/', async (req, res) => {
   } catch (err) {
     if (err.errorCode === ERROR.DB.ERROR)
       return res.status(500).json({message: 'Database connection error'})
-    console.log('Unhandled error in GET /skills:', err)
+    skillsLogger.chaos(`Unhandled error in GET /skills:`, err);
     return res.sendStatus(500);
   }
 })

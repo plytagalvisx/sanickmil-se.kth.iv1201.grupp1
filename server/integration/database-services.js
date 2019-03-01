@@ -58,44 +58,11 @@ class DBService {
   }
 
   /**
-   * Gets basic user information by SSN.
-   * @param {String} SSN The user to get info of
-   * @returns {Object} A object containing the: username, firstname, lastname, email, role
-   */
-  static async getBasicUserInfo(ssn) {
-    try {
-      const userCollection = await this.loadUserCollection();
-      const foundUser = await userCollection.findOne({
-        ssn
-      }, {
-        projection: {
-          _id: 0,
-          username: 1,
-          firstname: 1,
-          lastname: 1,
-          email: 1,
-          ssn: 1,
-          role: 1,
-        }
-      });
-      if (!foundUser) {
-        throw new MyError('That user doesn\'t exists').setCode(ERROR.USER.NOT_FOUND);
-      }
-      return foundUser;
-    } catch (err) {
-      if (err.errorCode === ERROR.USER.NOT_FOUND)
-        throw err;
-      console.log('Error in getBasicUserInfo', err);
-      throw new MyError('Database error').setCode(ERROR.DB.ERROR);
-    }
-  }
-
-  /**
    * Gets basic user information by username
    * @param {String} username The username to fetch user information from
    * @returns {Object} A object containing the: username, firstname, lastname, email, role
    */
-  static async getBasicUserInfoByUsername(username) {
+  static async getBasicUserInfo(username) {
     try {
       const userCollection = await this.loadUserCollection();
       const foundUser = await userCollection.findOne({
@@ -106,6 +73,7 @@ class DBService {
           username: 1,
           firstname: 1,
           lastname: 1,
+          ssn: 1,
           email: 1,
           role: 1,
         }

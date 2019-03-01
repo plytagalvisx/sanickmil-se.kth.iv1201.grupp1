@@ -21,12 +21,19 @@ const skills = require('./routes/api/skills');
 const auth = require('./routes/api/auth');
 const guard =  require('./helpers/guard');
 
+const Logger = require('./helpers/logger');
 
 /* Authenticates each */
 app.use(/\/api\/.{1,}/, guard);
 
-app.use('/api/user', user);
+const requestLogger = new Logger('requests')
+app.use(/.*/, (req, res, next) => {
+  requestLogger.log(`${req.method}\t${req.baseUrl} | [Auth user] ${req.userUsername}`);
+  next();
+});
+
 app.use('/api/auth', auth);
+app.use('/api/user', user);
 app.use('/api/application', application);
 app.use('/api/skills', skills);
 
