@@ -4,8 +4,6 @@
     <main>
       <router-view v-on:displayFlash="displayFlash"/>
       <FlashMessageComponent v-if="showFlash" :flashMessage="flashMessage" :type="flashType"/>
-
-      <h2>{{ 'lbl-welcome' | translate }}</h2>
     </main>
   </div>
 </template>

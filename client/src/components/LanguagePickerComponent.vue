@@ -1,11 +1,7 @@
 <template>
-    
-
-      
-
     <b-nav-item-dropdown right>
           <template slot="button-content">
-            <em>{{'lbl-language' | translate}}</em>
+            <em>{{'hdr-language' | translate}}</em>
           </template>
         <b-dropdown-item @click="changeLanguage(language.id)" v-for="language in availableLanguages" :key="language.id" :id="language.id" :value="language.id" v-model="selectedLanguage">{{language.label}}</b-dropdown-item>
     </b-nav-item-dropdown>

@@ -1,8 +1,8 @@
 <template>
   <b-jumbotron>
-    <template slot="header">{{ showHeader }}</template>
+    <template slot="header">{{ showHeader | translate}}</template>
 
-    <template slot="lead">{{ showLead }}</template>
+    <template slot="lead">{{ showLead | translate }}</template>
     <hr>
     <Stretch v-if="loading"></Stretch>
     <ApplicationReceiptComponent :inheritedApplication="application" :receiptType="'profile'" v-if="hasApplication" />
@@ -42,16 +42,16 @@
     computed: {
       showHeader() {
         if (this.hasApplication) {
-          return 'Your application';
+          return 'profile-title';
         } else {
-          return 'No application';
+          return 'profile-noTitle';
         }
       },
       showLead() {
         if (this.hasApplication) {
-          return 'Here you can see your current application. You can edit your application as long as it is "Unhandled"';
+          return 'profile-subtitle';
         } else {
-          return 'You do not have a current application. You can apply by pressing "Apply" in the upper right corner.';
+          return 'profile-noSubtitle';
         }
       }
     }

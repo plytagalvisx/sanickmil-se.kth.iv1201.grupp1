@@ -10,7 +10,7 @@ Vue.use(Vuex)
 const vuexLocalStorage = new VuexPersist({
   key: 'vuex-persistance',
   storage: window.localStorage,
-  modules: ['userModule']
+  modules: ['userModule', 'languageModule']
 });
 
 const userModule = {
