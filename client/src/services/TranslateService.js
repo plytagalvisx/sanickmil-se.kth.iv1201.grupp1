@@ -1,15 +1,15 @@
-// import store from '../store';
+import store from '../store';
 import dictionary from '../assets/localization';
 // import { mapState } from 'vuex';
 
 
 export default {    
   // computed: {
-  //   ...mapState('userModule', ['currentLanguage']),
+  //   ...mapState('languageModule', ['currentLanguage']),
   // },
   translate (key) {
     //get current language from vuex state
-    const currentLanguage = 'en'
+    const currentLanguage = store.state.languageModule.currentLanguage
     // eslint-disable-next-line
     console.log("Current key: ", key)
     return dictionary[currentLanguage][key]

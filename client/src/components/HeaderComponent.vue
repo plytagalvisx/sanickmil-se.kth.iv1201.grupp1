@@ -11,6 +11,8 @@
       <!-- Right aligned nav items -->
       <b-navbar-nav class="ml-auto">
 
+        <LanguagePickerComponent></LanguagePickerComponent>       
+
         <b-nav-item-dropdown right v-if="loggedIn">
           <!-- Using button-content slot -->
           <template slot="button-content">
@@ -30,7 +32,11 @@
 
 <script>
   import {mapState, mapActions} from 'vuex'
+  import LanguagePickerComponent from './LanguagePickerComponent.vue'
   export default {
+    components:{
+      LanguagePickerComponent,
+    },
     name: 'HeaderComponent',
     computed: {
       ...mapState('userModule', ['user']),

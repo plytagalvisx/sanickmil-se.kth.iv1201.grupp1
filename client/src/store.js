@@ -113,7 +113,7 @@ const applicationModule = {
 const languageModule = {
   namespaced: true,
   state: {
-    currentLanguage: languages[0].id
+    currentLanguage: languages[1].id
   },
   getters: {
     currentLanguage: state => state.currentLanguage,
