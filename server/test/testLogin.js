@@ -2,6 +2,8 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const server = require('../index');
 
+const should = chai.should();
+
 chai.use(chaiHttp);
 
 /**
@@ -49,7 +51,6 @@ describe('A incorrect login should fail', () => {
       .get('/api/auth')
       .query({username: 'emil', password: 'wrongpassword'})
       .end( (err, res) => {
-        // res.body.should.be.json();
         res.body.should.have.property('message');
         res.body.message.should.equal('Wrong username or password');
         done();
