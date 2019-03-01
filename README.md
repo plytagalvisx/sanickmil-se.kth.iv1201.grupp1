@@ -50,7 +50,7 @@ For back-end [Express](https://expressjs.com/) has been used as framework.
 ### Validation
 [Express-validator](https://express-validator.github.io/docs/) has been used to validate user input before sending it to the database. All validations are stored in **server/validation** folder, where each new validation is a new file.
 
-Each failed validation, sends an object with ```{param: e.param, message: e.msg```.
+Each failed validation, sends an object with ```{param: e.param, message: e.msg}```.
 
 ### Test
 
