@@ -21,6 +21,8 @@ export default {
         'apply-experiencePlaceholder': 'Erfarenhet: ',
         'apply-newEntry': 'Ny rad',
         'apply-competence': 'Kompetens: ',
+        'apply-availableTo': 'Till',
+        'apply-availableFrom': 'Från',
         'apply-availabilityFrom': 'Tillgänglig från: ',
         'apply-availabilityTo': 'Tillgänglig till',
         'apply-availability': 'Tillgänglighet: ',

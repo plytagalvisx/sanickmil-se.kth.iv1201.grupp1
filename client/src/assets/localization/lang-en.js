@@ -22,6 +22,8 @@ export default {
     'apply-experiencePlaceholder': 'Experience: ',
     'apply-newEntry': 'New entry',
     'apply-competence': 'Competence: ',
+    'apply-availableTo': 'To',
+    'apply-availableFrom': 'From',
     'apply-availabilityFrom': 'Availability from',
     'apply-availabilityTo': 'Availability to',
     'apply-availability': 'Availability: ',
