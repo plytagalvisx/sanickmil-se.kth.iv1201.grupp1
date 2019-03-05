@@ -54,9 +54,5 @@ describe('A incorrect login should fail', () => {
 
 All failed validations, could also only be one failed validation, are sent as an array with object(s), like this: ```[{param: e.param, message: e.msg}]```. Each failed validation contains which input field, _param_, that failed validation and also the error message, _message_.
 
-Authorization Guard E
-db-transafer (dev) E
-config.js (for getting env vars) N
-
 ## Manual
 
