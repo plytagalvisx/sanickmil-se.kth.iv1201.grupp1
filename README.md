@@ -25,7 +25,7 @@ validations: {
 If the validation fails, the user will see the error message directly. The users can also see when they have fulfilled the requirements by the green check mark. 
 
 ## Back-end
-[Express](https://expressjs.com/) is used as the web framework for back-end. 
+The back-end is a REST API and [Express](https://expressjs.com/) is used as the web framework. 
 
 ## Test
 ### Running tests
