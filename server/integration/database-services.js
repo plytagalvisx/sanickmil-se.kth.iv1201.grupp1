@@ -323,7 +323,6 @@ class DBService {
    * @param {String} ssn The SSN of the person who wants to remove their application
    */
   static async removeApplicationBySSN(ssn) {
-    // TODO: Validate ssn
     try {
       const applicationCollection = await this.loadUserCollection();
       applicationCollection.updateOne({

@@ -62,7 +62,6 @@
           <b-badge class="status" v-if="receiptType === 'profile'" v-bind:class="{unhandled : application.applicationStatus === 'unhandled', hired : application.applicationStatus === 'accepted', rejected : application.applicationStatus === 'rejected'}">
             {{ this.application.applicationStatus }}</b-badge>
           <b-button class="submit" variant="info" size="lg" v-if="receiptType === 'apply'" @click="onSubmit">{{'apply-review-submit' | translate}}</b-button>
-          <!-- TODO: Fixa så man kan submitta -->
         </b-col>
       </b-row>
     </b-container>
