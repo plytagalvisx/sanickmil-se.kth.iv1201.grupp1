@@ -5,7 +5,7 @@
         <b-form-input id="usernameInput" 
           type="text" 
           v-model="form.username"
-          :placeholder="'profile-usernamePlaceholder' | translate"
+          :placeholder="'login-usernamePlaceholder' | translate"
           @input="$v.form.username.$touch()"
           :state="$v.form.username.$dirty ? !$v.form.username.$error : null"
         />
