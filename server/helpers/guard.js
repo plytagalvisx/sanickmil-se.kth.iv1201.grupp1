@@ -119,7 +119,11 @@ const RECRUITER_ACTIONS = [
   {route: /^\/api\/application\/+\d+(-\d+)*$/, method: 'GET'}
 ]
 
-// TODO: Comment
+/**
+ * Checks to se if the action is allowed for recruiters
+ * @param {String} route The route
+ * @param {String} method Request method
+ */
 function allowedRecruiterAction(route, method) {
   route = route.trim();
   const allowed = RECRUITER_ACTIONS.find((action) => {
@@ -141,7 +145,11 @@ const SELF_ACTIONS = [
   {route: /^\/api\/user$/, method: 'GET'}
 ]
 
-// TODO: Comment
+/**
+ * Checks to se if the action is allowed for applicants (to perform on themselves)
+ * @param {String} route The route
+ * @param {String} method Request method
+ */
 function allowedSelfAction(route, method) {
   // Unsure whether this need to be trimmed. but better to be safe than sorry
   route = route.trim();
@@ -151,7 +159,11 @@ function allowedSelfAction(route, method) {
   return allowed;
 }
 
-// TODO: Comment
+/**
+ * Decodes the user token
+ * @param {String} token The reqest authrization token
+ * @returns {Object} user. With fields 'role' and 'username'
+ */
 async function decodeUsernameAndRole(token) {
   try {
     const {role, user} = await jwt.verify(token, config.SECRET);

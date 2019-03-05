@@ -28,17 +28,6 @@ class UserService {
   }
 
   /**
-   * @deprecated Logs out a user. 
-   */
-  static logout() {
-    return axios.delete(`${AUTH}`, {
-      headers: {
-        'Authorization': localStorage.getItem('userAuth')
-      }
-    }).then(response => response.data)
-  }
-
-  /**
    * Register a new user in the database
    * @param {String} username The username to be registered
    * @param {String} password The password to be registered

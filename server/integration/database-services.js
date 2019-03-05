@@ -232,6 +232,7 @@ class DBService {
 
   /**
    * Gets all the applications of applicants who has an applicationStatus
+   * @returns {Array} Returns a array of application objects
    */
   static async getAllApplications() {
     try {

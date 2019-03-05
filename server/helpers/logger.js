@@ -19,11 +19,21 @@ class Logger {
     this.fileName = file;
   }
 
+  /**
+   * Creates a nicely formatted message.
+   * @param {String} level The log level
+   * @param {String} msg The message to log
+   * @param  {...any} args More message parts.
+   */
   createMessage(level, msg, ...args) {
     const date = new Date();
     return `[${date.toISOString().substring(0, 10)} ${date.toTimeString().split(' ')[0]}] [${level}] ${msg} ${args ? `: ${args}` : ''}\n`;
   }
 
+  /**
+   * Writes the message to a file
+   * @param {String} text Text to write
+   */
   writeToFile(text) {
     fs.appendFile(this.fileName+'.log', text, (err) => {
       if (err) {

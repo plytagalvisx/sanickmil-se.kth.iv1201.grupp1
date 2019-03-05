@@ -9,10 +9,10 @@ const ERROR = require('../../helpers/errors');
 const Logger = require('../../helpers/logger');
 
 const applLogger = new Logger(`${__dirname}/../../../userActions`);
+
 /**
  * POST: Adds a new application for a user.
  */
-
 router.post('/', validateSubmitApplication, async (req, res) => {
   const result = validationResult(req); 
   

@@ -69,11 +69,4 @@ router.get('/', validatingLogin, async (req, res) => {
   }
 })
 
-/**
- * Logs out
- */
-router.delete('/', async (req, res) => {
-  res.json({message: 'Not implemented any longer'})
-})
-
 module.exports = router;
