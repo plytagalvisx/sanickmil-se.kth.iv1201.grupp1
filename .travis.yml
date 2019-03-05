@@ -1,0 +1,15 @@
+language: node_js
+node_js:
+  - "10.1"
+chahe:
+  - "node_modules"
+script:
+  - "npm test"
+deploy:
+  provider: heroku
+  api_key:
+    secure: H9JjR9AcE5F2419IuCPVDL35bK5Mt9iPDfM2pAdVLVMOtb3CRXxqesoToQPuhrWIPUWZHKg1tHtV2nsNHbdEnQB+0CI43e9Pd6DE0noNuw//wkQ36QA5vtjWpqWF806fFR88fAiso9k8wpU6lxOZR3NKpF3IzuMRbbumZ6KoiwXvi0iKWIcUmPMXX9tHaPrfGRJB69CdFVGoa4ngh/Oe8tT016gvvW1eR9/IY4cpqY7CXRZfu3TPx3IgZbK/VVzRFeQZTwvzcLs5URjU78k2InSgA5D+hUTOetlYAQRGuD3oz7Z2INBkXvxWMejuvmbjXvYAFk9yRWn/n/1SaeAJ8tj3Fk7WYkFvcbOyac1dlsz7qbVoLtxfTA2yq4nVBX/8IjhdBj9PvvzFAtmBKmS3hkB35t/PuCnp/Fvyi5UscLU5H6kRkPG7X0javZQXGrqrVlTE5nNQXniLLQVQ7bSV48flxD98We2mQGG+1hoK7sqSBlWExkCwJt3+LZjeHwdBnJ1AVVuoB9xVq9E5qD77hrIVeGtQbeZ/i7NAUG0vrki2ta3UrHg/HIQXsGxPJ2EYURpZgy/DTeXVw1S4evbp0SfrDNCY64ZeESnevL8//sB+wyRlxn6HFh6+QPKWgxa/oDe4ZDG08pbxVl4ErUlkQsvrb8RWjUjuVjxpQ7fHzWs=
+  app: sanickmil-recruitment-app
+  on:
+    repo: sanickmil/sanickmil-se.kth.iv1201.grupp1
+    branch: master
