@@ -1,9 +1,40 @@
-# sanickmil-se.kth.iv1201.grupp1
+# Project overview
 This is a school assignment in Design of Global Application IV1201, taken at the Royal Institute of Technology in Stockholm spring term 2019. The contributers for this assignment are: Nicklas Ockelberg, Sabina Hauzenberger and Emil Lindholm Brandt.
 
 Continue reading for information about continuing development, or running the application.
 
-Visit the application at: https://sanickmil-recruitment.azurewebsites.net
+Visit the application at: https://sanickmil-recruitment-app.herokuapp.com/
+
+# About the project
+
+## Front-end
+Vue E
+Vuex E
+Vue-bootstrap S
+Vuelidation S
+Vue Router E
+Translation N
+
+## Back-end
+Express S
+Databas E
+  Databas-schema E
+Tester S
+API Endpoints och metoder N
+Validering S
+Authorization Guard E
+db-transafer (dev) E
+config.js (for getting env vars) N
+
+## Manual
+
+Script för att starta i dev N
+Script för att starta lokalt, production nivå N
+Script/Metodik för pusha till production N
+travis is controlled by .travis.yml N
+
+
+#### END under refactoras upp
 
 ## Before running first time
 Run ```npm install``` in both client and server directory
