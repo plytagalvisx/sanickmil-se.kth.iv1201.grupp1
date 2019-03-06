@@ -154,6 +154,8 @@ export default {
 
   // Registry Success
   'USER.AUTH.REGISTERED': 'Användare registrerad.',
+  // Registry Success
+  'SUCCESS.USER.REGISTERED': 'Användare registrerad.',
 
   // Authentication Success
   'SUCCESS.AUTH.SUCCESS': 'Inloggad.',

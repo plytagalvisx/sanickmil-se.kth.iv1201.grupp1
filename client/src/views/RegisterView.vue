@@ -163,6 +163,8 @@
           .form.lastName, this.form.ssn)
           .then(resData => {
             this.$router.push('/login');
+            // eslint-disable-next-line
+            console.log(resData)
             this.$emit('displayFlash', resData.data.message, 'success');
           })
           .catch(err => {
