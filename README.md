@@ -67,33 +67,33 @@ Fields which are [opt] should not contain null, undefined or any "empty" value. 
 ##### User-collection
 ```
 {
-  "username": <b>[req]</b> String,
-  "password": <b>[req]</b> String (<b>hashed<b> password),
-  "email": <b>[req]</b> String,
-  "firstname": <b>[req]</b> String,
-  "lastname": <b>[req]</b> String,
-  "ssn": <b>[req]</b> String (on form yyyymmdd-xxxx),
-  "role": <b>[req]</b> String Value: "recruit" | "applicant",
-  "applicationStatus": <b>[req]</b> String Value: "rejected" | "accepted" | "unhandled",
-  "availability": <b>[opt]</b> Array of objects
+  "username": [req] String,
+  "password": [req] String (<b>hashed<b> password),
+  "email": [req] String,
+  "firstname": [req] String,
+  "lastname": [req] String,
+  "ssn": [req] String (on form yyyymmdd-xxxx),
+  "role": [req] String Value: "recruit" | "applicant",
+  "applicationStatus": [req] String Value: "rejected" | "accepted" | "unhandled",
+  "availability": [opt] Array of objects
     {
-      "from": <b>[req]</b> Javascript date on "toISOString()-form",
-      "to": <b>[req]</b> Javascript date on "toISOString()-form"
+      "from": [req] Javascript date on "toISOString()-form",
+      "to": [req] Javascript date on "toISOString()-form"
     }
-  "qualifications": <b>[opt]</b> Array of objects
+  "qualifications": [opt] Array of objects
     {
-      "competenceName": <b>[req]</b>, A value from the 'skill'-collection,
-      "yearsOfExperience": <b>[req]</b> Integer, must be positive.
+      "competenceName": [req], A value from the 'skill'-collection,
+      "yearsOfExperience": [req] Integer, must be positive.
     }
   ],
-  "submissionDate": <b>[opt]</b> Javascript date on "toISOString()-form"
+  "submissionDate": [opt] Javascript date on "toISOString()-form"
 }
 ```
 
 ##### Skill-collection
 ```
 {
-  <b>[req]</b> One array of Strings, name of the skill:
+  [req] One array of Strings, name of the skill:
   [
     "Karuselldrift",
     "Bagare"
