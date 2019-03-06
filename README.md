@@ -425,6 +425,8 @@ Currently the ```master``` branch is tracked, and as a pull request is done on i
 
 Therefore no pushes/local merges -> pushes will have an effect on the live application.
 
+**NOTE:** Before adding, commiting and pushing, the client must be built as it is now. If you switch to a could platform that supports custom scripts before deployment, this may be done at deploy time.
+
 The workflow should be to work/sync against the ```dev``` branch, branch info seprarate branches. As features are completed and run nicely when merged into the latest ```dev``` branch, a pull request should be done from ```dev```-> ```master```. When the test have passed (and the code has been reviewd denepdning on the team workflow) it may be merged, and will be deployed on Heroku within a few minutes.
 
 The hooks, commands/test to run may be configured in the .travis.yml file.
