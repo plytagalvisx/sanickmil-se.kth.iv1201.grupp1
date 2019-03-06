@@ -1,7 +1,7 @@
 const mongodb = require('mongodb');
 const config = require('../config');
 const bcrypt = require('bcryptjs');
-const ERROR = require('../helpers/errors');
+const {ERROR} = require('../../common/messageEnums');
 const MyError = require('../helpers/MyError');
 
 const DUPL_USER = 11000;
@@ -50,7 +50,7 @@ class DBService {
       }
       return await bcrypt.compare(password, foundUser.password);
     } catch (err) {
-      if (err.errorCode === ERROR.USER.NOT_FOUND)
+      if (err instanceof MyError)
         throw err;
       console.log('Error in authenticateUser: ', err);
       throw new MyError('Database error').setCode(ERROR.DB.ERROR);
@@ -83,7 +83,7 @@ class DBService {
       }
       return foundUser;
     } catch (err) {
-      if (err.errorCode === ERROR.USER.NOT_FOUND)
+      if (err instanceof MyError)
         throw err;
       console.log('Error in getBasicUserInfo', err);
       throw new MyError('Error fetching from database').setCode(ERROR.DB.ERROR);
@@ -178,11 +178,10 @@ class DBService {
         new: true
       });
       if (!results.lastErrorObject.updatedExisting) {
-        console.log('Error in submitApplication: application already exists...')
         throw new MyError('Application already exists. PATCH to update it instead.').setCode(ERROR.APPLICATION.ALREADY_SUBMITTED);
       }
     } catch (err) {
-      if (err.errorCode === ERROR.APPLICATION.ALREADY_SUBMITTED)
+      if (err instanceof MyError)
         throw err;
       console.log('Error in submitApplication: ', err);
       throw new MyError('Database error').setCode(ERROR.DB.ERROR);
@@ -224,7 +223,7 @@ class DBService {
         console.log(docs);
       });
     } catch (err) {
-      if (err.errorCode === ERROR.DB.ERROR)
+      if (err instanceof MyError)
         throw err;
       throw new MyError('Database error').setCode(ERROR.DB.ERROR);
     }
@@ -232,6 +231,7 @@ class DBService {
 
   /**
    * Gets all the applications of applicants who has an applicationStatus
+   * @returns {Array} Returns a array of application objects
    */
   static async getAllApplications() {
     try {
@@ -252,7 +252,7 @@ class DBService {
         throw new MyError('No applications was found').setCode(ERROR.APPLICATION.NOT_FOUND);
       return applications;
     } catch (err) {
-      if (err.errorCode === ERROR.APPLICATION.NOT_FOUND)
+      if (err instanceof MyError)
         throw err;
       console.log('Error in getAllApplications', err);
       throw new MyError('Database error').setCode(ERROR.DB.ERROR);
@@ -284,7 +284,7 @@ class DBService {
         throw new MyError('No application was found by that SSN').setCode(ERROR.APPLICATION.NOT_FOUND);
         return application[0];
       } catch (err) {
-        if (err.errorCode === ERROR.APPLICATION.NOT_FOUND)
+        if (err instanceof MyError)
          throw err;
       console.log('Error in getApplicationStatusBySSN', err);
       throw new MyError('Database error').setCode(ERROR.DB.ERROR);
@@ -297,23 +297,26 @@ class DBService {
    * @param {String} status Application status. Might be: accepted|rejected|unhandled
    */
   static async handleApplication(ssn, status) {
-    if (!(status === 'accepted' || status === 'rejected' || status === 'unhandled'))
-      throw new MyError('Status parameter must be \'accepted\', \'rejected\' or \'unhandled\'').setCode(ERROR.APPLICATION.INCOMPLETE_PARAMS);
+    if (!(status === 'accepted' || status === 'rejected'))
+      throw new MyError('Status parameter must be \'accepted\', \'rejected\'').setCode(ERROR.APPLICATION.INCOMPLETE_PARAMS);
       try {
         const userCollection = await this.loadUserCollection();
-        userCollection.findOneAndUpdate({
+        const result = await userCollection.findOneAndUpdate({
           ssn,
-          applicationStatus: {
-            $exists: true
-          }
+          applicationStatus: 'unhandled'
         }, {
           $set: {
             applicationStatus: status
           }
         });
+        if (!result.lastErrorObject.updatedExisting) {
+          throw new MyError('Already handled').setCode(ERROR.APPLICATION.ALREADY_HANDLED);
+        }
       } catch (err) {
-      console.log('Error in handleApplication:', err);
-      throw new MyError('Database error').setCode(ERROR.DB.ERROR);
+        if (err instanceof MyError)
+          throw err;
+        console.log('Error in handleApplication:', err);
+        throw new MyError('Database error').setCode(ERROR.DB.ERROR);
     }
   }
 
@@ -322,7 +325,6 @@ class DBService {
    * @param {String} ssn The SSN of the person who wants to remove their application
    */
   static async removeApplicationBySSN(ssn) {
-    // TODO: Validate ssn
     try {
       const applicationCollection = await this.loadUserCollection();
       applicationCollection.updateOne({

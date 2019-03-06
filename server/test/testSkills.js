@@ -20,7 +20,7 @@ describe('A logged out user should not be able to get skills w/o token', () => {
       .get('/api/skills')
       .end((err, res) => {
         res.body.should.have.property('message');
-        res.body.message.should.equal('No token supplied');
+        res.body.message.should.equal('ERROR.TOKEN.NOT_SUPPLIED');
         done();
       });
   });

@@ -50,7 +50,7 @@
       logout() {
         this.logOut();
         this.clearApplication();
-        this.$emit('displayFlash', 'Successfully logged out', 'info');
+        this.$emit('displayFlash', 'SUCCESS.AUTH.LOGGED_OUT', 'info');
         this.$router.push('/login');
       }
     }

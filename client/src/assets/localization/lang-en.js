@@ -119,5 +119,46 @@ export default {
     'recruiter-skill': 'Skill',
     'recruiter-years': 'Years',
     'recruiter-availableFrom': 'Available from',
-    'recruiter-availableTo': 'Available to'
+    'recruiter-availableTo': 'Available to',
+
+    /* SERVER MESSAGES */
+    
+    // User Error
+    'ERROR.USER.NOT_FOUND': 'The user was not found.',
+    'ERROR.USER.DUPLICATE': 'A user with that name already exists.',
+    
+    // Application Error
+    'ERROR.APPLICATION.NOT_FOUND': 'This application could not be found.',
+    'ERROR.APPLICATION.ALREADY_SUBMITTED': 'This application has aldready been submitted.',
+    'ERROR.APPLICATION.INCOMPLETE_PARAMS': 'This application is missing data.',
+    'ERROR.APPLICATION.ALREADY_HANDLED': 'This application has already been handled.',
+
+    // Authorization Error
+    'ERROR.AUTH.UNAUTHORIZED': 'Could not authorize the user.',
+    'ERROR.AUTH.WRONG_CREDENTIALS': 'Incorrect credentials.',
+
+    // Database Error
+    'ERROR.DB.ERROR': 'Database error (contact administrator/site owner).',
+
+    // Token Error
+    'ERROR.TOKEN.VERIFY': 'Could not verify the user. Please log in and out again.',
+    'ERROR.TOKEN.INVALID': 'Invalid token. Please log in and out again.',
+    'ERROR.TOKEN.NOT_SUPPLIED': 'A token was not supplised. Please log in and out again.',
+
+    // Generic Error
+    'ERROR.GENERAL.GENERIC': 'Unknown error. Please try to refresh or log out/in again.',
+
+    // Application Success
+    'SUCCESS.APPLICATION.SUBMITTED': 'The application was successfully submitted.',
+    'SUCCESS.APPLICATION.EDITED': 'The application was successfully edited.',
+    'SUCCESS.APPLICATION.HANDLED': 'The application has been handled.',
+    'SUCCESS.APPLICATION.DELETED': 'Application deleted.',
+
+    // Registry Success
+    'USER.AUTH.REGISTERED': 'Successfully registered.',
+
+    // Authentication Success
+    'SUCCESS.AUTH.SUCCESS': 'Successfully logged in.',
+    // Logout Success
+    'SUCCESS.AUTH.LOGGED_OUT': 'Successfully logged out.'
   }

@@ -1,9 +1,11 @@
 const router = require('express').Router();
 const jwt = require('jsonwebtoken');
 const config = require('../config');
-const ERROR = require('../helpers/errors')
-const MyError = require('../helpers/MyError')
-const dbservice = require('../integration/database-services')
+const {ERROR} = require('../../common/messageEnums');
+const MyError = require('../helpers/MyError');
+const dbservice = require('../integration/database-services');
+const Logger = require('./logger')
+const guardLogger = new Logger('../../userActions')
 
 /**
  * Array of path/method combos that may be accessed without logging in.
@@ -73,9 +75,9 @@ router.all(/.*/, async (req, res, next) => {
 
   let token = req.headers.authorization;
   if (!token)
-    return res.status(400).json({message: 'No token supplied'});
+    return res.status(400).json({message: ERROR.TOKEN.NOT_SUPPLIED});
   if (!token.startsWith('Bearer'))
-    return res.status(400).json({message: 'Invalid Token'});
+    return res.status(400).json({message: ERROR.TOKEN.INVALID});
   token = token.replace('Bearer ', '');
 
   const authAudit = await authenticateToken(token);
@@ -83,7 +85,7 @@ router.all(/.*/, async (req, res, next) => {
     return res.status(401).json({message: authAudit.message});
 
   try {
-    const {role, username} = await decodeUsernameAndRole(token);
+    const { role, username } = await decodeUsernameAndRole(token);
     const { ssn } = await dbservice.getBasicUserInfo(username);
     req.userSSN = ssn;
     req.userUsername = username;
@@ -93,17 +95,18 @@ router.all(/.*/, async (req, res, next) => {
       return next();
     }
   } catch (err) {
-    if (err.errorCode === error.USER.NOT_FOUND)
-      return res.status(400).json({message: 'User not found'});
+    if (!(err instanceof MyError)) {
+      guardLogger.chaos('Unhandled error in guard ALL');
+      return res.sendStatus(500);
+    }
+    if (err.errorCode === ERROR.USER.NOT_FOUND)
+      return res.status(400).json({message: err.errorCode});
     else if (err.errorCode === ERROR.DB.ERROR)
-      return res.status(500).json({message: 'Database error'});
+      return res.status(500).json({message: err.errorCode});
     else if (err.errorCode === ERROR.TOKEN.VERIFY)
-      return res.status(500).json({message: 'Cannot verify token'});
-
-    console.log('Unhandled error in guard ALL');
-    return res.sendStatus(500);
+      return res.status(500).json({message: err.errorCode});
   }
-  return res.status(401).json({message: 'You are not authorized to do this.'})
+  return res.status(401).json({message: ERROR.AUTH.UNAUTHORIZED})
 });
 
 /**
@@ -119,7 +122,11 @@ const RECRUITER_ACTIONS = [
   {route: /^\/api\/application\/+\d+(-\d+)*$/, method: 'GET'}
 ]
 
-// TODO: Comment
+/**
+ * Checks to se if the action is allowed for recruiters
+ * @param {String} route The route
+ * @param {String} method Request method
+ */
 function allowedRecruiterAction(route, method) {
   route = route.trim();
   const allowed = RECRUITER_ACTIONS.find((action) => {
@@ -141,7 +148,11 @@ const SELF_ACTIONS = [
   {route: /^\/api\/user$/, method: 'GET'}
 ]
 
-// TODO: Comment
+/**
+ * Checks to se if the action is allowed for applicants (to perform on themselves)
+ * @param {String} route The route
+ * @param {String} method Request method
+ */
 function allowedSelfAction(route, method) {
   // Unsure whether this need to be trimmed. but better to be safe than sorry
   route = route.trim();
@@ -151,13 +162,17 @@ function allowedSelfAction(route, method) {
   return allowed;
 }
 
-// TODO: Comment
+/**
+ * Decodes the user token
+ * @param {String} token The reqest authrization token
+ * @returns {Object} user. With fields 'role' and 'username'
+ */
 async function decodeUsernameAndRole(token) {
   try {
     const {role, user} = await jwt.verify(token, config.SECRET);
     return {role, username: user};
   } catch (err) {
-    console.log('Error in getUserType', err);
+    guardLogger.error('Error in decodeUsernameAndRole (by token)')
     throw new MyError('Error verifying token').setCode(ERROR.TOKEN.VERIFY);
   }
 }

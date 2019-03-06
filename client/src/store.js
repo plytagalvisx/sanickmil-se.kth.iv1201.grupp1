@@ -3,8 +3,6 @@ import Vuex from 'vuex'
 import VuexPersist from 'vuex-persist'
 import languages from './assets/localization/languages';
 
-// TODO: Decide on wether or not to keep the persist
-
 Vue.use(Vuex)
 
 const vuexLocalStorage = new VuexPersist({
