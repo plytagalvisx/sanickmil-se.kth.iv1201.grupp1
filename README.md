@@ -196,6 +196,7 @@ Method | Route | Description | Minimum Permissions
 
 #### Usage
 ```GET api/auth/```
+##### Parameters: NO
 ##### Response
 ```json
 {
@@ -206,8 +207,6 @@ Method | Route | Description | Minimum Permissions
   "role": "applicant"
 }
 ```
-
-
 
 ### Handling applications
 ```api/application```
