@@ -5,49 +5,6 @@ Continue reading for information about continuing development, or running the ap
 
 Visit the application at: https://sanickmil-recruitment-app.herokuapp.com/
 
-# Running the app
-#### Start in local development
-Run this commmand in both the client and root directory
-```bash
-npm install
-```
-
-Then run this command in the client directory
-
-```bash
-npm run serve
-```
-
-And then run this command in the server directory
-
-```bash
-npm run dev
-```
-The app is not up and running, now browse to the url suggested by the Vue cli
-
-------
-#### Start in local production
-First make sure you have all the environment variables set as suggested [here](#configuring-environment-variables)
-Especially making sure that the NODE_ENV is set to production.
-Run this commmand in both the client and root directory
-```bash
-npm install
-```
-
-Then run this command in the client directory
-
-```bash
-npm run build
-```
-Then run this command in the server directory
-
-```bash
-npm run start
-```
-The app is now up and running on localhost
-
-------
-
 # About the project
 
 ## Front-end
@@ -70,6 +27,8 @@ export PORT=yourport
 export NODE_ENV=developmentorproduction
 export SECRET=yourSecret
 ```
+
+It's now hard coded to use our mLab database, but this chould easily be moved out to a variable as well to enable "switching" databases easily.
 
 ### VueX
 To manage state which the whole or multiple parts of the application shares, VueX is used. This allows for a central but encapsulated storage which is easly debuggable during development. The users credentials/basic user information is stores in one such module, and a job-application state is kept in another module.
@@ -106,35 +65,35 @@ Required fields are marde with [req], optional: [opt]. Followed by the Datatype 
 Fields which are [opt] should not contain null, undefined or any "empty" value. If omitted the field should not exist.
 
 ##### User-collection
-```
+```json
 {
-  "username": **[req]** String,
-  "password": **[req]** String (**hashed** password),
-  "email": **[req]** String,
-  "firstname": **[req]** String,
-  "lastname": **[req]** String,
-  "ssn": **[req]** String (on form yyyymmdd-xxxx),
-  "role": **[req]** String Value: "recruit" | "applicant",
-  "applicationStatus": **[req]** String Value: "rejected" | "accepted" | "unhandled",
-  "availability": *[opt]* Array of objects
+  "username": <b>[req]</b> String,
+  "password": <b>[req]</b> String (<b>hashed<b> password),
+  "email": <b>[req]</b> String,
+  "firstname": <b>[req]</b> String,
+  "lastname": <b>[req]</b> String,
+  "ssn": <b>[req]</b> String (on form yyyymmdd-xxxx),
+  "role": <b>[req]</b> String Value: "recruit" | "applicant",
+  "applicationStatus": <b>[req]</b> String Value: "rejected" | "accepted" | "unhandled",
+  "availability": <b>[opt]</b> Array of objects
     {
-      "from": **[req]** Javascript date on "toISOString()-form",
-      "to": **[req]** Javascript date on "toISOString()-form"
+      "from": <b>[req]</b> Javascript date on "toISOString()-form",
+      "to": <b>[req]</b> Javascript date on "toISOString()-form"
     }
-  "qualifications": *[opt]* Array of objects
+  "qualifications": <b>[opt]</b> Array of objects
     {
-      "competenceName": **[req]**, A value from the 'skill'-collection,
-      "yearsOfExperience": **[req]** Integer, must be positive.
+      "competenceName": <b>[req]</b>, A value from the 'skill'-collection,
+      "yearsOfExperience": <b>[req]</b> Integer, must be positive.
     }
   ],
-  "submissionDate": *[opt]* Javascript date on "toISOString()-form"
+  "submissionDate": <b>[opt]</b> Javascript date on "toISOString()-form"
 }
 ```
 
 ##### Skill-collection
-```
+```json
 {
-  **[req]** One array of Strings, name of the skill:
+  <b>[req]</b> One array of Strings, name of the skill:
   [
     "Karuselldrift",
     "Bagare"
@@ -150,7 +109,7 @@ Run ```npm test``` in the root folder of the project. The command starts the ser
 [Mocha](https://mochajs.org/) has been used as the test framework which runs on NodeJS and [Chai](https://www.chaijs.com/) is a BDD/TDD assertion library.
 
 All test files are in **server/test**. Example of a test which tests that the status code is correct when login credentials are wrong:
-```
+```javascript
 describe('A incorrect login should fail', () => {
   it('Returns status code 401 unauthorized', (done) => {
     chai.request(server)
@@ -407,7 +366,64 @@ Method | Route | Description | Minimum Permissions
   "Jonglera"
 ]
   ```
+# Running the app & Development
+#### Start in local development
+Run this commmand in both the **client** and **root** directory
+```bash
+npm install
+cd client && npm install
+```
+
+Then run this command in the **client** directory
+
+```bash
+cd client
+npm run serve
+```
+
+And then run this command in the **root** directory
+
+```bash
+npm run dev
+```
+The app is not up and running, now browse to the url suggested by the Vue cli
+
+------
+#### Start in local production
+First make sure you have all the environment variables set as suggested [here](#configuring-environment-variables)
+Especially making sure that the NODE_ENV is set to production.
+Run this commmand in both the **client** and **root** directory
+```bash
+npm install
+cd client && npm install
+```
+
+Then run this command in the **client** directory
+
+```bash
+cd client
+npm run build
+```
+Then run this command in the **root** directory
+
+```bash
+npm run start
+```
+The app is now up and running on localhost
+
+------
 
 
-## Old database transfer (dev-feature)
+### Old database transfer (dev-feature)
 This is a ugly piece of one-time-use code that transfers the contents of the old business database to the new one. This currently looks for a localhost database on port ```8889```, with database name ```recruitment```. This may be configured in the file, but since its a one time use its not very pretty or well documented but works in its current form ;).
+
+### Continious Integration and Continious Delivery
+
+The project is currently hooked up to Travis for continious integration (testing) and to Herokus Continious Delivery/Deployment feature.
+Currently the ```master``` branch is tracked, and as a pull request is done on it, Travis will begin to run the tests and build it. if they succeed Heroku will deploy it.
+
+Therefore no pushes/local merges -> pushes will have an effect on the live application.
+
+The workflow should be to work/sync against the ```dev``` branch, branch info seprarate branches. As features are completed and run nicely when merged into the latest ```dev``` branch, a pull request should be done from ```dev```-> ```master```. When the test have passed (and the code has been reviewd denepdning on the team workflow) it may be merged, and will be deployed on Heroku within a few minutes.
+
+The hooks, commands/test to run may be configured in the .travis.yml file.
