@@ -6,8 +6,7 @@
   "scripts": {
     "start": "node server/index.js",
     "dev": "nodemon server/index.js",
-    "test": "./node_modules/.bin/mocha server/test --recursive --reporter spec --exit",
-    "heroku-postbuild": "cd client && npm install --only=dev --no-shrinkwrap && npm run build"
+    "test": "./node_modules/.bin/mocha server/test --recursive --reporter spec --exit"
   },
   "repository": {
     "type": "git",

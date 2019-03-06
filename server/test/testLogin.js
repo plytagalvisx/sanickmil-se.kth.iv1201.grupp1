@@ -52,7 +52,7 @@ describe('A incorrect login should fail', () => {
       .query({username: 'emil', password: 'wrongpassword'})
       .end( (err, res) => {
         res.body.should.have.property('message');
-        res.body.message.should.equal('Wrong username or password');
+        res.body.message.should.equal('ERROR.AUTH.WRONG_CREDENTIALS');
         done();
       });
   });
