@@ -65,7 +65,7 @@ Required fields are marde with [req], optional: [opt]. Followed by the Datatype 
 Fields which are [opt] should not contain null, undefined or any "empty" value. If omitted the field should not exist.
 
 ##### User-collection
-```json
+```
 {
   "username": <b>[req]</b> String,
   "password": <b>[req]</b> String (<b>hashed<b> password),
@@ -91,7 +91,7 @@ Fields which are [opt] should not contain null, undefined or any "empty" value. 
 ```
 
 ##### Skill-collection
-```json
+```
 {
   <b>[req]</b> One array of Strings, name of the skill:
   [
