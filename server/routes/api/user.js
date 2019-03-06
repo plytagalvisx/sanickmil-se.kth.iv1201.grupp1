@@ -6,7 +6,8 @@ const config = require('../../config');
 const { validationResult } = require('express-validator/check');
 const validatingRegister = require('../../validation/validateRegister');
 const { prettyValidation } = require('../../helpers/formatValidationError');
-const ERROR = require('../../helpers/errors')
+const {ERROR, SUCCESS} = require('../../../common/messageEnums')
+const MyError = require('../../helpers/MyError');
 const Logger = require('../../helpers/logger');
 
 const userLogger = new Logger(`${__dirname}/../../../userActions`);
@@ -34,13 +35,15 @@ router.post('/', validatingRegister, async (req, res) => {
     }
     await dbservice.registerUser(newUser);
     userLogger.log(`${req.body.username} has successfully registered`);
-    return res.status(201).json({message: 'Successfully registered user'});
+    return res.status(201).json({message: SUCCESS.USER.REGISTERED});
   } catch (err) {
-    if (err.errorCode === ERROR.USER.DUPLICATE) {
-      return res.status(409).json({message: 'A user with that username already exists, try another one!'});
+    if (!(err instanceof MyError)) {
+      userLogger.chaos(`Unhandled error in POST /user when ${req.userUsername} tried to register`, err);
+      return res.sendStatus(500);
     }
-    userLogger.chaos(`Unhandled error in POST /user when ${req.userUsername} tried to register`, err);
-    return res.sendStatus(500);
+    if (err.errorCode === ERROR.USER.DUPLICATE) {
+      return res.status(409).json({message: err.errorCode});
+    }
   }
 });
 
@@ -52,11 +55,13 @@ router.get('/', async (req, res) => {
     const fetchedUser = await dbservice.getBasicUserInfo(req.userUsername);
     return res.json(fetchedUser);
   } catch (err) {
-    if (err.errorCode === ERROR.USER.NOT_FOUND) {
-      return res.status(404).json({message: 'User not found.'});
+    if (!(err instanceof MyError)) {
+      userLogger.chaos(`Unhandled error in GET /user when ${req.userUsername} tried to get their info`, err);
+      return res.sendStatus(500);
     }
-    userLogger.chaos(`Unhandled error in GET /user when ${req.userUsername} tried to get their info`, err);
-    return res.sendStatus(500);
+    if (err.errorCode === ERROR.USER.NOT_FOUND) {
+      return res.status(404).json({message: err.errorCode});
+    }
   }
 });
 

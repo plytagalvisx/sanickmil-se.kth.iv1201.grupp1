@@ -101,7 +101,11 @@
       }
     },
     created() {
-      ApplicationService.getApplications().then((res) => {
+      this.loadApplications();
+    },
+    methods: {
+      loadApplications() {
+        ApplicationService.getApplications().then((res) => {
         this.loading = true;
         let tmp = res.data;
         tmp.map((ele) => {
@@ -112,13 +116,16 @@
       .finally(() => {
         this.loading = false;
       });
-    },
-    methods: {
+      },
       onStatus(application, status) {
         let oldStatus = application.applicationStatus;
         ApplicationService.changeStatus(application.ssn, status)
-        .catch(() => {
+        .catch((err) => {
           application.applicationStatus = oldStatus;
+          if (err.response.status === 409) {
+            this.$emit('propagateFlash', err.response.data.message, 'error');
+            this.loadApplications();
+          }
         });
         application.applicationStatus = status;
       }

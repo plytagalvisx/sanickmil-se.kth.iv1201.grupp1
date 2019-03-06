@@ -1,4 +1,5 @@
 const { check } = require('express-validator/check')
+const { ERROR } = require('../../common/messageEnums')
 
 module.exports = [
   /**

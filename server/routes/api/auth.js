@@ -6,7 +6,8 @@ const dbservice = require('../../integration/database-services.js');
 const { validationResult } = require('express-validator/check');
 const validatingLogin = require('../../validation/validateLogin');
 const { prettyValidation } = require('../../helpers/formatValidationError');
-const ERROR = require('../../helpers/errors')
+const { ERROR, SUCCESS } = require('../../../common/messageEnums')
+const MyError = require('../../helpers/MyError')
 const Logger = require('../../helpers/logger');
 
 const authLogger = new Logger(`${__dirname}/../../../userActions`);
@@ -28,18 +29,19 @@ router.get('/', validatingLogin, async (req, res) => {
   try {
     authenticated = await dbservice.authenticateUser(username, password);
   } catch (err) {
+    if (!(err instanceof MyError)) {
+      authLogger.chaos(`Unhandled error in GET /auth when ${username} tried to log in`, err);
+      return res.sendStatus(500);
+    }
     if (err.errorCode === ERROR.USER.NOT_FOUND)
-      return res.status(400).json({message: 'There are no users with that username'});
+      return res.status(400).json({message: err.errorCode});
     else if (err.errorCode === ERROR.DB.ERROR)
-      return res.status(500).json({message: 'Database error'});
-
-    authLogger.chaos(`Unhandled error in GET /auth when ${username} tried to log in`, err);
-    return res.sendStatus(500);
+      return res.status(500).json({message: err.errorCode});
   }
   if (!authenticated) {
     authLogger.warn(`${username} tried to log in but enterd wrong credentials`);
     return res.status(401).json({
-      message: 'Wrong username or password'
+      message: ERROR.AUTH.WRONG_CREDENTIALS
     });
   }
 
@@ -54,17 +56,19 @@ router.get('/', validatingLogin, async (req, res) => {
     });
     authLogger.log(`${username} has logged in`);
     return res.status(200).json({
-      message: 'Successfully logged in',
+      message: SUCCESS.AUTH.SUCCESS,
       access_token: token,
       token_type: 'Bearer',
       username: authenticatedUser.username,
       role: authenticatedUser.role
     });
   } catch (err) {
+    if (!(err instanceof MyError)) {
+      authLogger.chaos('Unhandeled error in GET /auth #2');
+      return res.status(500);
+    }
     if (err.errorCode === ERROR.DB.ERROR) {
-      return res.status(500).json({message: 'Database communcation error'});
-    } else {
-      return res.status(500).json({message: 'Token error'});
+      return res.status(500).json({message: err.errorCode});
     }
   }
 })

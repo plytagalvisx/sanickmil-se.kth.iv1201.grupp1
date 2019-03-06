@@ -95,8 +95,6 @@
       if (this.inheritedApplication) {
         this.setApplication(this.inheritedApplication);
         this.showApplication = true;
-        // eslint-disable-next-line
-        console.log('already has applicaotin...')
         return;
       }
       if (this.applicationState === 'partial') {

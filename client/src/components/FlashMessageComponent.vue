@@ -1,6 +1,6 @@
 <template>
   <div class="flashmessage" v-bind:class="{error: type === 'error', success: type === 'success', info: type === 'info'}">
-    {{ flashMessage }}
+    {{ flashMessage | translate }}
   </div>
 </template>
 <script>
