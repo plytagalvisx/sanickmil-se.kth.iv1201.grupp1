@@ -156,6 +156,8 @@ export default {
 
     // Registry Success
     'USER.AUTH.REGISTERED': 'Successfully registered.',
+    // Registry Success
+    'SUCCESS.USER.REGISTERED': 'Successfully registered.',
 
     // Authentication Success
     'SUCCESS.AUTH.SUCCESS': 'Successfully logged in.',
