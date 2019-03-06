@@ -407,6 +407,7 @@ npm run build
 Then run this command in the **root** directory
 
 ```bash
+export NODE_ENV=production
 npm run start
 ```
 The app is now up and running on localhost
