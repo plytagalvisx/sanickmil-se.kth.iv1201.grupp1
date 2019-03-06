@@ -5,6 +5,51 @@ Continue reading for information about continuing development, or running the ap
 
 Visit the application at: https://sanickmil-recruitment-app.herokuapp.com/
 
+#Running the app
+####Start in local development
+Run this commmand in both the client and root directory
+```bash
+npm install
+```
+
+Then run this command in the client directory
+
+```bash
+npm run serve
+```
+
+And then run this command in the server directory
+
+```bash
+npm run dev
+```
+The app is not up and running, now browse to the url suggested by the Vue cli
+
+------
+####Start in local production
+First make sure you have all the environment variables set as suggested [here](#configuring-environment-variables)
+Especially making sure that the NODE_ENV is set to production.
+Run this commmand in both the client and root directory
+```bash
+npm install
+```
+
+Then run this command in the client directory
+
+```bash
+npm run build
+```
+Then run this command in the server directory
+
+```bash
+npm run start
+```
+The app is not up and running on localhost
+
+------
+Script/Metodik för pusha till production N 
+travis is controlled by .travis.yml N
+
 # About the project
 
 ## Front-end
@@ -16,6 +61,17 @@ The way this works is by having a translation file for each language we want to 
 
 #Configuring environment variables
 This application is dependent on some environment variables which have to be set in order for the application to work correctly. These configs can be found in the server directory in the config.js file.
+
+In bash you can set your environment variables with the export command:
+
+```bash
+export DBUSER=yourUser
+export DBPW=yourPW
+export BASE_URL=yourbaseurl
+export PORT=yourport
+export NODE_ENV=developmentorproduction
+export SECRET=yourSecret
+```
 
 ### VueX
 To manage state which the whole or multiple parts of the application shares, VueX is used. This allows for a central but encapsulated storage which is easly debuggable during development. The users credentials/basic user information is stores in one such module, and a job-application state is kept in another module.
