@@ -5,8 +5,8 @@ Continue reading for information about continuing development, or running the ap
 
 Visit the application at: https://sanickmil-recruitment-app.herokuapp.com/
 
-#Running the app
-####Start in local development
+# Running the app
+#### Start in local development
 Run this commmand in both the client and root directory
 ```bash
 npm install
@@ -26,7 +26,7 @@ npm run dev
 The app is not up and running, now browse to the url suggested by the Vue cli
 
 ------
-####Start in local production
+#### Start in local production
 First make sure you have all the environment variables set as suggested [here](#configuring-environment-variables)
 Especially making sure that the NODE_ENV is set to production.
 Run this commmand in both the client and root directory
@@ -44,22 +44,20 @@ Then run this command in the server directory
 ```bash
 npm run start
 ```
-The app is not up and running on localhost
+The app is now up and running on localhost
 
 ------
-Script/Metodik för pusha till production N 
-travis is controlled by .travis.yml N
 
 # About the project
 
 ## Front-end
 The front end is a Single Page Application written in Vue. Besides being very fast for the user after the initial load, this is nice from a development perspective since the front and back-end are completely separated.
-#Translation
+# Translation
 In order to make the application internationalized we decided to make use of filters in Vue and Vuex's reactiveness which made it really easy to switch between languages.
 
 The way this works is by having a translation file for each language we want to support for example 'lang-en.js'. This file holds key - value pairs where we map keywords to the translation of the given language, in this case English. To extend the internationalization and add another language you would simply create an identical file where you replace the translations to the language of your choosing without changing the keys. You then need to include the language details in the index.js and languages.js file found inside the assets/localization folder and add a flag image in png format to the assets/localization/flags folder where the name of the image file is the same as the id specified in the language.js and index.js files, so for our English example I would name my flag image, en.png.
 
-#Configuring environment variables
+# Configuring environment variables
 This application is dependent on some environment variables which have to be set in order for the application to work correctly. These configs can be found in the server directory in the config.js file.
 
 In bash you can set your environment variables with the export command:
@@ -414,5 +412,3 @@ Method | Route | Description | Minimum Permissions
 
 ## Old database transfer (dev-feature)
 This is a ugly piece of one-time-use code that transfers the contents of the old business database to the new one. This currently looks for a localhost database on port ```8889```, with database name ```recruitment```. This may be configured in the file, but since its a one time use its not very pretty or well documented but works in its current form ;).
-
-config.js (for getting env vars) N
