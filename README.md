@@ -38,7 +38,7 @@ To manage state which the whole or multiple parts of the application shares, Vue
 
 ### Validation
 [Vuelidate](https://monterail.github.io/vuelidate/) is used in order to validate user input on the front-end side. The validation is done inline the forms. Example of how validation for username could look like in the *script* tag:
-```json
+```
 validations: {
   form: {
     username: {
